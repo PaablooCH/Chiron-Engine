@@ -22,6 +22,7 @@ namespace Chiron
         static inline float RadToDeg(float radians);
 
         static std::string WStringToString(const std::wstring& wstr);
+        static std::wstring StringToWString(const std::string& str);
 
         // ------------- CONTAINERS ----------------------
 

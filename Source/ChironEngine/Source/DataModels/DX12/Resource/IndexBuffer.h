@@ -5,7 +5,7 @@ class IndexBuffer : public Resource
 {
 public:
     IndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numIndices, const DXGI_FORMAT& indexFormat,
-        const std::wstring& name = L"");
+        const std::string& name = "");
     IndexBuffer(const IndexBuffer& copy);
 
     ~IndexBuffer() override;

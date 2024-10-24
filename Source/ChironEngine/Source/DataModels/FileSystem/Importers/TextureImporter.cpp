@@ -131,7 +131,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
         break;
     }
 
-    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, wFilePath);
+    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, sFilePath);
     texture->SetTexture(newTexture);
 
     imgResult = &img;

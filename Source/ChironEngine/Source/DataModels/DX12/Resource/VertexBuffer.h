@@ -5,7 +5,7 @@ class VertexBuffer : public Resource
 {
 public:
     VertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numVertices, size_t vertexStride,
-        const std::wstring& name = L"");
+        const std::string& name = "");
     VertexBuffer(const VertexBuffer& copy);
 
     ~VertexBuffer() override;

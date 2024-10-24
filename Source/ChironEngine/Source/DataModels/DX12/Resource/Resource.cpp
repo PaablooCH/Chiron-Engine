@@ -7,11 +7,11 @@
 
 #include "DataModels/DX12/ResourceStateTracker/ResourceStateTracker.h"
 
-Resource::Resource() : _resource(nullptr), _name(L"")
+Resource::Resource() : _resource(nullptr), _name("")
 {
 }
 
-Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::wstring& name, const D3D12_CLEAR_VALUE* clearValue)
+Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name, const D3D12_CLEAR_VALUE* clearValue)
 {
     if (clearValue)
     {

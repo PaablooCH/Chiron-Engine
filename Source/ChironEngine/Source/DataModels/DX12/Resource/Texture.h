@@ -7,7 +7,7 @@ class Texture : public Resource
 {
 public:
     Texture();
-    Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::wstring& name = L"",
+    Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "",
         const D3D12_CLEAR_VALUE* clearValue = nullptr);
     Texture(ComPtr<ID3D12Resource> resource);
     Texture(const Texture& copy);

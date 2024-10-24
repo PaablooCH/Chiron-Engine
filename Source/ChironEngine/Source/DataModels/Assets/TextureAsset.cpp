@@ -11,7 +11,7 @@ TextureAsset::~TextureAsset()
 {
 }
 
-std::wstring TextureAsset::GetName() const
+const std::string& TextureAsset::GetName() const
 {
     return _texture->GetName();
 }

@@ -46,8 +46,8 @@ public:
     inline bool& GetVsync();
 
     // ------------- CREATORS ----------------------
-    std::unique_ptr<Texture> CreateDepthStencil(const std::wstring& name);
-    std::unique_ptr<Texture> CreateDepthStencil(const std::wstring& name, unsigned width, unsigned height);
+    std::unique_ptr<Texture> CreateDepthStencil(const std::string& name);
+    std::unique_ptr<Texture> CreateDepthStencil(const std::string& name, unsigned width, unsigned height);
 
 private:
     // ------------- CREATORS ----------------------

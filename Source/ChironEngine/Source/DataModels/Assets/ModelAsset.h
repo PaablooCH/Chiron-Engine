@@ -20,7 +20,6 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline std::wstring GetName() const override;
     inline const std::vector<std::shared_ptr<MaterialAsset>>& GetMaterials() const;
     inline const std::vector<std::shared_ptr<MeshAsset>>& GetMeshes() const;
 
@@ -31,11 +30,6 @@ private:
     bool _isTopLeft;
 };
 
-inline std::wstring ModelAsset::GetName() const
-{
-    CHIRON_TODO("TODO");
-    return L"";
-}
 
 inline const std::vector<std::shared_ptr<MaterialAsset>>& ModelAsset::GetMaterials() const
 {
