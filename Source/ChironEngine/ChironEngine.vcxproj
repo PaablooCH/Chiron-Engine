@@ -47,6 +47,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\ConfigurationWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\ConsoleWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\EditorWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\InspectorWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SceneWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\CameraSubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\EngineStatisticsSubWindow.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="Source\DataModels\Components\Interfaces\Updatable.h" />
     <ClInclude Include="Source\DataModels\FileSystem\UID.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h" />
     <ClInclude Include="Source\Enums\ComponentType.h" />
     <ClInclude Include="Source\DataModels\Components\Component.h" />
     <ClInclude Include="Source\DataModels\GameObject\GameObject.h" />

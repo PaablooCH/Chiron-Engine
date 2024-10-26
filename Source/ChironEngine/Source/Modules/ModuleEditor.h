@@ -37,6 +37,7 @@ private:
         CONFIGURATION,
         ABOUT,
         HIERARCHY,
+        INSPECTOR,
         SIZE
     };
 
