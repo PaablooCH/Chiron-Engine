@@ -10,6 +10,7 @@
 #include "DataModels/Window/MainMenuWindow.h"
 #include "DataModels/Window/EditorWindow/ConfigurationWindow.h"
 #include "DataModels/Window/EditorWindow/ConsoleWindow.h"
+#include "DataModels/Window/EditorWindow/HierarchyWindow.h"
 #include "DataModels/Window/EditorWindow/SceneWindow.h"
 
 #include "DataModels/DX12/CommandList/CommandList.h"
@@ -60,6 +61,7 @@ bool ModuleEditor::Init()
     _windows[static_cast<int>(WindowsType::SCENE)] = std::make_unique<SceneWindow>();
     _windows[static_cast<int>(WindowsType::CONSOLE)] = std::make_unique<ConsoleWindow>();
     _windows[static_cast<int>(WindowsType::CONFIGURATION)] = std::make_unique<ConfigurationWindow>();
+    _windows[static_cast<int>(WindowsType::HIERARCHY)] = std::make_unique<HierarchyWindow>();
     _mainMenu = std::make_unique<MainMenuWindow>(reinterpret_cast<AboutWindow*>(_windows[static_cast<int>(WindowsType::ABOUT)].get()));
 
     SetStyles();
@@ -187,7 +189,7 @@ void ModuleEditor::StartDock() const
         //ImGui::DockBuilderDockWindow("Resources", dockIdRight);
         //ImGui::DockBuilderDockWindow("Inspector", dockIdRight);
         //ImGui::DockBuilderDockWindow("Editor Control", dockIdUp);
-        //ImGui::DockBuilderDockWindow("Hierarchy", dockIdLeft);
+        ImGui::DockBuilderDockWindow("Hierarchy", dockIdLeft);
         ImGui::DockBuilderDockWindow("Scene", dockSpaceId);
         ImGui::DockBuilderFinish(dockSpaceId);
     }

@@ -36,6 +36,7 @@ private:
         CONSOLE,
         CONFIGURATION,
         ABOUT,
+        HIERARCHY,
         SIZE
     };
 

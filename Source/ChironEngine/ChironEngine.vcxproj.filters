@@ -264,6 +264,9 @@
     <ClCompile Include="Source\DataModels\Components\TransformComponent.cpp">
       <Filter>Source\DataModels\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.cpp">
+      <Filter>Source\DataModels\Windows\EditorWindow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -476,6 +479,12 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h">
       <Filter>Source\DataModels\Components\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h">
+      <Filter>Source\DataModels\Windows\EditorWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\UID.h">
+      <Filter>Source\DataModels\FileSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
