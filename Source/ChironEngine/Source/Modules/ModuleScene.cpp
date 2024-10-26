@@ -15,7 +15,7 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
-    _loadedScene = std::unique_ptr<Scene>();
+    _loadedScene = std::make_unique<Scene>();
     _selectedGameObject = _loadedScene->GetRoot();
     return true;
 }
