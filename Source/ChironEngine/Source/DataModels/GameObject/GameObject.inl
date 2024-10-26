@@ -11,7 +11,7 @@ namespace Chiron::detail
 #define ASSERT_TYPE_COMPLETE(T)                                                                    \
 	static_assert(Chiron::detail::CompleteType<T>,                                                    \
 				  "Trying to call method template with an incomplete type. Check the type and " \
-				  "the corresponding include?");
+				  "the corresponding include.");
 } // namespace Chiron::detail
 
 template<typename C>

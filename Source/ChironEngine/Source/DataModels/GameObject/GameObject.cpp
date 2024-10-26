@@ -12,18 +12,15 @@
 #include "DataModels/Scene/Scene.h"
 
 // root constructor
-GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, true, true, false)
+GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, 0U, true, true, false)
 {
 }
 
-GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, true, 
+GameObject::GameObject(const std::string& name, GameObject* parent, UID uid) : GameObject(name, parent, uid, true,
     parent->IsActive(), parent->IsStatic())
 {
-}
-
-GameObject::GameObject(const std::string& name, GameObject* parent, bool enabled, bool active, bool staticObject)
-    : _name(name), _parent(parent), _enabled(enabled), _active(active), _static(staticObject)
-{
+    _parent->LinkChild(this);
+    App->GetModule<ModuleScene>()->GetLoadedScene()->AddGameObject(this);
     if (_static)
     {
         App->GetModule<ModuleScene>()->GetLoadedScene()->AddStaticGO(this);
@@ -34,7 +31,28 @@ GameObject::GameObject(const std::string& name, GameObject* parent, bool enabled
     }
 }
 
-GameObject::GameObject(const GameObject& copy) : GameObject(copy._name, copy._parent, copy._enabled, copy._active, copy._static)
+GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, 0U, true, 
+    parent->IsActive(), parent->IsStatic())
+{
+    _parent->LinkChild(this);
+    App->GetModule<ModuleScene>()->GetLoadedScene()->AddGameObject(this);
+    if (_static)
+    {
+        App->GetModule<ModuleScene>()->GetLoadedScene()->AddStaticGO(this);
+    }
+    else
+    {
+        App->GetModule<ModuleScene>()->GetLoadedScene()->AddDynamicGO(this);
+    }
+}
+
+GameObject::GameObject(const std::string& name, GameObject* parent, UID uid, bool enabled, bool active, bool staticObject)
+    : _name(name), _parent(parent), _uid(uid), _enabled(enabled), _active(active), _static(staticObject)
+{
+    CreateComponent<TransformComponent>();
+}
+
+GameObject::GameObject(const GameObject& copy) : GameObject(copy._name, copy._parent, copy._uid, copy._enabled, copy._active, copy._static)
 {
     std::ranges::for_each(copy._components.begin(), copy._components.end(),
         [this](const std::unique_ptr<Component>& copyComponent)
@@ -62,6 +80,24 @@ GameObject::~GameObject()
     }
     _children.clear();
     _components.clear();
+}
+
+void GameObject::SetParent(GameObject* parent)
+{
+    assert(parent);
+    if (parent->IsChild(this) || IsDescendant(parent))
+    {
+        return;
+    }
+    std::ignore = _parent->UnLinkChild(this);
+
+    parent->LinkChild(this);
+    auto transform = GetInternalComponent<TransformComponent>();
+    auto newParentTransform = parent->GetInternalComponent<TransformComponent>();
+    if (newParentTransform && transform)
+    {
+        transform->CalculateLocalFromNewGlobal(newParentTransform);
+    }
 }
 
 void GameObject::SetStatic(bool isStatic)
@@ -109,7 +145,7 @@ void GameObject::LinkChild(GameObject* child)
         child->_parent = this;
         child->_active = IsActive();
 
-        CHIRON_TODO("Fix transforms with parent");
+        child->GetInternalComponent<TransformComponent>()->UpdateMatrices();
 
         _children.push_back(std::unique_ptr<GameObject>(child));
     }
@@ -136,6 +172,24 @@ GameObject* GameObject::UnLinkChild(GameObject* child)
     return nullptr;
 }
 
+void GameObject::MoveChild(GameObject* child, int newPos)
+{
+    for (int i = 0; i < _children.size(); i++)
+    {
+        if (_children[i].get() == child)
+        {
+            if ((i + newPos == _children.size()) || (i + newPos < 0))
+            {
+                LOG_WARNING("Couldn't move child to the new position.");
+                return;
+            }
+            std::rotate(_children.begin() + i, _children.begin() + i + 1, _children.begin() + newPos + (newPos > i ? 1 : 0));
+            return;
+        }
+    }
+    LOG_TRACE("{} is not a child of {}", child, this);
+}
+
 bool GameObject::IsChild(GameObject* child)
 {
     return std::ranges::any_of(_children.begin(), _children.end(),
@@ -143,6 +197,27 @@ bool GameObject::IsChild(GameObject* child)
         {
             return actualChild.get() == child;
         });
+}
+
+bool GameObject::IsDescendant(GameObject* gameObject)
+{
+    std::queue<GameObject*> descendants;
+    descendants.push(this);
+    while (!descendants.empty())
+    {
+        GameObject* descendant;
+        Chiron::Utils::TryFrontPop(descendants, descendant);
+        if (descendant == gameObject)
+        {
+            return true;
+        }
+
+        for (auto& child : _children)
+        {
+            descendants.push(child.get());
+        }
+    }
+    return false;
 }
 
 Component* GameObject::CreateComponent(ComponentType type)

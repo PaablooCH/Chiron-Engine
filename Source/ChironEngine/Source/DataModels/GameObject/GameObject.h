@@ -1,8 +1,7 @@
 #pragma once
 
 #include "DataModels/Components/Component.h"
-
-enum class ComponentType;
+#include "DataModels/FileSystem/UID.h"
 
 class GameObject
 {
@@ -12,6 +11,7 @@ public:
         std::function<GameObject* (const std::unique_ptr<GameObject>&)>>;
 
     explicit GameObject(const std::string& name);
+    GameObject(const std::string& name, GameObject* parent, UID uid); // delete
     GameObject(const std::string& name, GameObject* parent);
     GameObject(const GameObject& copy);
     ~GameObject();
@@ -20,8 +20,10 @@ public:
 
     void LinkChild(GameObject* child);
     [[nodiscard]] GameObject* UnLinkChild(GameObject* child);
+    void MoveChild(GameObject* child, int newPos);
 
     bool IsChild(GameObject* child);
+    bool IsDescendant(GameObject* child);
 
     // ------------- COMPONENTS METHODS ----------------------
 
@@ -43,6 +45,7 @@ public:
 
     // ------------- GETTERS ----------------------
 
+    inline const UID GetUID() const;
     inline const std::string& GetName();
     inline bool& IsEnabled();
     inline bool IsActive() const;
@@ -50,14 +53,17 @@ public:
     inline const std::string& GetTag();
     inline GameObject* GetParent() const;
     inline GameObjectView GetChildren() const;
+    inline bool HasChildren() const;
 
     // ------------- SETTERS ----------------------
 
+    void SetParent(GameObject* parent);
     void SetStatic(bool isStatic);
 
 private:
     GameObject(const std::string& name,
         GameObject* parent,
+        UID uid,
         bool enabled,
         bool active,
         bool staticObject);
@@ -71,16 +77,22 @@ private:
 
 private:
     std::string _name;
+    GameObject* _parent;
+    UID _uid;
     
     bool _enabled;
     bool _active;
     bool _static;
     std::string _tag;
 
-    GameObject* _parent;
     std::vector<std::unique_ptr<GameObject>> _children;
     std::vector<std::unique_ptr<Component>> _components;
 };
+
+inline const UID GameObject::GetUID() const
+{
+    return _uid;
+}
 
 inline const std::string& GameObject::GetName()
 {
@@ -119,6 +131,11 @@ inline GameObject::GameObjectView GameObject::GetChildren() const
             return go.get();
         };
     return std::ranges::transform_view(_children, lambda);
+}
+
+inline bool GameObject::HasChildren() const
+{
+    return _children.size() > 0;
 }
 
 #include "GameObject.inl"
