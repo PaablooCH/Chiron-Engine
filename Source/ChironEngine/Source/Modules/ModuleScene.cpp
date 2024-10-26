@@ -4,6 +4,7 @@
 #include "DataModels/Scene/Scene.h"
 #include "DataModels/GameObject/GameObject.h"
 
+#include "DataModels/Components/TransformComponent.h"
 ModuleScene::ModuleScene() : _loadedScene(nullptr), _selectedGameObject(nullptr)
 {
 }
@@ -46,4 +47,27 @@ bool ModuleScene::CleanUp()
 {
     _loadedScene->CleanUp();
     return true;
+}
+
+GameObject* ModuleScene::GetRoot() const
+{
+    return _loadedScene->GetRoot();
+}
+
+GameObject* ModuleScene::SearchGameObjectByUID(UID uid)
+{
+    return _loadedScene->SearchGameObjectByUID(uid);
+}
+
+GameObject* ModuleScene::CreateGameObject(const std::string& name, GameObject* parent)
+{
+    GameObject* newGameObject = new GameObject(name, parent);
+    newGameObject->CreateComponent<TransformComponent>();
+
+    return newGameObject;
+}
+
+void ModuleScene::RemoveGameObject(GameObject* gameObject)
+{
+    _loadedScene->RemoveGameObject(gameObject);
 }

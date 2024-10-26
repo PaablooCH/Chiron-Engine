@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 
+#include "DataModels/FileSystem/UID.h"
+
 class GameObject;
 class Scene;
 
@@ -17,10 +19,22 @@ public:
     UpdateStatus PostUpdate() override;
     bool CleanUp() override;
 
+    // ------------- SCENE METHODS ----------------------
+
+    GameObject* GetRoot() const;
+
+    GameObject* SearchGameObjectByUID(UID uid);
+    GameObject* CreateGameObject(const std::string& name, GameObject* parent);
+    void RemoveGameObject(GameObject* gameObject);
+
     // ------------- GETTERS ----------------------
 
     inline Scene* GetLoadedScene();
     inline GameObject* GetSelectedGameObject();
+
+    // ------------- SETTERS ----------------------
+
+    inline void SetSelectedGameObject(GameObject* newSelected);
 
 private:
 
@@ -37,4 +51,9 @@ inline Scene* ModuleScene::GetLoadedScene()
 inline GameObject* ModuleScene::GetSelectedGameObject()
 {
     return _selectedGameObject;
+}
+
+inline void ModuleScene::SetSelectedGameObject(GameObject* newSelected)
+{
+    _selectedGameObject = newSelected;
 }
