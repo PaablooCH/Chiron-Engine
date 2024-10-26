@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DataModels/FileSystem/UID.h"
+
 class GameObject;
 class Drawable;
 class Updatable;
@@ -15,6 +17,8 @@ public:
     void PostUpdate();
     
     void CleanUp();
+
+    GameObject* SearchGameObjectByUID(UID uid);
 
     // ------------- MODIFY CONTAINERS ----------------------
 

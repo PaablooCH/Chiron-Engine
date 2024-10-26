@@ -51,6 +51,23 @@ void Scene::CleanUp()
     _updatableComponents.clear();
 }
 
+GameObject* Scene::SearchGameObjectByUID(UID uid)
+{
+    auto gameObjectIt = std::find_if(_sceneGameObjects.begin(), _sceneGameObjects.end(),
+        [uid](GameObject* gameObject)
+        {
+            return gameObject->GetUID() == uid;
+        });
+
+    if (gameObjectIt == _sceneGameObjects.end())
+    {
+        LOG_TRACE("UID: {}, doesn't exist.", uid);
+        return nullptr;
+    }
+
+    return (*gameObjectIt);
+}
+
 void Scene::RemoveGameObject(GameObject* gameObject)
 {
     if (gameObject && gameObject != _root.get())
