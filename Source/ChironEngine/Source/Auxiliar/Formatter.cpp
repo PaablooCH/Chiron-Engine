@@ -1,6 +1,8 @@
 #include "Pch.h"
 #include "Formatter.h"
 
+#include "DataModels/GameObject/GameObject.h"
+
 namespace Chiron::detail
 {
     namespace
@@ -11,6 +13,11 @@ namespace Chiron::detail
     size_t FindPositionKey(const std::string& format)
     {
         return format.find(replaceKey);
+    }
+
+    bool Format(std::string& format, GameObject* arg)
+    {
+        return Format(format, arg->GetName());
     }
 
     bool Format(std::string& format, int arg)
