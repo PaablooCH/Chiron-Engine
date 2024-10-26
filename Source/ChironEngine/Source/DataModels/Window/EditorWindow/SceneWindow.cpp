@@ -12,9 +12,10 @@
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
 #include "DataModels/DX12/Resource/Texture.h"
 
-SceneWindow::SceneWindow() : EditorWindow("Scene"), _currentWidth(0), _currentHeight(0)
+SceneWindow::SceneWindow() : EditorWindow("Scene", ImGuiWindowFlags_AlwaysAutoResize | 
+    ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse), _currentWidth(0), 
+    _currentHeight(0)
 {
-    _flags |= ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
 }
 
 SceneWindow::~SceneWindow()

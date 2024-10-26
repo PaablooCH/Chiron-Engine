@@ -11,7 +11,7 @@ public:
     void Draw(const std::shared_ptr<CommandList>& commandList) override;
 
 protected:
-    EditorWindow(const std::string& name);
+    EditorWindow(const std::string& name, ImGuiWindowFlags flags = ImGuiWindowFlags_None);
 
     virtual void DrawWindowContent(const std::shared_ptr<CommandList>& commandList) = 0;
 

@@ -7,9 +7,8 @@
 
 #include "DataModels/GameObject/GameObject.h"
 
-HierarchyWindow::HierarchyWindow() : EditorWindow("Hierarchy")
+HierarchyWindow::HierarchyWindow() : EditorWindow("Hierarchy", ImGuiWindowFlags_AlwaysAutoResize)
 {
-    _flags |= ImGuiWindowFlags_AlwaysAutoResize;
 }
 
 HierarchyWindow::~HierarchyWindow()
