@@ -22,10 +22,12 @@ public:
 
     inline void SetOwner(GameObject* owner);
 
+protected:
+    GameObject* _owner;
+
 private:
     ComponentType _type;
 
-    GameObject* _owner;
     bool _enabled;
 };
 
