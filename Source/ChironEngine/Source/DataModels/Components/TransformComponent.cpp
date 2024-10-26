@@ -1,6 +1,8 @@
 #include "Pch.h"
 #include "TransformComponent.h"
 
+#include "DataModels/GameObject/GameObject.h"
+
 TransformComponent::TransformComponent(GameObject* owner) : Component(ComponentType::TRANSFORM, owner),
     _localPos(Vector3::Zero),
     _localRot(Quaternion::Identity),
@@ -21,6 +23,7 @@ TransformComponent::TransformComponent(GameObject* owner) : Component(ComponentT
     _drawBoundingBoxes(false),
     _uniformScale(true)
 {
+    RecalculateMatrices();
 }
 
 TransformComponent::TransformComponent(const TransformComponent& copy) : Component(copy), 
@@ -43,8 +46,44 @@ TransformComponent::TransformComponent(const TransformComponent& copy) : Compone
     _drawBoundingBoxes(copy._drawBoundingBoxes),
     _uniformScale(copy._uniformScale)
 {
+    RecalculateMatrices();
 }
 
 TransformComponent::~TransformComponent()
 {
+}
+
+void TransformComponent::UpdateMatrices()
+{
+    RecalculateMatrices();
+    for (auto child : _owner->GetChildren())
+    {
+        child->GetInternalComponent<TransformComponent>()->UpdateMatrices();
+    }
+}
+
+void TransformComponent::CalculateLocalFromNewGlobal(const TransformComponent* newTransformFrom)
+{
+    _localMatrix = newTransformFrom->_globalMatrix.Invert() * _globalMatrix;
+    _localMatrix.Decompose(_localSca, _localRot, _localPos);
+    _rotXYZ.x = Chiron::Utils::RadToDeg(_localRot.ToEuler().x);
+    _rotXYZ.y = Chiron::Utils::RadToDeg(_localRot.ToEuler().y);
+    _rotXYZ.z = Chiron::Utils::RadToDeg(_localRot.ToEuler().z);
+}
+
+void TransformComponent::RecalculateMatrices()
+{
+    _localMatrix = Matrix::CreateTranslation(_localPos) * Matrix::CreateFromQuaternion(_localRot) * Matrix::CreateScale(_localSca);
+
+    auto parent = _owner->GetParent();
+    if (parent)
+    {
+        auto parentGlobalMatrix = parent->GetInternalComponent<TransformComponent>()->_globalMatrix;
+        _globalMatrix = parentGlobalMatrix * _localMatrix;
+        _globalMatrix.Decompose(_globalSca, _globalRot, _globalPos);
+    }
+    else
+    {
+        _globalMatrix = _localMatrix;
+    }
 }

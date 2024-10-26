@@ -8,6 +8,12 @@ public:
     TransformComponent(const TransformComponent& copy);
     ~TransformComponent() override;
 
+    void UpdateMatrices();
+    void CalculateLocalFromNewGlobal(const TransformComponent* newTransformFrom);
+
+private:
+    void RecalculateMatrices();
+
 private:
     Vector3 _localPos;
     Quaternion _localRot;
