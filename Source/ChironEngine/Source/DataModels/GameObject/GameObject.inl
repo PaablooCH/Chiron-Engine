@@ -34,7 +34,7 @@ inline C* GameObject::GetInternalComponent() const
 }
 
 template<typename C>
-inline std::vector<C*> GameObject::GetComponents() const
+inline std::vector<C*> GameObject::GetInternalComponents() const
 {
     ASSERT_TYPE_COMPLETE(C);
     auto viewComponents = _components |

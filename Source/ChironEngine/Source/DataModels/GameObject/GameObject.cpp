@@ -119,23 +119,6 @@ void GameObject::SetStatic(bool isStatic)
     }
 }
 
-bool GameObject::RemoveComponent(const Component* component)
-{
-    auto componentIt = std::ranges::find_if(_components,
-        [component](std::unique_ptr<Component>& comp)
-        {
-            return comp.get() == component;
-        });
-
-    if (componentIt != _components.end())
-    {
-        return false;
-    }
-
-    _components.erase(componentIt);
-    return true;
-}
-
 void GameObject::LinkChild(GameObject* child)
 {
     assert(child);
@@ -220,6 +203,24 @@ bool GameObject::IsDescendant(GameObject* gameObject)
     return false;
 }
 
+bool GameObject::RemoveComponent(Component* deleteComponent)
+{
+    auto newEnd = std::remove_if(_components.begin(), _components.end(),
+        [&deleteComponent](const std::unique_ptr<Component>& component)
+        {
+            return component.get() == deleteComponent;
+        });
+
+    if (newEnd == _components.end())
+    {
+        LOG_WARNING("Couldn't delete component from {}. Doesn't exist.", this);
+        return false;
+    }
+
+    _components.erase(newEnd, _components.end());
+    return true;
+}
+
 Component* GameObject::CreateComponent(ComponentType type)
 {
     Component* newComponent = nullptr;
@@ -235,23 +236,6 @@ Component* GameObject::CreateComponent(ComponentType type)
     AddComponent(newComponent);
 
     return newComponent;
-}
-
-bool GameObject::RemoveComponent(Component* deleteComponent)
-{
-    auto newEnd = std::remove_if(_components.begin(), _components.end(),
-        [&deleteComponent](const std::unique_ptr<Component>& component)
-        {
-            return component.get() == deleteComponent;
-        });
-    
-    if (newEnd == _components.end())
-    {
-        return false;
-    }
-
-    _components.erase(newEnd, _components.end());
-    return true;
 }
 
 void GameObject::CopyComponent(Component* copyComponent)

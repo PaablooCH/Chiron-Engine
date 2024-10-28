@@ -34,14 +34,14 @@ public:
     template<typename C>
     C* GetInternalComponent() const;
     template<typename C>
-    std::vector<C*> GetComponents() const;
+    std::vector<C*> GetInternalComponents() const;
     template<typename C>
     bool RemoveComponent();
     template<typename C>
     bool RemoveComponents();
-    bool RemoveComponent(const Component* component);
+    bool RemoveComponent(Component* component);
     template<typename C>
-    bool HasComponent();
+    inline bool HasComponent();
 
     // ------------- GETTERS ----------------------
 
@@ -71,7 +71,6 @@ private:
     // ------------- COMPONENTS METHODS ----------------------
 
     Component* CreateComponent(ComponentType type);
-    bool RemoveComponent(Component* component);
     void CopyComponent(Component* copyComponent);
     void AddComponent(Component* newComponent);
 
