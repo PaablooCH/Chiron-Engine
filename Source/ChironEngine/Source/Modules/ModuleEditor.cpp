@@ -24,6 +24,8 @@
 #include "ImGui/imgui_impl_dx12.h"
 #include "ImGui/imgui_impl_win32.h"
 
+#include "DataModels/Window/Fonts/Font.h"
+
 #if OPTICK
     #include "Optick/optick.h"
 #endif // OPTICK
@@ -73,6 +75,7 @@ bool ModuleEditor::Init()
 
 bool ModuleEditor::Start()
 {
+    Font::SetDefaultFont();
     ApplyTheme(_darkGreenStyle);
 
     _dockFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |

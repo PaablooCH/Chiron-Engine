@@ -54,6 +54,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\HardwareSubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\SubWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\Fonts\Font.cpp" />
     <ClCompile Include="Source\DataModels\Window\Window.cpp" />
     <ClCompile Include="Source\DataModels\Window\MainMenuWindow.cpp" />
     <ClCompile Include="Source\DebugDrawPass.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="Source\DataModels\FileSystem\UID.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\Fonts\Font.h" />
     <ClInclude Include="Source\Enums\ComponentType.h" />
     <ClInclude Include="Source\DataModels\Components\Component.h" />
     <ClInclude Include="Source\DataModels\GameObject\GameObject.h" />

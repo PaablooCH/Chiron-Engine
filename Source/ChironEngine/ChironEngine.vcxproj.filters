@@ -91,6 +91,9 @@
     <Filter Include="Source\DataModels\Components\Interfaces">
       <UniqueIdentifier>{79fa2462-a767-497a-92c9-a943548a66d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\DataModels\Windows\Fonts">
+      <UniqueIdentifier>{27138e4e-67e3-4c36-934e-b6be7ecea095}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -269,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="Source\DataModels\Window\EditorWindow\InspectorWindow.cpp">
       <Filter>Source\DataModels\Windows\EditorWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\Window\Fonts\Font.cpp">
+      <Filter>Source\DataModels\Windows\Fonts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +497,9 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h">
       <Filter>Source\DataModels\Windows\EditorWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Window\Fonts\Font.h">
+      <Filter>Source\DataModels\Windows\Fonts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
