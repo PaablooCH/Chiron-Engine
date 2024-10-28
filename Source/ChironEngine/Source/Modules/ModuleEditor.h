@@ -26,8 +26,10 @@ public:
 private:
     void StartDock() const;
 
-    void SetStyles();
+    void SetThemes();
     void ApplyTheme(const ThemeColors& theme);
+
+    void SetStyle();
 
 private:
     enum class WindowsType
