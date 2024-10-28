@@ -66,9 +66,10 @@ void TransformComponent::CalculateLocalFromNewGlobal(const TransformComponent* n
 {
     _localMatrix = newTransformFrom->_globalMatrix.Invert() * _globalMatrix;
     _localMatrix.Decompose(_localSca, _localRot, _localPos);
-    _rotXYZ.x = Chiron::Utils::RadToDeg(_localRot.ToEuler().x);
-    _rotXYZ.y = Chiron::Utils::RadToDeg(_localRot.ToEuler().y);
-    _rotXYZ.z = Chiron::Utils::RadToDeg(_localRot.ToEuler().z);
+    Vector3 euler = _localRot.ToEuler();
+    _rotXYZ.x = DirectX::XMConvertToDegrees(euler.x);
+    _rotXYZ.y = DirectX::XMConvertToDegrees(euler.y);
+    _rotXYZ.z = DirectX::XMConvertToDegrees(euler.z);
 }
 
 void TransformComponent::RecalculateMatrices()

@@ -80,9 +80,9 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             pos.x,
             pos.y,
             pos.z,
-            Chiron::Utils::RadToDeg(rot.ToEuler().x),
-            Chiron::Utils::RadToDeg(rot.ToEuler().y),
-            Chiron::Utils::RadToDeg(rot.ToEuler().z),
+            DirectX::XMConvertToDegrees(rot.ToEuler().x),
+            DirectX::XMConvertToDegrees(rot.ToEuler().y),
+            DirectX::XMConvertToDegrees(rot.ToEuler().z),
             scale.x,
             scale.y,
             scale.z);
