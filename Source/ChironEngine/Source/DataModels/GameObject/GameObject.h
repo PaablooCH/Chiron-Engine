@@ -9,6 +9,9 @@ public:
     using GameObjectView =
         std::ranges::transform_view<std::ranges::ref_view<const std::vector<std::unique_ptr<GameObject>>>,
         std::function<GameObject* (const std::unique_ptr<GameObject>&)>>;
+    using ComponentsView =
+        std::ranges::transform_view<std::ranges::ref_view<const std::vector<std::unique_ptr<Component>>>,
+        std::function<Component* (const std::unique_ptr<Component>&)>>;
 
     explicit GameObject(const std::string& name);
     GameObject(const std::string& name, GameObject* parent, UID uid); // delete
@@ -53,10 +56,13 @@ public:
     inline const std::string& GetTag();
     inline GameObject* GetParent() const;
     inline GameObjectView GetChildren() const;
+    inline ComponentsView GetComponents() const;
     inline bool HasChildren() const;
+    inline size_t HowManyComponentsHas() const;
 
     // ------------- SETTERS ----------------------
 
+    inline void SetName(const std::string& name);
     void SetParent(GameObject* parent);
     void SetStatic(bool isStatic);
 
@@ -132,9 +138,28 @@ inline GameObject::GameObjectView GameObject::GetChildren() const
     return std::ranges::transform_view(_children, lambda);
 }
 
+inline GameObject::ComponentsView GameObject::GetComponents() const
+{
+    std::function<Component* (const std::unique_ptr<Component>&)> lambda = [](const std::unique_ptr<Component>& component)
+        {
+            return component.get();
+        };
+    return std::ranges::transform_view(_components, lambda);
+}
+
 inline bool GameObject::HasChildren() const
 {
     return _children.size() > 0;
+}
+
+inline size_t GameObject::HowManyComponentsHas() const
+{
+    return _components.size();
+}
+
+inline void GameObject::SetName(const std::string& name)
+{
+    _name = name;
 }
 
 #include "GameObject.inl"
