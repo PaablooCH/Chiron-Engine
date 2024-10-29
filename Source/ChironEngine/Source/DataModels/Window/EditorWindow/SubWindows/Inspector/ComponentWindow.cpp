@@ -39,14 +39,13 @@ void ComponentWindow::DrawEnable()
     if (_component)
     {
         std::stringstream ss;
-        ss << "##Enabled" << _windowUID;
 
-        ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
+        ImGui::SameLine(ImGui::GetContentRegionAvail().x - 55);
         bool enable = _component->IsEnabled();
-        std::string uniformLabel = enable ? ICON_FA_EYE : ICON_FA_EYE_SLASH;
-        if (ImGui::Selectable(uniformLabel.c_str(), &enable))
+        ss << (enable ? ICON_FA_EYE : ICON_FA_EYE_SLASH) << "##Enabled" << _windowUID;
+        if (ImGui::Button(ss.str().c_str()))
         {
-            _component->SetEnabled(enable);
+            _component->SetEnabled(!enable);
         }
         if (ImGui::BeginItemTooltip()) 
         {
@@ -65,8 +64,8 @@ void ComponentWindow::DrawRemoveComponent()
         std::stringstream ss;
         ss << ICON_FA_TRASH "###" << _windowUID;
 
-        ImGui::SameLine(ImGui::GetContentRegionAvail().x - 45);
-        if (ImGui::Button(ss.str().c_str(), ImVec2(30, 22)))
+        ImGui::SameLine(ImGui::GetContentRegionAvail().x - 25);
+        if (ImGui::Button(ss.str().c_str()))
         {
             _component->GetOwner()->RemoveComponent(_component);
             _component = nullptr;
@@ -78,5 +77,6 @@ void ComponentWindow::DrawRemoveComponent()
             ImGui::PopTextWrapPos();
             ImGui::EndTooltip();
         }
+        ImGui::Dummy(ImVec2(30, 0));
     }
 }
