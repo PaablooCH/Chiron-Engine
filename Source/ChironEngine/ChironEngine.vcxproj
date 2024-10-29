@@ -53,6 +53,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\EngineStatisticsSubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\HardwareSubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\ComponentWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\SubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\Fonts\Font.cpp" />
     <ClCompile Include="Source\DataModels\Window\Window.cpp" />
@@ -77,6 +78,7 @@
     </ClCompile>
     <ClCompile Include="Source\DataModels\DX12\Resource\VertexBuffer.cpp" />
     <ClCompile Include="Source\DataModels\Components\TransformComponent.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />
@@ -84,6 +86,8 @@
     <ClInclude Include="Source\DataModels\FileSystem\UID.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\ComponentWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.h" />
     <ClInclude Include="Source\DataModels\Window\Fonts\Font.h" />
     <ClInclude Include="Source\Enums\ComponentType.h" />
     <ClInclude Include="Source\DataModels\Components\Component.h" />

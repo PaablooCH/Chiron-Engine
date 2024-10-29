@@ -1,6 +1,14 @@
 #pragma once
 #include "Component.h"
 
+enum class Axis
+{
+    X,
+    Y,
+    Z,
+    NONE
+};
+
 class TransformComponent : public Component
 {
 public:
@@ -16,12 +24,19 @@ public:
     inline const Vector3& GetLocalPos() const;
     inline const Vector3& GetLocalRotXYZ() const;
     inline const Vector3& GetLocalSca() const;
+    
+    inline const bool GetUniformScale() const;
 
     // ------------- SETTERS ----------------------
 
-    inline void SetLocalPos(const Vector3& localPos);
-    inline void SetLocalRot(const Vector3& localRotV);
-    inline void SetLocalSca(const Vector3& localSca);
+    inline void SetLocalPos(const Vector3& pos);
+    inline void SetLocalRot(const Vector3& rotXYZ);
+    inline void SetLocalSca(const Vector3& scale);
+    inline void SetScaleUniform(const Vector3& localSca, Axis axis);
+
+
+    inline void SetUniformScale(bool uniformScale);
+
 private:
     void RecalculateMatrices();
 
@@ -66,19 +81,56 @@ inline const Vector3& TransformComponent::GetLocalSca() const
     return _localSca;
 }
 
-inline void TransformComponent::SetLocalPos(const Vector3& localPos)
+inline const bool TransformComponent::GetUniformScale() const
 {
-    _localPos = localPos;
+    return _uniformScale;
 }
 
-inline void TransformComponent::SetLocalRot(const Vector3& localRotV)
+inline void TransformComponent::SetLocalPos(const Vector3& pos)
 {
-    _rotXYZ = localRotV;
+    _localPos = pos;
+}
+
+inline void TransformComponent::SetLocalRot(const Vector3& rotXYZ)
+{
+    _rotXYZ = rotXYZ;
     _localRot = Quaternion::CreateFromYawPitchRoll(DirectX::XMConvertToRadians(_rotXYZ.y), 
         DirectX::XMConvertToRadians(_rotXYZ.x), DirectX::XMConvertToRadians(_rotXYZ.z));
 }
 
-inline void TransformComponent::SetLocalSca(const Vector3& localSca)
+inline void TransformComponent::SetLocalSca(const Vector3& scale)
 {
-    _localSca = localSca;
+    _localSca.x = std::max(scale.x, 0.001f);
+    _localSca.y = std::max(scale.y, 0.001f);
+    _localSca.z = std::max(scale.z, 0.001f);
+}
+
+inline void TransformComponent::SetScaleUniform(const Vector3& scale, Axis modifiedAxis)
+{
+    switch (modifiedAxis)
+    {
+    case Axis::X:
+        _localSca.y = std::max(scale.y * scale.x / _localSca.x, 0.001f);
+        _localSca.z = std::max(scale.z * scale.x / _localSca.x, 0.001f);
+        _localSca.x = std::max(scale.x, 0.001f);
+        break;
+    case Axis::Y:
+        _localSca.x = std::max(scale.x * scale.y / _localSca.y, 0.001f);
+        _localSca.z = std::max(scale.z * scale.y / _localSca.y, 0.001f);
+        _localSca.y = std::max(scale.y, 0.001f);
+        break;
+    case Axis::Z:
+        _localSca.x = std::max(scale.x * scale.z / _localSca.z, 0.001f);
+        _localSca.y = std::max(scale.y * scale.z / _localSca.z, 0.001f);
+        _localSca.z = std::max(scale.z, 0.001f);
+        break;
+    case Axis::NONE:
+        LOG_ERROR("Axis not specified");
+        break;
+    }
+}
+
+inline void TransformComponent::SetUniformScale(bool uniformScale)
+{
+    _uniformScale = uniformScale;
 }

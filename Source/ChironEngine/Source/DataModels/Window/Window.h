@@ -1,5 +1,8 @@
 #pragma once
 
+#include "IconFontCppHeaders/IconsFontAwesome6.h"
+#include "IconFontCppHeaders/IconsForkAwesome.h"
+
 class CommandList;
 
 class Window
