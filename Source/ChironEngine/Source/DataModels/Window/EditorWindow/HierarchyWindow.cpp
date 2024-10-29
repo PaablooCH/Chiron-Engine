@@ -7,7 +7,7 @@
 
 #include "DataModels/GameObject/GameObject.h"
 
-HierarchyWindow::HierarchyWindow() : EditorWindow("Hierarchy", ImGuiWindowFlags_AlwaysAutoResize)
+HierarchyWindow::HierarchyWindow() : EditorWindow(ICON_FA_SITEMAP " Hierarchy", ImGuiWindowFlags_AlwaysAutoResize)
 {
 }
 

@@ -7,7 +7,7 @@ namespace
     std::optional<size_t> selectedMaxLinesIndex = 3U; // default to 50 lines max
 } // namespace
 
-ConsoleWindow::ConsoleWindow() : EditorWindow("Console", ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar)
+ConsoleWindow::ConsoleWindow() : EditorWindow(ICON_FA_TERMINAL " Console", ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar)
 {
     _severityFilters[LogSeverity::INFO_LOG] = true;
     _severityFilters[LogSeverity::TRACE_LOG] = true;

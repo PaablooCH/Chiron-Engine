@@ -1,6 +1,7 @@
 #include "Pch.h"
 #include "TransformComponentWindow.h"
 
+#include "DataModels/GameObject/GameObject.h"
 #include "DataModels/Components/TransformComponent.h"
 
 namespace
@@ -20,7 +21,7 @@ namespace
 }
 
 TransformComponentWindow::TransformComponentWindow(TransformComponent* component) : 
-    ComponentWindow("Transform", component, true, true), _dragSpeed(0.03f)
+    ComponentWindow(ICON_FA_UP_DOWN_LEFT_RIGHT " Transform", component, true, true), _dragSpeed(0.03f)
 {
 }
 
@@ -30,11 +31,6 @@ TransformComponentWindow::~TransformComponentWindow()
 
 void TransformComponentWindow::DrawWindowContent(const std::shared_ptr<CommandList>& commandList)
 {
-    if (_component->GetOwner() == nullptr) // No draw this component in the root
-    {
-        return;
-    }
-
     auto transformComponent = static_cast<TransformComponent*>(_component);
     if (transformComponent)
     {

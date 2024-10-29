@@ -42,8 +42,12 @@ void ComponentWindow::DrawEnable()
         ss << "##Enabled" << _windowUID;
 
         ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
-        bool& enable = _component->IsEnabled();
-        ImGui::Checkbox(ss.str().c_str(), &enable);
+        bool enable = _component->IsEnabled();
+        std::string uniformLabel = enable ? ICON_FA_EYE : ICON_FA_EYE_SLASH;
+        if (ImGui::Selectable(uniformLabel.c_str(), &enable))
+        {
+            _component->SetEnabled(enable);
+        }
         if (ImGui::BeginItemTooltip()) 
         {
             ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);

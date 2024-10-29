@@ -3,6 +3,8 @@
 
 #include "DataModels/Components/TransformComponent.h"
 
+#include "DataModels/GameObject/GameObject.h"
+
 #include "DataModels/Window/EditorWindow/SubWindows/Inspector/TransformComponentWindow.h"
 
 std::unique_ptr<ComponentWindow> ComponentWindowFactory::CreateComponentWindow(Component* component)
@@ -10,6 +12,10 @@ std::unique_ptr<ComponentWindow> ComponentWindowFactory::CreateComponentWindow(C
     switch (component->GetType())
     {
     case ComponentType::TRANSFORM:
+        if (component->GetOwner()->GetParent() == nullptr)
+        {
+            return nullptr;
+        }
         return std::unique_ptr<TransformComponentWindow>(new TransformComponentWindow(static_cast<TransformComponent*>(component)));
     case ComponentType::MESH_RENDERER:
         break;

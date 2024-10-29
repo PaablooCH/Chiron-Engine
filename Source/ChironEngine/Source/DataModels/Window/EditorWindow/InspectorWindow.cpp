@@ -83,14 +83,17 @@ void InspectorWindow::DrawGameObjectInfo()
 
 void InspectorWindow::DrawComponentsWindows(const std::shared_ptr<CommandList>& commandList)
 {
-    if (ImGui::BeginChild("Child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeY))
+    if (!_componentsWindows.empty())
     {
-        ImGui::SeparatorText("Components");
-        for (auto& componentWindow : _componentsWindows)
+        if (ImGui::BeginChild("Child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeY))
         {
-            componentWindow->Draw(commandList);
+            ImGui::SeparatorText("Components");
+            for (auto& componentWindow : _componentsWindows)
+            {
+                componentWindow->Draw(commandList);
+            }
+            ImGui::EndChild();
         }
-        ImGui::EndChild();
     }
 }
 
@@ -104,6 +107,10 @@ void InspectorWindow::FillComponentsWindows()
 {
     for (auto component : _lastSelected->GetComponents())
     {
-        _componentsWindows.push_back(ComponentWindowFactory::CreateComponentWindow(component));
+        auto componentWindow = ComponentWindowFactory::CreateComponentWindow(component);
+        if (componentWindow)
+        {
+            _componentsWindows.push_back(std::move(componentWindow));
+        }
     }
 }
