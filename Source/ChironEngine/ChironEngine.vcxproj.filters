@@ -94,6 +94,9 @@
     <Filter Include="Source\DataModels\Windows\EditorWindow\SubWindows\Configuration">
       <UniqueIdentifier>{8fbe8fea-7fb5-489c-8ca1-256f5b04ba9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Factories">
+      <UniqueIdentifier>{b0c82360-d462-4e0e-af65-e88a21b88928}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\DataModels\Windows\Fonts">
       <UniqueIdentifier>{27138e4e-67e3-4c36-934e-b6be7ecea095}</UniqueIdentifier>
     </Filter>
@@ -281,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp">
       <Filter>Source\DataModels\Windows\EditorWindow\SubWindows\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Factories\ComponentWindowFactory.cpp">
+      <Filter>Source\Factories</Filter>
     </ClCompile>
     <ClCompile Include="Source\DataModels\Window\Fonts\Font.cpp">
       <Filter>Source\DataModels\Windows\Fonts</Filter>
@@ -512,6 +518,9 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.h">
       <Filter>Source\DataModels\Windows\EditorWindow\SubWindows\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Factories\ComponentWindowFactory.h">
+      <Filter>Source\Factories</Filter>
     </ClInclude>
     <ClInclude Include="Source\DataModels\Window\Fonts\Font.h">
       <Filter>Source\DataModels\Windows\Fonts</Filter>

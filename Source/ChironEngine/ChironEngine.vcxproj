@@ -59,6 +59,7 @@
     <ClCompile Include="Source\DataModels\Window\Window.cpp" />
     <ClCompile Include="Source\DataModels\Window\MainMenuWindow.cpp" />
     <ClCompile Include="Source\DebugDrawPass.cpp" />
+    <ClCompile Include="Source\Factories\ComponentWindowFactory.cpp" />
     <ClCompile Include="Source\Modules\ModuleCamera.cpp" />
     <ClCompile Include="Source\Modules\ModuleEditor.cpp" />
     <ClCompile Include="Source\Modules\ModuleFileSystem.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\SubWindow.h" />
     <ClInclude Include="Source\DataModels\Window\Window.h" />
     <ClInclude Include="Source\DataModels\Window\MainMenuWindow.h" />
+    <ClInclude Include="Source\Factories\ComponentWindowFactory.h" />
     <ClInclude Include="Source\Modules\ModuleEditor.h" />
     <ClInclude Include="Source\Modules\ModuleScene.h" />
     <ClInclude Include="Source\Structs\ModelAttributes.h" />
