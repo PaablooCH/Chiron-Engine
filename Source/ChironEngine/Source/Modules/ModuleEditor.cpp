@@ -187,16 +187,16 @@ void ModuleEditor::StartDock() const
         ImGuiID dockIdRight = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.27f, nullptr, &dockSpaceId);
         ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
         ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
-        ImGui::DockBuilderDockWindow("Console", dockIdDown);
+        ImGui::DockBuilderDockWindow(ICON_FA_TERMINAL " Console", dockIdDown);
         //ImGui::DockBuilderDockWindow("File Browser", dockIdDown);
         //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
-        ImGui::DockBuilderDockWindow("Configuration", dockIdRight);
+        ImGui::DockBuilderDockWindow(ICON_FA_GEAR " Configuration", dockIdRight);
         //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
         //ImGui::DockBuilderDockWindow("Resources", dockIdRight);
         ImGui::DockBuilderDockWindow(ICON_FA_CIRCLE_INFO " Inspector", dockIdRight);
         //ImGui::DockBuilderDockWindow("Editor Control", dockIdUp);
-        ImGui::DockBuilderDockWindow("Hierarchy", dockIdLeft);
-        ImGui::DockBuilderDockWindow("Scene", dockSpaceId);
+        ImGui::DockBuilderDockWindow(ICON_FA_SITEMAP " Hierarchy", dockIdLeft);
+        ImGui::DockBuilderDockWindow(ICON_FA_BOX_OPEN " Scene", dockSpaceId);
         ImGui::DockBuilderFinish(dockSpaceId);
     }
 }
