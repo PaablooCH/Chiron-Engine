@@ -67,7 +67,7 @@ void TransformComponentWindow::DrawTransforms()
 
         ImGui::TableNextColumn();
         ImGui::Dummy(ImVec2(0, 1));
-        ImGui::Text("Pos:");
+        ImGui::Text("Pos");
 
         ImGui::TableNextColumn();
         float itemWidth = (ImGui::GetContentRegionAvail().x - 20) / 3;
@@ -116,7 +116,7 @@ void TransformComponentWindow::DrawTransforms()
 
         ImGui::TableNextColumn();
         ImGui::Dummy(ImVec2(0, 1));
-        ImGui::Text("Rot:");
+        ImGui::Text("Rot");
         
         ImGui::TableNextColumn();
         ImGui::PushStyleColor(ImGuiCol_FrameBg, red);
@@ -164,7 +164,7 @@ void TransformComponentWindow::DrawTransforms()
 
         ImGui::TableNextColumn();
         ImGui::Dummy(ImVec2(0, 1));
-        ImGui::Text("Sca:");
+        ImGui::Text("Sca");
         ImGui::SameLine();
         ImGui::PushStyleColor(ImGuiCol_Header, greyHeader);
         ImGui::PushStyleColor(ImGuiCol_HeaderHovered, greyHover);

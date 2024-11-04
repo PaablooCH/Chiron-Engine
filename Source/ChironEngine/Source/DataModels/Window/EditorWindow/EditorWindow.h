@@ -2,6 +2,7 @@
 #include "DataModels/Window/Window.h"
 
 #include <ImGui/imgui.h>
+#include <ImGui/imgui_stdlib.h>
 
 class EditorWindow : public Window
 {
@@ -15,6 +16,7 @@ protected:
 
     virtual void DrawWindowContent(const std::shared_ptr<CommandList>& commandList) = 0;
 
+protected:
     ImGuiWindowFlags _flags;
 
 private:

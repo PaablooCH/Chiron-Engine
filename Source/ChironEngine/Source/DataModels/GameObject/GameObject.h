@@ -65,6 +65,7 @@ public:
     inline void SetName(const std::string& name);
     void SetParent(GameObject* parent);
     void SetStatic(bool isStatic);
+    inline void SetTag(const std::string& tag);
 
 private:
     GameObject(const std::string& name,
@@ -160,6 +161,11 @@ inline size_t GameObject::HowManyComponentsHas() const
 inline void GameObject::SetName(const std::string& name)
 {
     _name = name;
+}
+
+inline void GameObject::SetTag(const std::string& tag)
+{
+    _tag = tag;
 }
 
 #include "GameObject.inl"

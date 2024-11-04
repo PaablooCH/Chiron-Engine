@@ -31,7 +31,6 @@ void InspectorWindow::DrawWindowContent(const std::shared_ptr<CommandList>& comm
             _lastSelected = selected;
             _componentsWindows.clear();
             FillComponentsWindows();
-
         }
         else if (_lastSelected->HowManyComponentsHas() != _componentsWindows.size())
         {
@@ -62,7 +61,7 @@ void InspectorWindow::DrawGameObjectInfo()
     }
     ImGui::PushItemWidth(inputTextWidth > 50.0f ? inputTextWidth : 50.0f);
     std::string name = _lastSelected->GetName();
-    if (ImGui::InputText("##GameObject", name.data(), 32, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
+    if (ImGui::InputText("##NameGameObject", &name, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
     {
         _lastSelected->SetName(name);
     }
@@ -78,6 +77,26 @@ void InspectorWindow::DrawGameObjectInfo()
         }
         ImGui::SameLine();
         ImGui::Text("Static");
+
+        if (ImGui::BeginTable("TagTable", 2))
+        {
+
+            ImGui::TableSetupColumn("###tagFirstCol", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("###tagSecondCol", ImGuiTableColumnFlags_WidthStretch);
+
+            ImGui::TableNextColumn();
+            ImGui::Dummy(ImVec2(0, 1));
+            ImGui::Text("Tag");
+
+            ImGui::TableNextColumn();
+            std::string tag = _lastSelected->GetTag();
+            if (ImGui::InputText("##TagGameObject", &tag, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
+            {
+                _lastSelected->SetTag(tag);
+            }
+
+            ImGui::EndTable();
+        }
     }
 }
 
