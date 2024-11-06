@@ -24,7 +24,7 @@ public:
     inline const Vector3& GetLocalPos() const;
     inline const Vector3& GetLocalRotXYZ() const;
     inline const Vector3& GetLocalSca() const;
-    
+
     inline const bool GetUniformScale() const;
 
     // ------------- SETTERS ----------------------
@@ -33,7 +33,6 @@ public:
     inline void SetLocalRot(const Vector3& rotXYZ);
     inline void SetLocalSca(const Vector3& scale);
     inline void SetScaleUniform(const Vector3& localSca, Axis axis);
-
 
     inline void SetUniformScale(bool uniformScale);
 
@@ -61,7 +60,7 @@ private:
     DirectX::BoundingBox _localAABB;
     DirectX::BoundingBox _encapsuledAABB;
     DirectX::BoundingOrientedBox _objectOBB;
-    
+
     bool _drawBoundingBoxes;
     bool _uniformScale;
 };
@@ -94,7 +93,7 @@ inline void TransformComponent::SetLocalPos(const Vector3& pos)
 inline void TransformComponent::SetLocalRot(const Vector3& rotXYZ)
 {
     _rotXYZ = rotXYZ;
-    _localRot = Quaternion::CreateFromYawPitchRoll(DirectX::XMConvertToRadians(_rotXYZ.y), 
+    _localRot = Quaternion::CreateFromYawPitchRoll(DirectX::XMConvertToRadians(_rotXYZ.y),
         DirectX::XMConvertToRadians(_rotXYZ.x), DirectX::XMConvertToRadians(_rotXYZ.z));
 }
 

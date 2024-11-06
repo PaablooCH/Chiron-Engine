@@ -3,7 +3,8 @@
 
 #include "DataModels/GameObject/GameObject.h"
 
-TransformComponent::TransformComponent(GameObject* owner) : Component(ComponentType::TRANSFORM, owner),
+TransformComponent::TransformComponent(GameObject* owner) :
+    Component(ComponentType::TRANSFORM, owner),
     _localPos(Vector3::Zero),
     _localRot(Quaternion::Identity),
     _localSca(Vector3::One),
@@ -26,7 +27,8 @@ TransformComponent::TransformComponent(GameObject* owner) : Component(ComponentT
     RecalculateMatrices();
 }
 
-TransformComponent::TransformComponent(const TransformComponent& copy) : Component(copy), 
+TransformComponent::TransformComponent(const TransformComponent& copy) :
+    Component(copy),
     _localPos(copy._localPos),
     _localRot(copy._localRot),
     _localSca(copy._localSca),

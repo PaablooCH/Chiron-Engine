@@ -15,7 +15,7 @@ public:
     void PreUpdate();
     void Update();
     void PostUpdate();
-    
+
     void CleanUp();
 
     GameObject* SearchGameObjectByUID(UID uid);

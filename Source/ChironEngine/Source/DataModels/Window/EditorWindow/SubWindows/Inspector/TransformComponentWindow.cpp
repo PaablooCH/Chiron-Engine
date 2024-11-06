@@ -20,7 +20,7 @@ namespace
     ImVec4 greyHover = ImVec4(0.20f, 0.20f, 0.20f, 1.0f);
 }
 
-TransformComponentWindow::TransformComponentWindow(TransformComponent* component) : 
+TransformComponentWindow::TransformComponentWindow(TransformComponent* component) :
     ComponentWindow(ICON_FA_UP_DOWN_LEFT_RIGHT " Transform", component, true, true), _dragSpeed(0.03f)
 {
 }
@@ -75,7 +75,7 @@ void TransformComponentWindow::DrawTransforms()
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, redHover);
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, redActive);
         ImGui::SetNextItemWidth(itemWidth);
-        if (ImGui::DragFloat("##XTrans", &localPos.x, _dragSpeed, std::numeric_limits<float>::min(), 
+        if (ImGui::DragFloat("##XTrans", &localPos.x, _dragSpeed, std::numeric_limits<float>::min(),
             std::numeric_limits<float>::max()))
         {
             posModified = true;
@@ -89,7 +89,7 @@ void TransformComponentWindow::DrawTransforms()
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, greenHover);
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, greenActive);
         ImGui::SetNextItemWidth(itemWidth);
-        if (ImGui::DragFloat("##YTrans", &localPos.y, _dragSpeed, std::numeric_limits<float>::min(), 
+        if (ImGui::DragFloat("##YTrans", &localPos.y, _dragSpeed, std::numeric_limits<float>::min(),
             std::numeric_limits<float>::max()))
         {
             posModified = true;
@@ -103,7 +103,7 @@ void TransformComponentWindow::DrawTransforms()
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, blueHover);
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, blueActive);
         ImGui::SetNextItemWidth(itemWidth);
-        if (ImGui::DragFloat("##ZTrans", &localPos.z, _dragSpeed, std::numeric_limits<float>::min(), 
+        if (ImGui::DragFloat("##ZTrans", &localPos.z, _dragSpeed, std::numeric_limits<float>::min(),
             std::numeric_limits<float>::max()))
         {
             posModified = true;
@@ -117,13 +117,13 @@ void TransformComponentWindow::DrawTransforms()
         ImGui::TableNextColumn();
         ImGui::Dummy(ImVec2(0, 1));
         ImGui::Text("Rot");
-        
+
         ImGui::TableNextColumn();
         ImGui::PushStyleColor(ImGuiCol_FrameBg, red);
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, redHover);
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, redActive);
         ImGui::SetNextItemWidth(itemWidth);
-        if (ImGui::DragFloat("##XRot", &localRot.x, _dragSpeed, std::numeric_limits<float>::min(), 
+        if (ImGui::DragFloat("##XRot", &localRot.x, _dragSpeed, std::numeric_limits<float>::min(),
             std::numeric_limits<float>::max()))
         {
             rotModified = true;
@@ -137,7 +137,7 @@ void TransformComponentWindow::DrawTransforms()
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, greenHover);
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, greenActive);
         ImGui::SetNextItemWidth(itemWidth);
-        if (ImGui::DragFloat("##YRot", &localRot.y, _dragSpeed, std::numeric_limits<float>::min(), 
+        if (ImGui::DragFloat("##YRot", &localRot.y, _dragSpeed, std::numeric_limits<float>::min(),
             std::numeric_limits<float>::max()))
         {
             rotModified = true;
@@ -151,7 +151,7 @@ void TransformComponentWindow::DrawTransforms()
         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, blueHover);
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, blueActive);
         ImGui::SetNextItemWidth(itemWidth);
-        if (ImGui::DragFloat("##ZRot", &localRot.z, _dragSpeed, std::numeric_limits<float>::min(), 
+        if (ImGui::DragFloat("##ZRot", &localRot.z, _dragSpeed, std::numeric_limits<float>::min(),
             std::numeric_limits<float>::max()))
         {
             rotModified = true;

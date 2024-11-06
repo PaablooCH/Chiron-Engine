@@ -7,7 +7,7 @@ class Font
 public:
     static void DeleteInstance();
     static void SetDefaultFont();
-    
+
     static void PushForkWebfont();
 
     static bool PopFont();
@@ -25,4 +25,3 @@ private:
 
     bool _fontChanged;
 };
-

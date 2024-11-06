@@ -13,7 +13,7 @@
 #include "DataModels/DX12/Resource/Texture.h"
 
 SceneWindow::SceneWindow() : EditorWindow(ICON_FA_BOX_OPEN " Scene", ImGuiWindowFlags_AlwaysAutoResize |
-    ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse), _currentWidth(0), 
+    ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse), _currentWidth(0),
     _currentHeight(0)
 {
 }

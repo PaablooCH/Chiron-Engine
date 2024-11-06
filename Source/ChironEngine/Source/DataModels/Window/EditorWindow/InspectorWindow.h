@@ -28,4 +28,3 @@ private:
 
     GameObject* _lastSelected;
 };
-

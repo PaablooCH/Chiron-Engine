@@ -86,7 +86,7 @@ private:
     std::string _name;
     GameObject* _parent;
     UID _uid;
-    
+
     bool _enabled;
     bool _active;
     bool _static;

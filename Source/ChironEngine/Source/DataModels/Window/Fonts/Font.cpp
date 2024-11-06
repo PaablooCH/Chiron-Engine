@@ -19,12 +19,12 @@ void Font::SetDefaultFont()
     }
 
     ImGuiIO& io = ImGui::GetIO();
-   
+
     float baseFontSize = 16.0f;
     float iconFontSize = baseFontSize * 0.80f;
 
     _instanceFont->_robotoRegular = std::unique_ptr<ImFont>(io.Fonts->AddFontFromFileTTF("Fonts/Roboto/Roboto-Regular.ttf", baseFontSize));
-    
+
     // merge in icons from Font Awesome
     static const ImWchar iconsRanges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
     ImFontConfig iconsConfig;

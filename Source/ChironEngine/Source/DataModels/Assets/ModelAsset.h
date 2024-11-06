@@ -30,7 +30,6 @@ private:
     bool _isTopLeft;
 };
 
-
 inline const std::vector<std::shared_ptr<MaterialAsset>>& ModelAsset::GetMaterials() const
 {
     return _materials;

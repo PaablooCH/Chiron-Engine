@@ -66,7 +66,7 @@ void InspectorWindow::DrawGameObjectInfo()
     {
         bool& enabled = _lastSelected->IsEnabled();
         ImGui::Checkbox("###enableGameObject", &enabled);
-    
+
         ImGui::SameLine();
     }
 
@@ -141,7 +141,7 @@ void InspectorWindow::DrawAddComponent()
             ImGui::TableSetupColumn("###addComponent1", ImGuiTableColumnFlags_WidthStretch);
             ImGui::TableSetupColumn("###addComponent2", ImGuiTableColumnFlags_WidthFixed);
             ImGui::TableSetupColumn("###addComponent3", ImGuiTableColumnFlags_WidthStretch);
-            
+
             ImGui::TableNextColumn();
 
             ImGui::TableNextColumn();
@@ -170,9 +170,9 @@ void InspectorWindow::DrawAddComponent()
                 }
                 ImGui::EndPopup();
             }
-            
+
             ImGui::TableNextColumn();
-            
+
             ImGui::EndTable();
         }
     }

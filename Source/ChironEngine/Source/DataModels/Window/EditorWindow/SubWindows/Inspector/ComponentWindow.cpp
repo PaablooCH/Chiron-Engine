@@ -14,7 +14,7 @@ void ComponentWindow::Draw(const std::shared_ptr<CommandList>& commandList)
     }
 }
 
-ComponentWindow::ComponentWindow(std::string name, Component* component, bool disableEnable, bool disableRemove) : 
+ComponentWindow::ComponentWindow(std::string name, Component* component, bool disableEnable, bool disableRemove) :
     SubWindow(name), _component(component), _windowUID(0U), _disableEnable(disableEnable), _disableRemove(disableRemove)
 {
     _flags |= ImGuiTreeNodeFlags_AllowOverlap;
@@ -47,7 +47,7 @@ void ComponentWindow::DrawEnable()
         {
             _component->SetEnabled(!enable);
         }
-        if (ImGui::BeginItemTooltip()) 
+        if (ImGui::BeginItemTooltip())
         {
             ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
             ImGui::TextUnformatted("Enable/Disable");

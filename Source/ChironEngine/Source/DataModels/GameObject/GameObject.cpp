@@ -31,7 +31,7 @@ GameObject::GameObject(const std::string& name, GameObject* parent, UID uid) : G
     }
 }
 
-GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, 0U, true, 
+GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, 0U, true,
     parent->IsActive(), parent->IsStatic())
 {
     _parent->LinkChild(this);
@@ -145,7 +145,7 @@ GameObject* GameObject::UnLinkChild(GameObject* child)
             {
                 return actualChild.get() == child;
             });
-        
+
         auto orphan = childIt->release();
         _children.erase(childIt);
 

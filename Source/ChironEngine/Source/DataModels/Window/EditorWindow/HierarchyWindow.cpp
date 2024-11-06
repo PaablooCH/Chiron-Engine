@@ -18,7 +18,7 @@ HierarchyWindow::~HierarchyWindow()
 void HierarchyWindow::DrawWindowContent(const std::shared_ptr<CommandList>& commandList)
 {
     DrawSearchBar();
-    
+
     ImGui::Separator();
     CHIRON_TODO("If too slow create a vector with all the gameobject and update it when anything in it change???");
     auto root = App->GetModule<ModuleScene>()->GetRoot();
@@ -64,9 +64,9 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
         ImGui::PushID(gameObjectLabel);
 
         ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-        if (gameObject == selected) 
-        { 
-            treeFlags |= ImGuiTreeNodeFlags_Selected; 
+        if (gameObject == selected)
+        {
+            treeFlags |= ImGuiTreeNodeFlags_Selected;
         }
         if (!gameObject->HasChildren())
         {
@@ -79,21 +79,21 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
 
         bool nodeOpen = ImGui::TreeNodeEx(gameObjectLabel, treeFlags);
 
-        if (ImGui::IsItemClicked() && gameObject != selected) 
+        if (ImGui::IsItemClicked() && gameObject != selected)
         {
             moduleScene->SetSelectedGameObject(gameObject);
         }
 
         if (ImGui::BeginPopupContextItem("RightClickGameObject", ImGuiPopupFlags_MouseButtonRight)) {
-            if (ImGui::MenuItem("Create Empty child")) 
+            if (ImGui::MenuItem("Create Empty child"))
             {
                 moduleScene->CreateGameObject("Empty GameObject", gameObject);
             }
-            if (IsMovable(gameObject)) 
+            if (IsMovable(gameObject))
             {
                 DrawMoveObjectMenu(gameObject);
             }
-            if (IsDeletable(gameObject) && DrawDeleteObjectMenu(gameObject)) 
+            if (IsDeletable(gameObject) && DrawDeleteObjectMenu(gameObject))
             {
                 ImGui::EndPopup();
                 ImGui::PopID();
@@ -106,7 +106,7 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
             ImGui::EndPopup();
         }
 
-        if (ImGui::BeginDragDropSource()) 
+        if (ImGui::BeginDragDropSource())
         {
             UID uid = gameObject->GetUID();
             ImGui::SetDragDropPayload("HIERARCHY", &uid, sizeof(UID));
@@ -114,13 +114,13 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
             ImGui::EndDragDropSource();
         }
 
-        if (ImGui::BeginDragDropTarget()) 
+        if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY")) 
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY"))
             {
                 UID draggedGameObjectUID = *static_cast<UID*>(payload->Data);
                 auto draggedGameObject = moduleScene->SearchGameObjectByUID(draggedGameObjectUID);
-                if (draggedGameObject) 
+                if (draggedGameObject)
                 {
                     draggedGameObject->SetParent(gameObject);
                     ImGui::EndDragDropTarget();
@@ -135,10 +135,10 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
             ImGui::EndDragDropTarget();
         }
 
-        if (nodeOpen) 
+        if (nodeOpen)
         {
             stack.push({ gameObject, true });
-            for (auto child : gameObject->GetChildren()) 
+            for (auto child : gameObject->GetChildren())
             {
                 stack.push({ child, false });
             }

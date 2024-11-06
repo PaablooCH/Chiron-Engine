@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 
-inline std::vector<std::string> CreateEnumNamesVector(const std::string& names) 
+inline std::vector<std::string> CreateEnumNamesVector(const std::string& names)
 {
     std::vector<std::string> namesVector;
     size_t start = 0, end;
-    while ((end = names.find(',', start)) != std::string::npos) 
+    while ((end = names.find(',', start)) != std::string::npos)
     {
         namesVector.push_back(names.substr(start, end - start));
         start = end + 1;
