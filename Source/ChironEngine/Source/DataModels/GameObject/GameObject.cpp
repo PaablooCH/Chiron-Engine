@@ -128,9 +128,9 @@ void GameObject::LinkChild(GameObject* child)
         child->_parent = this;
         child->_active = IsActive();
 
-        child->GetInternalComponent<TransformComponent>()->UpdateMatrices();
-
         _children.push_back(std::unique_ptr<GameObject>(child));
+
+        child->GetInternalComponent<TransformComponent>()->UpdateMatrices();
     }
 }
 
