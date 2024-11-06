@@ -62,7 +62,6 @@ GameObject* ModuleScene::SearchGameObjectByUID(UID uid)
 GameObject* ModuleScene::CreateGameObject(const std::string& name, GameObject* parent)
 {
     GameObject* newGameObject = new GameObject(name, parent);
-    newGameObject->CreateComponent<TransformComponent>();
 
     return newGameObject;
 }
