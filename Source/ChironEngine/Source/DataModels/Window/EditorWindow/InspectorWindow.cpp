@@ -7,14 +7,30 @@
 
 #include "Factories/ComponentWindowFactory.h"
 
+#include "Structs/AddComponentAction.h"
+
 #include "DataModels/Components/TransformComponent.h"
 
 #include "DataModels/Window/EditorWindow/SubWindows/Inspector/TransformComponentWindow.h"
 
 #include "DataModels/GameObject/GameObject.h"
 
+namespace
+{
+    template<typename C>
+    bool GameObjectDoesNotHaveComponent(GameObject* toCheck)
+    {
+        return !toCheck->HasComponent<C>();
+    }
+} // namespace
+
 InspectorWindow::InspectorWindow() : EditorWindow(ICON_FA_CIRCLE_INFO " Inspector", ImGuiWindowFlags_AlwaysAutoResize), _lastSelected(nullptr)
 {
+    _actions.emplace_back("Mesh Renderer",
+        std::bind(&InspectorWindow::AddMeshRendererComponent, this),
+        ComponentGroup::GRAPHICS);
+
+    std::sort(_actions.begin(), _actions.end());
 }
 
 InspectorWindow::~InspectorWindow()
@@ -45,7 +61,7 @@ void InspectorWindow::DrawWindowContent(const std::shared_ptr<CommandList>& comm
 
 void InspectorWindow::DrawGameObjectInfo()
 {
-    bool isRoot = _lastSelected->GetParent() == nullptr;
+    bool isRoot = _lastSelected->IsRoot();
     if (!isRoot)
     {
         bool& enabled = _lastSelected->IsEnabled();
@@ -80,7 +96,6 @@ void InspectorWindow::DrawGameObjectInfo()
 
         if (ImGui::BeginTable("TagTable", 2))
         {
-
             ImGui::TableSetupColumn("###tagFirstCol", ImGuiTableColumnFlags_WidthFixed);
             ImGui::TableSetupColumn("###tagSecondCol", ImGuiTableColumnFlags_WidthStretch);
 
@@ -118,8 +133,49 @@ void InspectorWindow::DrawComponentsWindows(const std::shared_ptr<CommandList>& 
 
 void InspectorWindow::DrawAddComponent()
 {
-    ImGui::Separator();
-    ImGui::Text("Add Compoent implementarlo");
+    if (!_lastSelected->IsRoot())
+    {
+        ImGui::Separator();
+        if (ImGui::BeginTable("AddComponentTable", 3))
+        {
+            ImGui::TableSetupColumn("###addComponent1", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("###addComponent2", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("###addComponent3", ImGuiTableColumnFlags_WidthStretch);
+            
+            ImGui::TableNextColumn();
+
+            ImGui::TableNextColumn();
+            if (ImGui::Button("Add Component"))
+            {
+                ImGui::OpenPopup("addComponent");
+            }
+            if (ImGui::BeginPopup("addComponent"))
+            {
+                ComponentGroup currentComponentGroup = ComponentGroup::NONE;
+                for (auto& action : _actions)
+                {
+                    if (!action.condition(_lastSelected))
+                    {
+                        continue;
+                    }
+                    if (currentComponentGroup != action.componentGroup)
+                    {
+                        currentComponentGroup = action.componentGroup;
+                        ImGui::SeparatorText(ToString(currentComponentGroup).c_str());
+                    }
+                    if (ImGui::Selectable(action.name.c_str()))
+                    {
+                        action.callback();
+                    }
+                }
+                ImGui::EndPopup();
+            }
+            
+            ImGui::TableNextColumn();
+            
+            ImGui::EndTable();
+        }
+    }
 }
 
 void InspectorWindow::FillComponentsWindows()
@@ -132,4 +188,10 @@ void InspectorWindow::FillComponentsWindows()
             _componentsWindows.push_back(std::move(componentWindow));
         }
     }
+}
+
+void InspectorWindow::AddMeshRendererComponent()
+{
+    CHIRON_TODO("Implement when component is ready");
+    //_lastSelected->CreateComponent<MeshRendererComponent>();
 }

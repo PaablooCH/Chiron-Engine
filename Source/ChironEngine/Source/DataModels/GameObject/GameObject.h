@@ -55,6 +55,7 @@ public:
     inline bool IsStatic() const;
     inline const std::string& GetTag();
     inline GameObject* GetParent() const;
+    inline bool IsRoot() const;
     inline GameObjectView GetChildren() const;
     inline ComponentsView GetComponents() const;
     inline bool HasChildren() const;
@@ -128,6 +129,11 @@ inline const std::string& GameObject::GetTag()
 inline GameObject* GameObject::GetParent() const
 {
     return _parent;
+}
+
+inline bool GameObject::IsRoot() const
+{
+    return _parent == nullptr;
 }
 
 inline GameObject::GameObjectView GameObject::GetChildren() const

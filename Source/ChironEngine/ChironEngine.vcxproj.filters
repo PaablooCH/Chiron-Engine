@@ -525,6 +525,12 @@
     <ClInclude Include="Source\DataModels\Window\Fonts\Font.h">
       <Filter>Source\DataModels\Windows\Fonts</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Structs\AddComponentAction.h">
+      <Filter>Source\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enums\EnumNames.h">
+      <Filter>Source\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\DataModels\GameObject\GameObject.inl">

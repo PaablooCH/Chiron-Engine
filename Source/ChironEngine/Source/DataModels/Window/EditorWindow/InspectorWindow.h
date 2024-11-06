@@ -4,6 +4,8 @@
 class GameObject;
 class ComponentWindow;
 
+struct AddComponentAction;
+
 class InspectorWindow : public EditorWindow
 {
 public:
@@ -18,8 +20,11 @@ private:
 
     void FillComponentsWindows();
 
+    void AddMeshRendererComponent();
+
 private:
     std::vector<std::unique_ptr<ComponentWindow>> _componentsWindows;
+    std::vector<AddComponentAction> _actions;
 
     GameObject* _lastSelected;
 };

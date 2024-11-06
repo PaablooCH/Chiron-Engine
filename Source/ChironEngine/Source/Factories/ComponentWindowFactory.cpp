@@ -12,7 +12,7 @@ std::unique_ptr<ComponentWindow> ComponentWindowFactory::CreateComponentWindow(C
     switch (component->GetType())
     {
     case ComponentType::TRANSFORM:
-        if (component->GetOwner()->GetParent() == nullptr)
+        if (component->GetOwner()->IsRoot())
         {
             return nullptr;
         }
