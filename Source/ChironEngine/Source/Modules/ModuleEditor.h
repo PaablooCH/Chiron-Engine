@@ -34,12 +34,12 @@ private:
 private:
     enum class WindowsType
     {
-        SCENE,
-        CONSOLE,
-        CONFIGURATION,
         ABOUT,
+        CONFIGURATION,
+        CONSOLE,
         HIERARCHY,
         INSPECTOR,
+        SCENE,
         SIZE
     };
 
