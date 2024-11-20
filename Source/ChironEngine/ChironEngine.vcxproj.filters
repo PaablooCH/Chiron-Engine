@@ -100,6 +100,9 @@
     <Filter Include="Source\DataModels\Windows\Fonts">
       <UniqueIdentifier>{27138e4e-67e3-4c36-934e-b6be7ecea095}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\DataModels\FileSystem\UID">
+      <UniqueIdentifier>{4f521cbf-60eb-46bb-af19-e57d6e4bb913}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -291,6 +294,7 @@
     <ClCompile Include="Source\DataModels\Window\Fonts\Font.cpp">
       <Filter>Source\DataModels\Windows\Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\UID\UIDGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -507,9 +511,6 @@
     <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h">
       <Filter>Source\DataModels\Windows\EditorWindow</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DataModels\FileSystem\UID.h">
-      <Filter>Source\DataModels\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h">
       <Filter>Source\DataModels\Windows\EditorWindow</Filter>
     </ClInclude>
@@ -531,6 +532,10 @@
     <ClInclude Include="Source\Enums\EnumNames.h">
       <Filter>Source\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\UID\UID.h">
+      <Filter>Source\DataModels\FileSystem\UID</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\UID\UIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\DataModels\GameObject\GameObject.inl">

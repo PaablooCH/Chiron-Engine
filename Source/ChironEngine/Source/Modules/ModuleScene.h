@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 
-#include "DataModels/FileSystem/UID.h"
+#include "DataModels/FileSystem/UID/UID.h"
 
 class GameObject;
 class Scene;

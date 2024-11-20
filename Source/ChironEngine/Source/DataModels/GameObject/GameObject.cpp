@@ -11,28 +11,16 @@
 
 #include "DataModels/Scene/Scene.h"
 
+#include "DataModels/FileSystem/UID/UIDGenerator.h"
+
 // root constructor
-GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, 0U, true, true, false)
+GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, Chiron::UIDGenerator::GenerateUID(), true, true,
+    false)
 {
 }
 
-GameObject::GameObject(const std::string& name, GameObject* parent, UID uid) : GameObject(name, parent, uid, true,
-    parent->IsActive(), parent->IsStatic())
-{
-    _parent->LinkChild(this);
-    App->GetModule<ModuleScene>()->GetLoadedScene()->AddGameObject(this);
-    if (_static)
-    {
-        App->GetModule<ModuleScene>()->GetLoadedScene()->AddStaticGO(this);
-    }
-    else
-    {
-        App->GetModule<ModuleScene>()->GetLoadedScene()->AddDynamicGO(this);
-    }
-}
-
-GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, 0U, true,
-    parent->IsActive(), parent->IsStatic())
+GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, 
+    Chiron::UIDGenerator::GenerateUID(), true, parent->IsActive(), parent->IsStatic())
 {
     _parent->LinkChild(this);
     App->GetModule<ModuleScene>()->GetLoadedScene()->AddGameObject(this);
@@ -52,7 +40,8 @@ GameObject::GameObject(const std::string& name, GameObject* parent, UID uid, boo
     CreateComponent<TransformComponent>();
 }
 
-GameObject::GameObject(const GameObject& copy) : GameObject(copy._name, copy._parent, copy._uid, copy._enabled, copy._active, copy._static)
+GameObject::GameObject(const GameObject& copy) : GameObject(copy._name, copy._parent, Chiron::UIDGenerator::GenerateUID(), 
+    copy._enabled, copy._active, copy._static)
 {
     std::ranges::for_each(copy._components.begin(), copy._components.end(),
         [this](const std::unique_ptr<Component>& copyComponent)

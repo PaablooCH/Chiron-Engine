@@ -34,6 +34,7 @@
     <ClCompile Include="Source\DataModels\FileSystem\Importers\ModelImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Importers\TextureImporter.cpp" />
     <ClCompile Include="Source\DataModels\Assets\ModelAsset.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\UID\UIDGenerator.cpp" />
     <ClCompile Include="Source\DataModels\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\DataModels\Programs\GenerateMipsProgram.cpp" />
     <ClCompile Include="Source\DataModels\Scene\Scene.cpp" />
@@ -84,7 +85,8 @@
   <ItemGroup>
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Updatable.h" />
-    <ClInclude Include="Source\DataModels\FileSystem\UID.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\UID\UID.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\UID\UIDGenerator.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\ComponentWindow.h" />

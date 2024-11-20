@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DataModels/FileSystem/UID.h"
+#include "DataModels/FileSystem/UID/UID.h"
 
 class GameObject;
 class Drawable;

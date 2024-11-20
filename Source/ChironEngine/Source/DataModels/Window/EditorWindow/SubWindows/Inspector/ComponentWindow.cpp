@@ -2,7 +2,10 @@
 #include "ComponentWindow.h"
 
 #include "DataModels/Components/Component.h"
+
 #include "DataModels/GameObject/GameObject.h"
+
+#include "DataModels/FileSystem/UID/UIDGenerator.h"
 
 #include <sstream>
 
@@ -15,7 +18,8 @@ void ComponentWindow::Draw(const std::shared_ptr<CommandList>& commandList)
 }
 
 ComponentWindow::ComponentWindow(std::string name, Component* component, bool disableEnable, bool disableRemove) :
-    SubWindow(name), _component(component), _windowUID(0U), _disableEnable(disableEnable), _disableRemove(disableRemove)
+    SubWindow(name), _component(component), _windowUID(Chiron::UIDGenerator::GenerateUID()), _disableEnable(disableEnable), 
+    _disableRemove(disableRemove)
 {
     _flags |= ImGuiTreeNodeFlags_AllowOverlap;
 }
@@ -38,12 +42,12 @@ void ComponentWindow::DrawEnable()
 {
     if (_component)
     {
-        std::stringstream ss;
+        std::ostringstream oss;
 
         ImGui::SameLine(ImGui::GetContentRegionAvail().x - 55);
         bool enable = _component->IsEnabled();
-        ss << (enable ? ICON_FA_EYE : ICON_FA_EYE_SLASH) << "##Enabled" << _windowUID;
-        if (ImGui::Button(ss.str().c_str()))
+        oss << (enable ? ICON_FA_EYE : ICON_FA_EYE_SLASH) << "##Enabled" << _windowUID;
+        if (ImGui::Button(oss.str().c_str()))
         {
             _component->SetEnabled(!enable);
         }
@@ -61,11 +65,11 @@ void ComponentWindow::DrawRemoveComponent()
 {
     if (_component)
     {
-        std::stringstream ss;
-        ss << ICON_FA_TRASH "###" << _windowUID;
+        std::ostringstream oss;
+        oss << ICON_FA_TRASH "###" << _windowUID;
 
         ImGui::SameLine(ImGui::GetContentRegionAvail().x - 25);
-        if (ImGui::Button(ss.str().c_str()))
+        if (ImGui::Button(oss.str().c_str()))
         {
             _component->GetOwner()->RemoveComponent(_component);
             _component = nullptr;

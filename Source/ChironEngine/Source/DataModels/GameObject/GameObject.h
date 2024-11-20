@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DataModels/Components/Component.h"
-#include "DataModels/FileSystem/UID.h"
+#include "DataModels/FileSystem/UID/UID.h"
 
 class GameObject
 {
@@ -14,7 +14,6 @@ public:
         std::function<Component* (const std::unique_ptr<Component>&)>>;
 
     explicit GameObject(const std::string& name);
-    GameObject(const std::string& name, GameObject* parent, UID uid); // delete
     GameObject(const std::string& name, GameObject* parent);
     GameObject(const GameObject& copy);
     ~GameObject();

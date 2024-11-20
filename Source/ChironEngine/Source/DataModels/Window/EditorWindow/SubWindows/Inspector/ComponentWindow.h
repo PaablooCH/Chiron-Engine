@@ -1,7 +1,7 @@
 #pragma once
 #include "../SubWindow.h"
 
-#include "DataModels/FileSystem/UID.h"
+#include "DataModels/FileSystem/UID/UID.h"
 
 class Component;
 
@@ -26,6 +26,7 @@ private:
 
 private:
     UID _windowUID;
+    
     bool _disableEnable;
     bool _disableRemove;
 };
