@@ -17,7 +17,7 @@ public:
 
     UpdateStatus PostUpdate() override;
 
-    // The caller will lose ownership of the commandList shared_ptr after calling this function.
+    // The caller will lose commandList shared_ptr's ownership after calling this function.
     uint64_t ExecuteCommandList(std::shared_ptr<CommandList>& commandList);
 
     // ------------- WINDOW FUNC ----------------------
