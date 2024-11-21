@@ -7,7 +7,7 @@
 
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
 
-ConstantBuffer::ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, const std::wstring& name) :
+ConstantBuffer::ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, const std::string& name) :
     Resource(resourceDesc, name), _sizeInBytes(sizeInBytes)
 {
     CreateView();

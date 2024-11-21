@@ -7,6 +7,7 @@ class ModuleID3D12;
 class ModuleInput;
 class ModuleProgram;
 class ModuleRender;
+class ModuleScene;
 class ModuleWindow;
 
 // Order matters: they will Init/start/update/cleanUp in this order
@@ -18,6 +19,7 @@ enum class ModuleType
     PROGRAM,
     INPUT,
     CAMERA,
+    SCENE,
     RENDER,
     EDITOR,
     LAST,
@@ -62,6 +64,12 @@ template<>
 struct ModuleToEnum<ModuleCamera>
 {
     const static ModuleType value = ModuleType::CAMERA;
+};
+
+template<>
+struct ModuleToEnum<ModuleScene>
+{
+    const static ModuleType value = ModuleType::SCENE;
 };
 
 template<>

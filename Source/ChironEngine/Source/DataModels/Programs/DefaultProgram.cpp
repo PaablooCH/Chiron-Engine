@@ -28,7 +28,7 @@ void DefaultProgram::InitRootSignature()
 
     rootParameters[0].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
 
-    // ------------- CONSTANT ----------------------
+    // ------------- INLINE CONSTANT BUFFER ----------------------
 
     rootParameters[1].InitAsConstants(sizeof(ModelAttributes) / 4, 1);
 
