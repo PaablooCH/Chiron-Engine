@@ -19,9 +19,8 @@ namespace Chiron
 
         // ------------- PARSE ----------------------
 
-        static inline float RadToDeg(float radians);
-
         static std::string WStringToString(const std::wstring& wstr);
+        static std::wstring StringToWString(const std::string& str);
 
         // ------------- CONTAINERS ----------------------
 
@@ -97,11 +96,6 @@ namespace Chiron
     inline void Chiron::Utils::OpenLink(const std::string& url)
     {
         ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
-    }
-
-    inline float Chiron::Utils::RadToDeg(float radians)
-    {
-        return radians * (180.0f / DirectX::XM_PI);
     }
 
     template<typename T>

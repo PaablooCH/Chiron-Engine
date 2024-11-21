@@ -1,7 +1,6 @@
 #pragma once
 
 template<typename U>
-
 class Importer
 {
 public:

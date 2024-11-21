@@ -12,7 +12,7 @@ Texture::Texture() : Resource()
 {
 }
 
-Texture::Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::wstring& name,
+Texture::Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name,
     const D3D12_CLEAR_VALUE* clearValue) : Resource(resourceDesc, name, clearValue)
 {
     CreateViews();
@@ -66,7 +66,7 @@ void Texture::Resize(uint32_t width, uint32_t height, uint32_t depthOrArraySize)
         Chiron::Utils::ThrowIfFailed(_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &textureDesc,
             D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&_resource)));
 
-        _resource->SetName(_name.c_str());
+        SetName(_name);
 
         ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
 

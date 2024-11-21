@@ -11,7 +11,6 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline std::wstring GetName() const override;
     inline TextureAsset* GetDiffuse() const;
     inline TextureAsset* GetNormal() const;
     inline TextureAsset* GetMetalness() const;
@@ -19,6 +18,8 @@ public:
     inline TextureAsset* GetOcclusion() const;
 
     // ------------- SETTERS ----------------------
+
+    inline void SetName(const std::string& name) override;
 
     inline void SetDiffuse(std::shared_ptr<TextureAsset>& diffuse);
     inline void SetNormal(std::shared_ptr<TextureAsset>& normal);
@@ -33,12 +34,6 @@ private:
     std::shared_ptr<TextureAsset> _textureEmissive;
     std::shared_ptr<TextureAsset> _textureOcclusion;
 };
-
-inline std::wstring MaterialAsset::GetName() const
-{
-    CHIRON_TODO("TODO");
-    return L"";
-}
 
 inline TextureAsset* MaterialAsset::GetDiffuse() const
 {
@@ -63,6 +58,11 @@ inline TextureAsset* MaterialAsset::GetEmissive() const
 inline TextureAsset* MaterialAsset::GetOcclusion() const
 {
     return _textureOcclusion.get();
+}
+
+inline void MaterialAsset::SetName(const std::string& name)
+{
+    SetInternalName("Material " + name);
 }
 
 inline void MaterialAsset::SetDiffuse(std::shared_ptr<TextureAsset>& diffuse)

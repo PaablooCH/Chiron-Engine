@@ -80,9 +80,9 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             pos.x,
             pos.y,
             pos.z,
-            Chiron::Utils::RadToDeg(rot.ToEuler().x),
-            Chiron::Utils::RadToDeg(rot.ToEuler().y),
-            Chiron::Utils::RadToDeg(rot.ToEuler().z),
+            DirectX::XMConvertToDegrees(rot.ToEuler().x),
+            DirectX::XMConvertToDegrees(rot.ToEuler().y),
+            DirectX::XMConvertToDegrees(rot.ToEuler().z),
             scale.x,
             scale.y,
             scale.z);
@@ -164,7 +164,7 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
 
     std::string newFileName = "Vertex " + fileName + "_" + std::to_string(iteration);
     resourceMesh->SetVertexBuffer(CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
-        triangleVertices.size(), std::wstring(newFileName.begin(), newFileName.end()));
+        triangleVertices.size(), newFileName);
 
     D3D12_SUBRESOURCE_DATA subresourceData = {};
     subresourceData.pData = triangleVertices.data();
@@ -188,7 +188,7 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
 
     newFileName = "Index " + fileName + "_" + std::to_string(iteration);
     resourceMesh->SetIndexBuffer(CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize), indexBufferData.size(),
-        DXGI_FORMAT_R32_UINT, std::wstring(newFileName.begin(), newFileName.end()));
+        DXGI_FORMAT_R32_UINT, newFileName);
 
     D3D12_SUBRESOURCE_DATA subresourceData2 = {};
     subresourceData2.pData = indexBufferData.data();

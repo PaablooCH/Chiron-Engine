@@ -21,26 +21,21 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline std::wstring GetName() const override;
     inline IndexBuffer* GetIndexBuffer() const;
     inline VertexBuffer* GetVertexBuffer() const;
 
-    // ------------- GETTERS ----------------------
+    // ------------- SETTERS ----------------------
+
+    inline void SetName(const std::string& name) override;
 
     void SetIndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numIndices, const DXGI_FORMAT& indexFormat,
-        const std::wstring& name = L"");
-    void SetVertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numVertices, const std::wstring& name = L"");
+        const std::string& name = "");
+    void SetVertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numVertices, const std::string& name = "");
 
 private:
     std::unique_ptr<IndexBuffer> _indexBuffer;
     std::unique_ptr<VertexBuffer> _vertexBuffer;
 };
-
-inline std::wstring MeshAsset::GetName() const
-{
-    CHIRON_TODO("TODO");
-    return L"";
-}
 
 inline IndexBuffer* MeshAsset::GetIndexBuffer() const
 {
@@ -50,4 +45,9 @@ inline IndexBuffer* MeshAsset::GetIndexBuffer() const
 inline VertexBuffer* MeshAsset::GetVertexBuffer() const
 {
     return _vertexBuffer.get();
+}
+
+inline void MeshAsset::SetName(const std::string& name)
+{
+    SetInternalName("Mesh " + name);
 }

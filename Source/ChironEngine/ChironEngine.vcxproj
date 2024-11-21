@@ -19,6 +19,7 @@
     <ClCompile Include="Source\DataModels\Assets\MeshAsset.cpp" />
     <ClCompile Include="Source\DataModels\Assets\TextureAsset.cpp" />
     <ClCompile Include="Source\DataModels\Camera\Camera.cpp" />
+    <ClCompile Include="Source\DataModels\Components\Component.cpp" />
     <ClCompile Include="Source\DataModels\DX12\CommandList\CommandList.cpp" />
     <ClCompile Include="Source\DataModels\DX12\DescriptorAllocator\DescriptorAllocation.cpp" />
     <ClCompile Include="Source\DataModels\DX12\DescriptorAllocator\DescriptorAllocator.cpp" />
@@ -33,7 +34,10 @@
     <ClCompile Include="Source\DataModels\FileSystem\Importers\ModelImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Importers\TextureImporter.cpp" />
     <ClCompile Include="Source\DataModels\Assets\ModelAsset.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\UID\UIDGenerator.cpp" />
+    <ClCompile Include="Source\DataModels\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\DataModels\Programs\GenerateMipsProgram.cpp" />
+    <ClCompile Include="Source\DataModels\Scene\Scene.cpp" />
     <ClCompile Include="Source\DataModels\Timer\Timer.cpp" />
     <ClCompile Include="Source\Auxiliar\Utils.cpp" />
     <ClCompile Include="Source\DataModels\DX12\CommandQueue\CommandQueue.cpp" />
@@ -44,14 +48,19 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\ConfigurationWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\ConsoleWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\EditorWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\InspectorWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SceneWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\CameraSubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\EngineStatisticsSubWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\HardwareSubWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\ComponentWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\SubWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\Fonts\Font.cpp" />
     <ClCompile Include="Source\DataModels\Window\Window.cpp" />
     <ClCompile Include="Source\DataModels\Window\MainMenuWindow.cpp" />
     <ClCompile Include="Source\DebugDrawPass.cpp" />
+    <ClCompile Include="Source\Factories\ComponentWindowFactory.cpp" />
     <ClCompile Include="Source\Modules\ModuleCamera.cpp" />
     <ClCompile Include="Source\Modules\ModuleEditor.cpp" />
     <ClCompile Include="Source\Modules\ModuleFileSystem.cpp" />
@@ -70,8 +79,24 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\DataModels\DX12\Resource\VertexBuffer.cpp" />
+    <ClCompile Include="Source\DataModels\Components\TransformComponent.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />
+    <ClInclude Include="Source\DataModels\Components\Interfaces\Updatable.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\UID\UID.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\UID\UIDGenerator.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\InspectorWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\ComponentWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.h" />
+    <ClInclude Include="Source\DataModels\Window\Fonts\Font.h" />
+    <ClInclude Include="Source\Enums\EnumNames.h" />
+    <ClInclude Include="Source\Enums\ComponentType.h" />
+    <ClInclude Include="Source\DataModels\Components\Component.h" />
+    <ClInclude Include="Source\DataModels\GameObject\GameObject.h" />
+    <ClInclude Include="Source\DataModels\Scene\Scene.h" />
     <ClInclude Include="Source\DataModels\Window\AboutWindow.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\ConfigurationWindow.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\ConsoleWindow.h" />
@@ -83,8 +108,10 @@
     <ClInclude Include="Source\DataModels\Window\EditorWindow\SubWindows\SubWindow.h" />
     <ClInclude Include="Source\DataModels\Window\Window.h" />
     <ClInclude Include="Source\DataModels\Window\MainMenuWindow.h" />
+    <ClInclude Include="Source\Factories\ComponentWindowFactory.h" />
     <ClInclude Include="Source\Modules\ModuleEditor.h" />
     <ClInclude Include="Source\Modules\ModuleScene.h" />
+    <ClInclude Include="Source\Structs\AddComponentAction.h" />
     <ClInclude Include="Source\Structs\ModelAttributes.h" />
     <ClInclude Include="Source\DataModels\DX12\Resource\ConstantBuffer.h" />
     <ClInclude Include="Source\Structs\ViewProjection.h" />
@@ -137,6 +164,10 @@
     <ClInclude Include="Source\Pch.h" />
     <ClInclude Include="Source\DataModels\DX12\Resource\VertexBuffer.h" />
     <ClInclude Include="Source\Structs\ThemeColors.h" />
+    <ClInclude Include="Source\DataModels\Components\TransformComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\DataModels\GameObject\GameObject.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

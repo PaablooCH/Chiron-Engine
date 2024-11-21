@@ -13,7 +13,7 @@ public:
     // ------------- GETTERS ----------------------
 
     inline ID3D12Resource* GetResource() const;
-    inline const std::wstring& GetName() const;
+    inline const std::string& GetName() const;
 
     /*virtual D3D12_CPU_DESCRIPTOR_HANDLE GetCPURenderTargetView() const = 0;
     virtual D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDepthStencilView() const = 0;
@@ -23,11 +23,11 @@ public:
     // ------------- SETTERS ----------------------
 
     void SetResource(ComPtr<ID3D12Resource> resource);
-    inline void SetName(std::wstring name);
+    inline void SetName(std::string name);
 
 protected:
     Resource();
-    Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::wstring& name = L"",
+    Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "",
         const D3D12_CLEAR_VALUE* clearValue = nullptr);
     Resource(ComPtr<ID3D12Resource> resource);
     Resource(const Resource& copy);
@@ -42,7 +42,7 @@ private:
 
 protected:
     ComPtr<ID3D12Resource> _resource;
-    std::wstring _name;
+    std::string _name;
 
     ID3D12Device5* _device;
 private:
@@ -60,16 +60,17 @@ inline ID3D12Resource* Resource::GetResource() const
     return _resource.Get();
 }
 
-inline const std::wstring& Resource::GetName() const
+inline const std::string& Resource::GetName() const
 {
     return _name;
 }
 
-inline void Resource::SetName(std::wstring name)
+inline void Resource::SetName(std::string name)
 {
     _name = name;
     if (_resource)
     {
-        _resource->SetName(_name.c_str());
+        std::wstring w = Chiron::Utils::StringToWString(_name);
+        _resource->SetName(w.c_str());
     }
 }

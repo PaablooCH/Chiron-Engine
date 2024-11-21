@@ -7,11 +7,11 @@
 
 #include "DataModels/DX12/ResourceStateTracker/ResourceStateTracker.h"
 
-Resource::Resource() : _resource(nullptr), _name(L"")
+Resource::Resource() : _resource(nullptr), _name(""), _device(nullptr), _featureSupport()
 {
 }
 
-Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::wstring& name, const D3D12_CLEAR_VALUE* clearValue)
+Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name, const D3D12_CLEAR_VALUE* clearValue)
 {
     if (clearValue)
     {
@@ -35,7 +35,8 @@ Resource::Resource(ComPtr<ID3D12Resource> resource) : _resource(resource)
     CheckFeatureSupport();
 }
 
-Resource::Resource(const Resource& copy) : _resource(copy._resource), _name(copy._name), _featureSupport(copy._featureSupport)
+Resource::Resource(const Resource& copy) : _resource(copy._resource), _name(copy._name), _device(copy._device),
+_featureSupport(copy._featureSupport)
 {
     if (copy._clearValue)
     {

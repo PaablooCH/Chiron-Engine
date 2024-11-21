@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "EditorWindow.h"
 
-EditorWindow::EditorWindow(const std::string& name) : Window(name), _flags(ImGuiWindowFlags_None), _focused(false)
+EditorWindow::EditorWindow(const std::string& name, ImGuiWindowFlags flags) : Window(name), _flags(flags), _focused(false)
 {
 }
 

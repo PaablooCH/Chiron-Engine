@@ -5,7 +5,7 @@
 #include "SubWindows/Configuration/EngineStatisticsSubWindow.h"
 #include "SubWindows/Configuration/HardwareSubWindow.h"
 
-ConfigurationWindow::ConfigurationWindow() : EditorWindow("Configuration")
+ConfigurationWindow::ConfigurationWindow() : EditorWindow(ICON_FA_GEAR " Configuration")
 {
     _subWindows.push_back(std::make_unique<EngineStatisticsSubWindow>());
     _subWindows.push_back(std::make_unique<CameraSubWindow>());

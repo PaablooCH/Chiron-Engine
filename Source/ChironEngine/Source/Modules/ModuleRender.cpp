@@ -27,6 +27,14 @@
     #include "Optick/optick.h"
 #endif // OPTICK
 
+void ModuleRender::LoadNewModel(std::string modelPath)
+{
+    CHIRON_TODO("Delete");
+    auto file = App->GetModule<ModuleFileSystem>();
+    model.reset(new ModelAsset());
+    file->Import(modelPath.c_str(), model);
+}
+
 ModuleRender::ModuleRender() : _scissor(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX)), _sceneTexture(nullptr),
 _depthStencilTexture(nullptr)
 {
@@ -157,17 +165,10 @@ void ModuleRender::ResizeBuffers(unsigned newWidth, unsigned newHeight)
     D3D12_RESOURCE_DESC textureDesc =
         CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, newWidth, newHeight, 1, 1, 1, 0,
             D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-    _sceneTexture = std::make_unique<Texture>(textureDesc, L"Scene Texture", &clearValue);
+    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", &clearValue);
 
     _depthStencilTexture = App->GetModule<ModuleID3D12>()->
-        CreateDepthStencil(L"Scene Depth Stencil Texture", newWidth, newHeight);
-}
-
-void ModuleRender::LoadNewModel(std::string modelPath)
-{
-    auto file = App->GetModule<ModuleFileSystem>();
-    model.reset(new ModelAsset());
-    file->Import(modelPath.c_str(), model);
+        CreateDepthStencil("Scene Depth Stencil Texture", newWidth, newHeight);
 }
 
 void ModuleRender::CreateTextures()
@@ -184,7 +185,7 @@ void ModuleRender::CreateTextures()
     D3D12_RESOURCE_DESC textureDesc =
         CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, 1, 1, 1, 0,
             D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-    _sceneTexture = std::make_unique<Texture>(textureDesc, L"Scene Texture", &clearValue);
+    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", &clearValue);
 
-    _depthStencilTexture = App->GetModule<ModuleID3D12>()->CreateDepthStencil(L"Scene Depth Stencil Texture", width, height);
+    _depthStencilTexture = App->GetModule<ModuleID3D12>()->CreateDepthStencil("Scene Depth Stencil Texture", width, height);
 }

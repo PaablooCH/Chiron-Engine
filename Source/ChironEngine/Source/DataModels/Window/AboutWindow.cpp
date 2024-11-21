@@ -3,7 +3,7 @@
 
 #include <ImGui/imgui.h>
 
-AboutWindow::AboutWindow() : Window("About"), _first(true)
+AboutWindow::AboutWindow() : Window(ICON_FA_CIRCLE_QUESTION " About"), _first(true)
 {
 }
 

@@ -24,6 +24,14 @@ std::string Chiron::Utils::WStringToString(const std::wstring& wstr)
     return str;
 }
 
+std::wstring Chiron::Utils::StringToWString(const std::string& str)
+{
+    int bufferSize = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+    std::wstring wstr(bufferSize, 0);
+    MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstr[0], bufferSize);
+    return wstr;
+}
+
 HANDLE Chiron::Utils::CreateEventHandle()
 {
     HANDLE event;

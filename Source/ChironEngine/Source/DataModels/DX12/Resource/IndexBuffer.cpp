@@ -2,7 +2,7 @@
 #include "IndexBuffer.h"
 
 IndexBuffer::IndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numIndices, const DXGI_FORMAT& indexFormat,
-    const std::wstring& name) : Resource(resourceDesc, name, nullptr),
+    const std::string& name) : Resource(resourceDesc, name, nullptr),
     _numIndices(numIndices), _format(indexFormat)
 {
     int stride = _format == DXGI_FORMAT_R32_UINT ? 4 : 2;

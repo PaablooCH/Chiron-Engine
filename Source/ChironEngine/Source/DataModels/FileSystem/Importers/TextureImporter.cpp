@@ -131,7 +131,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
         break;
     }
 
-    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, wFilePath);
+    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, sFilePath);
     texture->SetTexture(newTexture);
 
     imgResult = &img;
@@ -153,14 +153,16 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
         subresource.RowPitch = pImages[i].rowPitch;
         subresource.SlicePitch = pImages[i].slicePitch;
     }
-    auto d3d12 = App->GetModule<ModuleID3D12>();
-    auto commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
 
+    auto d3d12 = App->GetModule<ModuleID3D12>();
+
+    auto commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
     commandList->UpdateBufferResource(texture->GetTexture().get(), 0, numSubresources, subresources.data());
 
     uint64_t initFenceValue = d3d12->ExecuteCommandList(commandList);
     d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, initFenceValue);
 
+    CHIRON_TODO("delete????");
     commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
     commandList->TransitionBarrier(texture->GetTexture().get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     initFenceValue = d3d12->ExecuteCommandList(commandList);
