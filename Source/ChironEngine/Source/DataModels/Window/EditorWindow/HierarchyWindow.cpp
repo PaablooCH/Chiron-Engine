@@ -139,7 +139,7 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
         {
             stack.push({ gameObject, true });
             auto children = gameObject->GetChildren();
-            for (size_t i = children.size() - 1; i >= 0; i--)
+            for (int i = static_cast<int>(children.size()) - 1; i >= 0; i--)
             {
                 stack.push({ children[i], false});
             }
