@@ -19,7 +19,7 @@ GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, Chir
 {
 }
 
-GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent, 
+GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject(name, parent,
     Chiron::UIDGenerator::GenerateUID(), true, parent->IsActive(), parent->IsStatic())
 {
     _parent->LinkChild(this);
@@ -35,13 +35,13 @@ GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject
 }
 
 GameObject::GameObject(const std::string& name, GameObject* parent, UID uid, bool enabled, bool active, bool staticObject)
-    : _name(name), _parent(parent), _uid(uid), _enabled(enabled), _active(active), _static(staticObject), 
+    : _name(name), _parent(parent), _uid(uid), _enabled(enabled), _active(active), _static(staticObject),
     _hierarchyState(HierarchyState::NONE)
 {
     CreateComponent<TransformComponent>();
 }
 
-GameObject::GameObject(const GameObject& copy) : GameObject(copy._name, copy._parent, Chiron::UIDGenerator::GenerateUID(), 
+GameObject::GameObject(const GameObject& copy) : GameObject(copy._name, copy._parent, Chiron::UIDGenerator::GenerateUID(),
     copy._enabled, copy._active, copy._static)
 {
     std::ranges::for_each(copy._components.begin(), copy._components.end(),

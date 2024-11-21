@@ -152,7 +152,7 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
             auto children = gameObject->GetChildren();
             for (int i = static_cast<int>(children.size()) - 1; i >= 0; i--)
             {
-                stack.push({ children[i], false});
+                stack.push({ children[i], false });
             }
         }
         ImGui::PopID();

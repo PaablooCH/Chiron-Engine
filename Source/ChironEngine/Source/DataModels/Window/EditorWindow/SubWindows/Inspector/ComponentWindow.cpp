@@ -18,7 +18,7 @@ void ComponentWindow::Draw(const std::shared_ptr<CommandList>& commandList)
 }
 
 ComponentWindow::ComponentWindow(std::string name, Component* component, bool disableEnable, bool disableRemove) :
-    SubWindow(name), _component(component), _windowUID(Chiron::UIDGenerator::GenerateUID()), _disableEnable(disableEnable), 
+    SubWindow(name), _component(component), _windowUID(Chiron::UIDGenerator::GenerateUID()), _disableEnable(disableEnable),
     _disableRemove(disableRemove)
 {
     _flags |= ImGuiTreeNodeFlags_AllowOverlap;

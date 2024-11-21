@@ -155,7 +155,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     }
 
     auto d3d12 = App->GetModule<ModuleID3D12>();
-    
+
     auto commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
     commandList->UpdateBufferResource(texture->GetTexture().get(), 0, numSubresources, subresources.data());
 

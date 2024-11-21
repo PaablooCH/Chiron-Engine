@@ -26,7 +26,7 @@ private:
 
 private:
     UID _windowUID;
-    
+
     bool _disableEnable;
     bool _disableRemove;
 };
