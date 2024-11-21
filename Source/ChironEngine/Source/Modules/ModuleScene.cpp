@@ -5,6 +5,7 @@
 #include "DataModels/GameObject/GameObject.h"
 
 #include "DataModels/Components/TransformComponent.h"
+
 ModuleScene::ModuleScene() : _loadedScene(nullptr), _selectedGameObject(nullptr)
 {
 }
@@ -16,7 +17,7 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Init()
 {
     _loadedScene = std::make_unique<Scene>();
-    _selectedGameObject = _loadedScene->GetRoot();
+    SetSelectedGameObject(_loadedScene->GetRoot());
     return true;
 }
 
@@ -69,4 +70,14 @@ GameObject* ModuleScene::CreateGameObject(const std::string& name, GameObject* p
 void ModuleScene::RemoveGameObject(GameObject* gameObject)
 {
     _loadedScene->RemoveGameObject(gameObject);
+}
+
+void ModuleScene::SetSelectedGameObject(GameObject* newSelected)
+{
+    if (_selectedGameObject)
+    {
+        _selectedGameObject->SetHierarchyState(HierarchyState::NONE);
+    }
+    _selectedGameObject = newSelected;
+    _selectedGameObject->SetHierarchyState(HierarchyState::SELECTED);
 }

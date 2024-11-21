@@ -34,7 +34,7 @@ public:
 
     // ------------- SETTERS ----------------------
 
-    inline void SetSelectedGameObject(GameObject* newSelected);
+    void SetSelectedGameObject(GameObject* newSelected);
 
 private:
 
@@ -51,9 +51,4 @@ inline Scene* ModuleScene::GetLoadedScene()
 inline GameObject* ModuleScene::GetSelectedGameObject()
 {
     return _selectedGameObject;
-}
-
-inline void ModuleScene::SetSelectedGameObject(GameObject* newSelected)
-{
-    _selectedGameObject = newSelected;
 }

@@ -35,7 +35,8 @@ GameObject::GameObject(const std::string& name, GameObject* parent) : GameObject
 }
 
 GameObject::GameObject(const std::string& name, GameObject* parent, UID uid, bool enabled, bool active, bool staticObject)
-    : _name(name), _parent(parent), _uid(uid), _enabled(enabled), _active(active), _static(staticObject)
+    : _name(name), _parent(parent), _uid(uid), _enabled(enabled), _active(active), _static(staticObject), 
+    _hierarchyState(HierarchyState::NONE)
 {
     CreateComponent<TransformComponent>();
 }
