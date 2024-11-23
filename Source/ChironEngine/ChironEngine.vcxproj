@@ -220,7 +220,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies\;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -250,7 +250,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies\;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
     </ClCompile>
