@@ -103,6 +103,9 @@
     <Filter Include="Source\DataModels\FileSystem\UID">
       <UniqueIdentifier>{4f521cbf-60eb-46bb-af19-e57d6e4bb913}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\DataModels\FileSystem\Json">
+      <UniqueIdentifier>{3e7ab282-a8dc-461e-9ff4-f635149f582d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -296,6 +299,12 @@
     </ClCompile>
     <ClCompile Include="Source\DataModels\FileSystem\UID\UIDGenerator.cpp">
       <Filter>Source\DataModels\FileSystem\UID</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Json\Field.cpp">
+      <Filter>Source\DataModels\FileSystem\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Json\Json.cpp">
+      <Filter>Source\DataModels\FileSystem\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -539,6 +548,12 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\FileSystem\UID\UIDGenerator.h">
       <Filter>Source\DataModels\FileSystem\UID</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h">
+      <Filter>Source\DataModels\FileSystem\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Json\Json.h">
+      <Filter>Source\DataModels\FileSystem\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
