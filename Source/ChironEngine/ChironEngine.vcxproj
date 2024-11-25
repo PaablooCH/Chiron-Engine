@@ -85,6 +85,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Interfaces\Serializable.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Updatable.h" />

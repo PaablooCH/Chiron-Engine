@@ -106,6 +106,9 @@
     <Filter Include="Source\DataModels\FileSystem\Json">
       <UniqueIdentifier>{3e7ab282-a8dc-461e-9ff4-f635149f582d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Interfaces">
+      <UniqueIdentifier>{f19e723d-02cb-4c67-9a4d-b3b19e83c620}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -554,6 +557,9 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\FileSystem\Json\Json.h">
       <Filter>Source\DataModels\FileSystem\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Interfaces\Serializable.h">
+      <Filter>Source\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
