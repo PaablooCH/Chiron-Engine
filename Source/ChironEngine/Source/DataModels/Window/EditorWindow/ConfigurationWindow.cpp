@@ -54,25 +54,17 @@ void ConfigurationWindow::DrawWindowContent(const std::shared_ptr<CommandList>& 
 
 void ConfigurationWindow::LoadConfiguration()
 {
-    if (!ModuleFileSystem::ExistsFile(configurationPath.c_str()))
-    {
-        return;
-    }
-    char* buffer;
-    ModuleFileSystem::LoadFile(configurationPath.c_str(), buffer);
-
     rapidjson::Document doc;
     Json json = Json(doc);
-    json.ToJson(buffer);
-
-    for (auto& window : _subWindows)
+    if (ModuleFileSystem::LoadJson(configurationPath.c_str(), json))
     {
-        Serializable* serialized = dynamic_cast<Serializable*>(window.get());
-        if (serialized)
+        for (auto& window : _subWindows)
         {
-            serialized->Load(json);
+            Serializable* serialized = dynamic_cast<Serializable*>(window.get());
+            if (serialized)
+            {
+                serialized->Load(json);
+            }
         }
     }
-
-    delete buffer;
 }

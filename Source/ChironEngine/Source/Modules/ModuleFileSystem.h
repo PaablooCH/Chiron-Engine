@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 
+#include "DataModels/FileSystem/Json/Json.h"
+
 class TextureImporter;
 class ModelImporter;
 class Asset;
@@ -26,6 +28,7 @@ public:
 
     static bool SaveFile(const void* buffer, const char* filePath, size_t size);
     static bool LoadFile(const char* filePath, char*& buffer);
+    static bool LoadJson(const char* filePath, Json json);
     static bool DeleteFileC(const char* path);
     static bool ExistsFile(const char* path);
     static bool CreateDirectoryC(const char* directoryName);

@@ -236,25 +236,18 @@ void ModuleEditor::SaveWindowsState() const
 
 void ModuleEditor::LoadWindowsState()
 {
-    if (!ModuleFileSystem::ExistsFile(windowsStatePath.c_str()))
-    {
-        return;
-    }
-    char* buffer;
-    ModuleFileSystem::LoadFile(windowsStatePath.c_str(), buffer);
-    
     rapidjson::Document doc;
     Json json = Json(doc);
-    json.ToJson(buffer);
-    
-    for (auto& window : _windows)
-    {
-        window->SetEnabled(json[window->GetName().c_str()]);
-    }
-    auto aboutWindow = _mainMenu->GetAboutWindow();
-    aboutWindow->SetEnabled(json[aboutWindow->GetName().c_str()]);
 
-    delete buffer;
+    if (ModuleFileSystem::LoadJson(windowsStatePath.c_str(), json))
+    {
+        for (auto& window : _windows)
+        {
+            window->SetEnabled(json[window->GetName().c_str()]);
+        }
+        auto aboutWindow = _mainMenu->GetAboutWindow();
+        aboutWindow->SetEnabled(json[aboutWindow->GetName().c_str()]);
+    }
 }
 
 void ModuleEditor::SetThemes()

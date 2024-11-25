@@ -137,6 +137,22 @@ bool ModuleFileSystem::LoadFile(const char* filePath, char*& buffer)
     return false;
 }
 
+bool ModuleFileSystem::LoadJson(const char* filePath, Json json)
+{
+    if (!ModuleFileSystem::ExistsFile(filePath))
+    {
+        return false;
+    }
+    char* buffer;
+    ModuleFileSystem::LoadFile(filePath, buffer);
+
+    json.ToJson(buffer);
+
+    delete buffer;
+
+    return true;
+}
+
 bool ModuleFileSystem::DeleteFileC(const char* path)
 {
     return PHYSFS_delete(path);
