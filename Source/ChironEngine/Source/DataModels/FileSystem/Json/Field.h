@@ -9,6 +9,7 @@ public:
     Field(rapidjson::Value& value, rapidjson::Document& documentJson);
 
     Field operator[](unsigned it);
+    Field operator[](const char* key);
 
     inline operator bool() const;
     inline operator int() const;

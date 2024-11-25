@@ -37,10 +37,6 @@ Field Json::operator[](const char* key)
     {
         _document.AddMember(rapidjson::StringRef(key), rapidjson::Value(), _document.GetAllocator());
     }
-    auto& value = _document[key];
-    if (!value.IsObject())
-    {
-        value.SetObject();
-    }
-    return Field(value, _document);
+    
+    return Field(_document[key], _document);
 }

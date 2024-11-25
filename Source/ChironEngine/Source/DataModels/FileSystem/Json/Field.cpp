@@ -21,3 +21,17 @@ Field Field::operator[](unsigned it)
     }
     return Field(_value[it], _documentJson);
 }
+
+Field Field::operator[](const char* key)
+{
+    if (!_value.IsObject())
+    {
+        _value.SetObject();
+    }
+
+    if (!_value.HasMember(key))
+    {
+        _value.AddMember(rapidjson::StringRef(key), rapidjson::Value(), _documentJson.GetAllocator());
+    }
+    return Field(_value[key], _documentJson);
+}
