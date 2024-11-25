@@ -12,7 +12,7 @@ public:
     bool ToJson(const char* buffer);
     rapidjson::StringBuffer ToBuffer();
 
-    Field operator[](const char* key);
+    Field operator[](const char* key) const;
 
 private:
     rapidjson::Document& _document;

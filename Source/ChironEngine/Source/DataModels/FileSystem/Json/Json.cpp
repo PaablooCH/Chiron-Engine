@@ -31,7 +31,7 @@ rapidjson::StringBuffer Json::ToBuffer()
     return sb;
 }
 
-Field Json::operator[](const char* key)
+Field Json::operator[](const char* key) const
 {
     if (!_document.HasMember(key))
     {
