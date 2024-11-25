@@ -25,6 +25,8 @@ public:
 
 private:
     void StartDock() const;
+    void SaveWindowsState() const;
+    void LoadWindowsState();
 
     void SetThemes();
     void ApplyTheme(const ThemeColors& theme);
@@ -34,7 +36,6 @@ private:
 private:
     enum class WindowsType
     {
-        ABOUT,
         CONFIGURATION,
         CONSOLE,
         HIERARCHY,
@@ -55,6 +56,8 @@ private:
     std::shared_ptr<CommandList> _drawCommandList;
 
     ImGuiWindowFlags _dockFlags;
+
+    bool _startDock;
 };
 
 inline const std::vector<std::unique_ptr<Window>>& ModuleEditor::GetWindows() const

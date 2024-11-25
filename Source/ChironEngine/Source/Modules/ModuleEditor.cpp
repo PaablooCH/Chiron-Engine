@@ -3,6 +3,7 @@
 
 #include "Application.h"
 
+#include "ModuleFileSystem.h"
 #include "ModuleID3D12.h"
 #include "ModuleWindow.h"
 
@@ -20,17 +21,25 @@
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocatorPage.h"
 #include "DataModels/DX12/Resource/Texture.h"
 
+#include "DataModels/FileSystem/Json/Json.h"
+#include "Defines/FileSystemDefine.h"
+
+#include "DataModels/Window/Fonts/Font.h"
+
 #include "ImGui/imgui_internal.h"
 #include "ImGui/imgui_impl_dx12.h"
 #include "ImGui/imgui_impl_win32.h"
-
-#include "DataModels/Window/Fonts/Font.h"
 
 #if OPTICK
     #include "Optick/optick.h"
 #endif // OPTICK
 
-ModuleEditor::ModuleEditor() : _dockFlags(0)
+namespace
+{
+    const std::string windowsStatePath = "Settings/WindowsStates.conf";
+}
+
+ModuleEditor::ModuleEditor() : _dockFlags(0), _startDock(true)
 {
 }
 
@@ -59,15 +68,16 @@ bool ModuleEditor::Init()
         _srvDescHeap->GetCPUDescriptorHandle(), _srvDescHeap->GetGPUDescriptorHandle());
 
     _windows.resize(static_cast<int>(WindowsType::SIZE));
-    _windows[static_cast<int>(WindowsType::ABOUT)] = std::make_unique<AboutWindow>();
     _windows[static_cast<int>(WindowsType::SCENE)] = std::make_unique<SceneWindow>();
     _windows[static_cast<int>(WindowsType::CONSOLE)] = std::make_unique<ConsoleWindow>();
     _windows[static_cast<int>(WindowsType::CONFIGURATION)] = std::make_unique<ConfigurationWindow>();
     _windows[static_cast<int>(WindowsType::HIERARCHY)] = std::make_unique<HierarchyWindow>();
     _windows[static_cast<int>(WindowsType::INSPECTOR)] = std::make_unique<InspectorWindow>();
-    _mainMenu = std::make_unique<MainMenuWindow>(reinterpret_cast<AboutWindow*>(_windows[static_cast<int>(WindowsType::ABOUT)].get()));
+    _mainMenu = std::make_unique<MainMenuWindow>();
 
     SetThemes();
+
+    _startDock = !ModuleFileSystem::ExistsFile("imgui.ini");
 
     return true;
 }
@@ -78,6 +88,8 @@ bool ModuleEditor::Start()
     ApplyTheme(_darkGreenStyle);
     SetStyle();
 
+    LoadWindowsState();
+
     _dockFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking;
     _dockFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
@@ -87,12 +99,15 @@ bool ModuleEditor::Start()
 
 bool ModuleEditor::CleanUp()
 {
+    SaveWindowsState();
+
     _mainMenu.reset();
     _windows.clear();
     _srvDescHeap.reset();
     ImGui_ImplDX12_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+
     return true;
 }
 
@@ -130,7 +145,11 @@ UpdateStatus ModuleEditor::Update()
     ImGui::Begin("DockSpace", nullptr, _dockFlags);
     ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
     ImGui::DockSpace(dockSpaceId);
-    StartDock();
+    if (_startDock)
+    {
+        _startDock = false;
+        StartDock();
+    }
 
     ImGui::End();
 
@@ -143,7 +162,6 @@ UpdateStatus ModuleEditor::Update()
     {
         window->Draw(_drawCommandList);
     }
-    Font::PopFont();
     ImGui::Render();
 
     auto rtv = d3d12->GetRenderBuffer()->GetRenderTargetView().GetCPUDescriptorHandle();
@@ -173,32 +191,70 @@ UpdateStatus ModuleEditor::PostUpdate()
 
 void ModuleEditor::StartDock() const
 {
-    static bool firstTime = true;
-    if (firstTime)
+    ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
+
+    ImGui::DockBuilderRemoveNode(dockSpaceId);
+    ImGui::DockBuilderAddNode(dockSpaceId, _dockFlags | ImGuiDockNodeFlags_DockSpace);
+    ImGui::DockBuilderSetNodeSize(dockSpaceId, ImGui::GetMainViewport()->Size);
+
+    ImGuiID dockIdUp = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Up, 0.06f, nullptr, &dockSpaceId);
+    ImGuiID dockIdRight = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.27f, nullptr, &dockSpaceId);
+    ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
+    ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
+    ImGui::DockBuilderDockWindow(ICON_FA_TERMINAL " Console", dockIdDown);
+    //ImGui::DockBuilderDockWindow("File Browser", dockIdDown);
+    //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
+    ImGui::DockBuilderDockWindow(ICON_FA_GEAR " Configuration", dockIdRight);
+    //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
+    //ImGui::DockBuilderDockWindow("Resources", dockIdRight);
+    ImGui::DockBuilderDockWindow(ICON_FA_CIRCLE_INFO " Inspector", dockIdRight);
+    //ImGui::DockBuilderDockWindow("Editor Control", dockIdUp);
+    ImGui::DockBuilderDockWindow(ICON_FA_SITEMAP " Hierarchy", dockIdLeft);
+    ImGui::DockBuilderDockWindow(ICON_FA_BOX_OPEN " Scene", dockSpaceId);
+    ImGui::DockBuilderFinish(dockSpaceId);
+}
+
+void ModuleEditor::SaveWindowsState() const
+{
+    if (!ModuleFileSystem::IsDirectory(SETTINGS_FOLDER))
     {
-        firstTime = false;
-        ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
-
-        ImGui::DockBuilderRemoveNode(dockSpaceId);
-        ImGui::DockBuilderAddNode(dockSpaceId, _dockFlags | ImGuiDockNodeFlags_DockSpace);
-        ImGui::DockBuilderSetNodeSize(dockSpaceId, ImGui::GetMainViewport()->Size);
-
-        ImGuiID dockIdUp = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Up, 0.06f, nullptr, &dockSpaceId);
-        ImGuiID dockIdRight = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.27f, nullptr, &dockSpaceId);
-        ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
-        ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
-        ImGui::DockBuilderDockWindow(ICON_FA_TERMINAL " Console", dockIdDown);
-        //ImGui::DockBuilderDockWindow("File Browser", dockIdDown);
-        //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
-        ImGui::DockBuilderDockWindow(ICON_FA_GEAR " Configuration", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Resources", dockIdRight);
-        ImGui::DockBuilderDockWindow(ICON_FA_CIRCLE_INFO " Inspector", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Editor Control", dockIdUp);
-        ImGui::DockBuilderDockWindow(ICON_FA_SITEMAP " Hierarchy", dockIdLeft);
-        ImGui::DockBuilderDockWindow(ICON_FA_BOX_OPEN " Scene", dockSpaceId);
-        ImGui::DockBuilderFinish(dockSpaceId);
+        ModuleFileSystem::CreateDirectoryC(SETTINGS_FOLDER);
     }
+    rapidjson::Document doc;
+    Json json = Json(doc);
+
+    for (auto& window : _windows)
+    {
+        json[window->GetName().c_str()] = window->GetEnabled();
+    }
+    auto aboutWindow = _mainMenu->GetAboutWindow();
+    json[aboutWindow->GetName().c_str()] = aboutWindow->GetEnabled();
+
+    auto buffer = json.ToBuffer();
+    ModuleFileSystem::SaveFile(buffer.GetString(), windowsStatePath.c_str(), buffer.GetSize());
+}
+
+void ModuleEditor::LoadWindowsState()
+{
+    if (!ModuleFileSystem::ExistsFile(windowsStatePath.c_str()))
+    {
+        return;
+    }
+    char* buffer;
+    ModuleFileSystem::LoadFile(windowsStatePath.c_str(), buffer);
+    
+    rapidjson::Document doc;
+    Json json = Json(doc);
+    json.ToJson(buffer);
+    
+    for (auto& window : _windows)
+    {
+        window->SetEnabled(json[window->GetName().c_str()]);
+    }
+    auto aboutWindow = _mainMenu->GetAboutWindow();
+    aboutWindow->SetEnabled(json[aboutWindow->GetName().c_str()]);
+
+    delete buffer;
 }
 
 void ModuleEditor::SetThemes()
