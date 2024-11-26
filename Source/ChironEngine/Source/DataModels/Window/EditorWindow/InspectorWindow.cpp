@@ -161,7 +161,7 @@ void InspectorWindow::DrawAddComponent()
                     if (currentComponentGroup != action.componentGroup)
                     {
                         currentComponentGroup = action.componentGroup;
-                        ImGui::SeparatorText(ToString(currentComponentGroup).c_str());
+                        ImGui::SeparatorText(ComponentGroupUtils::ToString(currentComponentGroup).c_str());
                     }
                     if (ImGui::Selectable(action.name.c_str()))
                     {
