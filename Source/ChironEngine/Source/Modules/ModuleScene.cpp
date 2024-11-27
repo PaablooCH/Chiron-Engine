@@ -13,6 +13,7 @@
 #include "Auxiliar/SceneLoader.h"
 
 #include <sstream>
+
 ModuleScene::ModuleScene() : _loadedScene(nullptr), _selectedGameObject(nullptr)
 {
 }
