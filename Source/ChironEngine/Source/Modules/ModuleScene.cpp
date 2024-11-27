@@ -9,6 +9,9 @@
 
 #include "DataModels/FileSystem/Json/Json.h"
 #include "Defines/FileSystemDefine.h"
+
+#include "Auxiliar/SceneLoader.h"
+
 #include <sstream>
 ModuleScene::ModuleScene() : _loadedScene(nullptr), _selectedGameObject(nullptr)
 {

@@ -122,6 +122,16 @@ void GameObject::SetParent(GameObject* parent)
     }
 }
 
+void GameObject::SetEnabled(bool enabled)
+{
+    _enabled = enabled;
+    
+    for (auto& child : _children)
+    {
+        child->PropagateActive(_enabled && _active);
+    }
+}
+
 void GameObject::SetStatic(bool isStatic)
 {
     _static = isStatic;
@@ -241,6 +251,15 @@ bool GameObject::RemoveComponent(Component* deleteComponent)
 
     _components.erase(newEnd, _components.end());
     return true;
+}
+
+void GameObject::PropagateActive(bool active)
+{
+    _active = active;
+    for (auto& child : _children)
+    {
+        child->PropagateActive(_enabled && _active);
+    }
 }
 
 Component* GameObject::CreateComponent(ComponentType type)

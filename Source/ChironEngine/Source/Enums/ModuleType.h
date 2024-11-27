@@ -10,7 +10,7 @@ class ModuleRender;
 class ModuleScene;
 class ModuleWindow;
 
-// Order matters: they will Init/start/update/cleanUp in this order
+// Order matters: they will Init/start/update in this order. CleanUp executes in inverse order
 enum class ModuleType
 {
     WINDOW,

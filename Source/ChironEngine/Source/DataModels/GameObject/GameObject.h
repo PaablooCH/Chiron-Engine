@@ -64,7 +64,7 @@ public:
 
     inline const UID GetUID() const;
     inline const std::string& GetName();
-    inline bool& IsEnabled();
+    inline bool IsEnabled() const;
     inline bool IsActive() const;
     inline bool IsStatic() const;
     inline const std::string& GetTag();
@@ -84,6 +84,7 @@ public:
 
     inline void SetName(const std::string& name);
     void SetParent(GameObject* parent);
+    void SetEnabled(bool enabled);
     void SetStatic(bool isStatic);
     inline void SetTag(const std::string& tag);
     inline void SetHierarchyState(HierarchyState newState);
@@ -95,6 +96,10 @@ private:
         bool enabled,
         bool active,
         bool staticObject);
+
+    // ------------- CHILDREN METHODS ----------------------
+
+    void PropagateActive(bool active);
 
     // ------------- COMPONENTS METHODS ----------------------
 
@@ -128,7 +133,7 @@ inline const std::string& GameObject::GetName()
     return _name;
 }
 
-inline bool& GameObject::IsEnabled()
+inline bool GameObject::IsEnabled() const
 {
     return _enabled;
 }

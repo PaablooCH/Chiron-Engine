@@ -64,8 +64,11 @@ void InspectorWindow::DrawGameObjectInfo()
     bool isRoot = _lastSelected->IsRoot();
     if (!isRoot)
     {
-        bool& enabled = _lastSelected->IsEnabled();
-        ImGui::Checkbox("###enableGameObject", &enabled);
+        bool enabled = _lastSelected->IsEnabled();
+        if (ImGui::Checkbox("###enableGameObject", &enabled))
+        {
+            _lastSelected->SetEnabled(enabled);
+        }
 
         ImGui::SameLine();
     }
