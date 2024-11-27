@@ -3,6 +3,8 @@
 #include "DataModels/Components/Component.h"
 #include "DataModels/FileSystem/UID/UID.h"
 
+#include "DataModels/FileSystem/Json/Field.h"
+
 enum class HierarchyState
 {
     SELECTED,
@@ -25,6 +27,7 @@ public:
     GameObject(const GameObject& copy);
     ~GameObject();
 
+    void Save(Field& meta);
     // ------------- CHILDREN METHODS ----------------------
 
     void LinkChild(GameObject* child);
@@ -95,9 +98,9 @@ private:
     void AddComponent(Component* newComponent);
 
 private:
+    UID _uid;
     std::string _name;
     GameObject* _parent;
-    UID _uid;
 
     bool _enabled;
     bool _active;

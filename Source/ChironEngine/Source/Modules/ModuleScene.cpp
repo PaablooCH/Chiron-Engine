@@ -1,11 +1,15 @@
 #include "Pch.h"
 #include "ModuleScene.h"
 
+#include "ModuleFileSystem.h"
 #include "DataModels/Scene/Scene.h"
-#include "DataModels/GameObject/GameObject.h"
 
+#include "DataModels/GameObject/GameObject.h"
 #include "DataModels/Components/TransformComponent.h"
 
+#include "DataModels/FileSystem/Json/Json.h"
+#include "Defines/FileSystemDefine.h"
+#include <sstream>
 ModuleScene::ModuleScene() : _loadedScene(nullptr), _selectedGameObject(nullptr)
 {
 }
@@ -35,6 +39,12 @@ UpdateStatus ModuleScene::PreUpdate()
 UpdateStatus ModuleScene::Update()
 {
     _loadedScene->Update();
+    DirectX::Keyboard& keyboard = DirectX::Keyboard::Get();
+    const DirectX::Keyboard::State& keyState = keyboard.GetState();
+    if (keyState.LeftControl && keyState.S)
+    {
+        SaveScene();
+    }
     return UpdateStatus::UPDATE_CONTINUE;
 }
 
@@ -50,6 +60,24 @@ bool ModuleScene::CleanUp()
     return true;
 }
 
+void ModuleScene::SaveScene()
+{
+    if (!ModuleFileSystem::IsDirectory(SCENE_FOLDER))
+    {
+        ModuleFileSystem::CreateDirectoryC(SCENE_FOLDER);
+    }
+    rapidjson::Document doc;
+    Json json = Json(doc);
+
+    _loadedScene->Save(json);
+    auto buffer = json.ToBuffer();
+
+    std::ostringstream oss;
+    const std::string& name = _loadedScene->GetRoot()->GetName();
+    oss << SCENE_PATH << name << SCENE_EXT;
+
+    ModuleFileSystem::SaveFile(buffer.GetString(), oss.str().c_str(), buffer.GetSize());
+}
 GameObject* ModuleScene::GetRoot() const
 {
     return _loadedScene->GetRoot();

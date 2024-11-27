@@ -4,7 +4,9 @@
 #include "DataModels/FileSystem/UID/UID.h"
 
 class GameObject;
+class Drawable;
 class Scene;
+class Updatable;
 
 class ModuleScene : public Module
 {
@@ -21,6 +23,7 @@ public:
 
     // ------------- SCENE METHODS ----------------------
 
+    void SaveScene();
     GameObject* GetRoot() const;
 
     GameObject* SearchGameObjectByUID(UID uid);

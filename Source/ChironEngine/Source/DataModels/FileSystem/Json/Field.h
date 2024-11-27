@@ -8,8 +8,10 @@ class Field
 public:
     Field(rapidjson::Value& value, rapidjson::Document& documentJson);
 
-    Field operator[](unsigned it);
-    Field operator[](const char* key);
+    inline int Size() const;
+
+    Field operator[](unsigned it) const;
+    Field operator[](const char* key) const;
 
     inline operator bool() const;
     inline operator int() const;
@@ -28,11 +30,17 @@ public:
     inline void operator=(UID uid);
     inline void operator=(double d);
     inline void operator=(const char* c);
+    inline void operator=(const std::string& s);
 
 private:
     rapidjson::Value& _value;
     rapidjson::Document& _documentJson;
 };
+
+inline int Field::Size() const
+{
+    return _value.IsArray() ? _value.Size() : 0;
+}
 
 inline Field::operator bool() const
 {
@@ -112,4 +120,9 @@ inline void Field::operator=(double d)
 inline void Field::operator=(const char* c)
 {
     _value.SetString(c, _documentJson.GetAllocator());
+}
+
+inline void Field::operator=(const std::string& s)
+{
+    _value.SetString(s.c_str(), _documentJson.GetAllocator());
 }

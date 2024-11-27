@@ -74,6 +74,21 @@ void TransformComponent::CalculateLocalFromNewGlobal(const TransformComponent* n
     _rotXYZ.z = DirectX::XMConvertToDegrees(euler.z);
 }
 
+void TransformComponent::InternalSave(Field& meta)
+{
+    meta["localPos_X"] = _localPos.x;
+    meta["localPos_Y"] = _localPos.y;
+    meta["localPos_Z"] = _localPos.z;
+
+    meta["localRot_X"] = _rotXYZ.x;
+    meta["localRot_Y"] = _rotXYZ.y;
+    meta["localRot_Z"] = _rotXYZ.z;
+
+    meta["localSca_X"] = _localSca.x;
+    meta["localSca_Y"] = _localSca.y;
+    meta["localSca_Z"] = _localSca.z;
+}
+
 void TransformComponent::RecalculateMatrices()
 {
     _localMatrix = Matrix::CreateTranslation(_localPos) * Matrix::CreateFromQuaternion(_localRot) * Matrix::CreateScale(_localSca);

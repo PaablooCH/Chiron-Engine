@@ -39,8 +39,10 @@ public:
 private:
     void RecalculateMatrices();
 
+    void InternalSave(Field& meta) override;
 private:
     Vector3 _localPos;
+    // Rotation result
     Quaternion _localRot;
     Vector3 _localSca;
     Matrix _localMatrix;
@@ -55,6 +57,7 @@ private:
     Vector3 _originScaling;
     Vector3 _originCenter;
 
+    // Rotation of each angle
     Vector3 _rotXYZ;
 
     DirectX::BoundingBox _localAABB;

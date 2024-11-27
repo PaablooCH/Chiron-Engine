@@ -15,6 +15,14 @@ Component::~Component()
 {
 }
 
+void Component::Save(Field& meta)
+{
+    meta["type"] = ComponentTypeUtils::ToString(_type);
+    meta["enabled"] = _enabled;
+    InternalSave(meta);
+}
+}
+
 bool Component::IsActive()
 {
     return _owner->IsActive() && _enabled;

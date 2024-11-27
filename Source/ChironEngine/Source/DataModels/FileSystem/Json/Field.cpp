@@ -5,7 +5,7 @@ Field::Field(rapidjson::Value& value, rapidjson::Document& documentJson) : _valu
 {
 }
 
-Field Field::operator[](unsigned it)
+Field Field::operator[](unsigned it) const
 {
     if (!_value.IsArray())
     {
@@ -22,7 +22,7 @@ Field Field::operator[](unsigned it)
     return Field(_value[it], _documentJson);
 }
 
-Field Field::operator[](const char* key)
+Field Field::operator[](const char* key) const
 {
     if (!_value.IsObject())
     {

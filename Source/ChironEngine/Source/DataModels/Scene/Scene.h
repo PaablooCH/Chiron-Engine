@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DataModels/FileSystem/Json/Json.h"
 #include "DataModels/FileSystem/UID/UID.h"
 
 class GameObject;
@@ -19,6 +20,8 @@ public:
     void CleanUp();
 
     GameObject* SearchGameObjectByUID(UID uid);
+
+    void Save(Json& json);
 
     // ------------- MODIFY CONTAINERS ----------------------
 

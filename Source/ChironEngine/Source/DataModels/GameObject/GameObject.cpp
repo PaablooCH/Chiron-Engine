@@ -9,13 +9,11 @@
 #include "DataModels/Components/Interfaces/Drawable.h"
 #include "DataModels/Components/Interfaces/Updatable.h"
 
-#include "DataModels/Scene/Scene.h"
-
 #include "DataModels/FileSystem/UID/UIDGenerator.h"
 
 // root constructor
 GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, Chiron::UIDGenerator::GenerateUID(), true, true,
-    false)
+    true)
 {
 }
 
@@ -260,5 +258,22 @@ void GameObject::AddComponent(Component* newComponent)
         }
         newComponent->SetOwner(this);
         _components.push_back(std::unique_ptr<Component>(newComponent));
+    }
+}
+
+void GameObject::Save(Field& meta)
+{
+    meta["uid"] = _uid;
+    meta["name"] = _name;
+    meta["uidParent"] = _parent ? _parent->_uid : 0;
+    meta["enabled"] = _enabled;
+    meta["static"] = _static;
+    meta["tag"] = _tag;
+
+    auto components = meta["Components"];
+    for (int i = 0; i < _components.size(); i++)
+    {
+        auto field = components[i]["Component"];
+        _components[i]->Save(field);
     }
 }
