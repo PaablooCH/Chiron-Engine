@@ -24,11 +24,25 @@ public:
     // ------------- SCENE METHODS ----------------------
 
     void SaveScene();
+    void LoadScene(const std::string& scenePath, std::function<void(void)>&& callback, bool mantainCurrentScene = false);
     GameObject* GetRoot() const;
+    void SetRoot(GameObject* newRoot);
 
     GameObject* SearchGameObjectByUID(UID uid);
     GameObject* CreateGameObject(const std::string& name, GameObject* parent);
+    void AddGameObject(GameObject* gameObject);
     void RemoveGameObject(GameObject* gameObject);
+    void RemoveFromScene(GameObject* gameObject);
+
+    void AddStaticGO(GameObject* gameObject);
+    void AddDynamicGO(GameObject* gameObject);
+    void AddDrawableComponent(Drawable* drawable);
+    void AddUpdatableComponent(Updatable* updatable);
+
+    void RemoveStaticGO(GameObject* gameObject);
+    void RemoveDynamicGO(GameObject* gameObject);
+    void RemoveDrawableComponent(Drawable* drawable);
+    void RemoveUpdatableComponent(Updatable* updatable);
 
     // ------------- GETTERS ----------------------
 
@@ -38,6 +52,7 @@ public:
     // ------------- SETTERS ----------------------
 
     void SetSelectedGameObject(GameObject* newSelected);
+    void SetLoadedScene(Scene* newScene);
 
 private:
 

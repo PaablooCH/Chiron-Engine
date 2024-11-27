@@ -21,6 +21,11 @@ void Component::Save(Field& meta)
     meta["enabled"] = _enabled;
     InternalSave(meta);
 }
+
+void Component::Load(const Field& meta)
+{
+    _enabled = meta["enabled"];
+    InternalLoad(meta);
 }
 
 bool Component::IsActive()

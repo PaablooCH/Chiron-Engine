@@ -45,6 +45,17 @@ UpdateStatus ModuleScene::Update()
     {
         SaveScene();
     }
+    if (keyState.LeftControl && keyState.D)
+    {
+        auto start = std::chrono::steady_clock::now();
+        LoadScene("Assets/Scenes/New Scene.chiron", 
+            [start]()
+            {
+                auto end = std::chrono::steady_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+                LOG_INFO("Scene Loaded! Took {} seconds", static_cast<int>(duration));
+            });
+    }
     return UpdateStatus::UPDATE_CONTINUE;
 }
 
@@ -78,9 +89,22 @@ void ModuleScene::SaveScene()
 
     ModuleFileSystem::SaveFile(buffer.GetString(), oss.str().c_str(), buffer.GetSize());
 }
+
+void ModuleScene::LoadScene(const std::string& scenePath, std::function<void(void)>&& callback, bool mantainCurrentScene /* = false */)
+{
+    Chiron::Loader::LoadScene(scenePath, std::move(callback), mantainCurrentScene);
+}
+
 GameObject* ModuleScene::GetRoot() const
 {
     return _loadedScene->GetRoot();
+}
+
+void ModuleScene::SetRoot(GameObject* root)
+{
+    _loadedScene->SetRoot(root);
+    _selectedGameObject = nullptr;
+    SetSelectedGameObject(_loadedScene->GetRoot());
 }
 
 GameObject* ModuleScene::SearchGameObjectByUID(UID uid)
@@ -95,9 +119,59 @@ GameObject* ModuleScene::CreateGameObject(const std::string& name, GameObject* p
     return newGameObject;
 }
 
+void ModuleScene::AddGameObject(GameObject* gameObject)
+{
+    _loadedScene->AddGameObject(gameObject);
+}
+
 void ModuleScene::RemoveGameObject(GameObject* gameObject)
 {
     _loadedScene->RemoveGameObject(gameObject);
+}
+
+void ModuleScene::RemoveFromScene(GameObject* gameObject)
+{
+    _loadedScene->RemoveFromScene(gameObject);
+}
+
+void ModuleScene::AddStaticGO(GameObject* gameObject)
+{
+    _loadedScene->AddStaticGO(gameObject);
+}
+
+void ModuleScene::AddDynamicGO(GameObject* gameObject)
+{
+    _loadedScene->AddDynamicGO(gameObject);
+}
+
+void ModuleScene::AddDrawableComponent(Drawable* drawable)
+{
+    _loadedScene->AddDrawableComponent(drawable);
+}
+
+void ModuleScene::AddUpdatableComponent(Updatable* updatable)
+{
+    _loadedScene->AddUpdatableComponent(updatable);
+}
+
+void ModuleScene::RemoveStaticGO(GameObject* gameObject)
+{
+    _loadedScene->RemoveStaticGO(gameObject);
+}
+
+void ModuleScene::RemoveDynamicGO(GameObject* gameObject)
+{
+    _loadedScene->RemoveDynamicGO(gameObject);
+}
+
+void ModuleScene::RemoveDrawableComponent(Drawable* drawable)
+{
+    _loadedScene->RemoveDrawableComponent(drawable);
+}
+
+void ModuleScene::RemoveUpdatableComponent(Updatable* updatable)
+{
+    _loadedScene->RemoveUpdatableComponent(updatable);
 }
 
 void ModuleScene::SetSelectedGameObject(GameObject* newSelected)
@@ -108,4 +182,11 @@ void ModuleScene::SetSelectedGameObject(GameObject* newSelected)
     }
     _selectedGameObject = newSelected;
     _selectedGameObject->SetHierarchyState(HierarchyState::SELECTED);
+}
+
+void ModuleScene::SetLoadedScene(Scene* newScene)
+{
+    _loadedScene = std::unique_ptr<Scene>(newScene);
+    _selectedGameObject = nullptr;
+    SetSelectedGameObject(_loadedScene->GetRoot());
 }

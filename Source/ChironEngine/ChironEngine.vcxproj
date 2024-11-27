@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Auxiliar\SceneLoader.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Json\Field.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Auxiliar\Formatter.cpp" />
@@ -85,6 +86,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Auxiliar\SceneLoader.h" />
     <ClInclude Include="Source\Interfaces\Serializable.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />

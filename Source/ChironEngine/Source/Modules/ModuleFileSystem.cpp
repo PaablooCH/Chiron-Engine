@@ -137,7 +137,7 @@ bool ModuleFileSystem::LoadFile(const char* filePath, char*& buffer)
     return false;
 }
 
-bool ModuleFileSystem::LoadJson(const char* filePath, Json json)
+bool ModuleFileSystem::LoadJson(const char* filePath, Json& json)
 {
     if (!ModuleFileSystem::ExistsFile(filePath))
     {

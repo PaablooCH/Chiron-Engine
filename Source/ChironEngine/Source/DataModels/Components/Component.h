@@ -14,11 +14,13 @@ public:
     virtual ~Component();
 
     void Save(Field& meta);
+    void Load(const Field& meta);
+
     // ------------- GETTERS ----------------------
 
     inline ComponentType GetType() const;
     inline GameObject* GetOwner();
-    inline bool IsEnabled();
+    inline bool IsEnabled() const;
     bool IsActive();
 
     // ------------- GETTERS ----------------------
@@ -28,6 +30,8 @@ public:
 
 protected:
     virtual void InternalSave(Field& meta) = 0;
+    virtual void InternalLoad(const Field& meta) = 0;
+
 protected:
     GameObject* _owner;
 
@@ -47,7 +51,7 @@ inline GameObject* Component::GetOwner()
     return _owner;
 }
 
-inline bool Component::IsEnabled()
+inline bool Component::IsEnabled() const
 {
     return _enabled;
 }

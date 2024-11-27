@@ -309,6 +309,9 @@
     <ClCompile Include="Source\DataModels\FileSystem\Json\Json.cpp">
       <Filter>Source\DataModels\FileSystem\Json</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Auxiliar\SceneLoader.cpp">
+      <Filter>Source\Auxiliar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -560,6 +563,9 @@
     </ClInclude>
     <ClInclude Include="Source\Interfaces\Serializable.h">
       <Filter>Source\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Auxiliar\SceneLoader.h">
+      <Filter>Source\Auxiliar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

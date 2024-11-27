@@ -40,6 +40,8 @@ private:
     void RecalculateMatrices();
 
     void InternalSave(Field& meta) override;
+    void InternalLoad(const Field& meta) override;
+
 private:
     Vector3 _localPos;
     // Rotation result

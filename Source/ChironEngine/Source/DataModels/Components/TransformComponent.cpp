@@ -89,6 +89,25 @@ void TransformComponent::InternalSave(Field& meta)
     meta["localSca_Z"] = _localSca.z;
 }
 
+void TransformComponent::InternalLoad(const Field& meta)
+{
+    _localPos.x = meta["localPos_X"];
+    _localPos.y = meta["localPos_Y"];
+    _localPos.z = meta["localPos_Z"];
+
+    Vector3 rot;
+    rot.x = meta["localRot_X"];
+    rot.y = meta["localRot_Y"];
+    rot.z = meta["localRot_Z"];
+    SetLocalRot(rot);
+
+    _localSca.x = meta["localSca_X"];
+    _localSca.y = meta["localSca_Y"];
+    _localSca.z = meta["localSca_Z"];
+
+    RecalculateMatrices();
+}
+
 void TransformComponent::RecalculateMatrices()
 {
     _localMatrix = Matrix::CreateTranslation(_localPos) * Matrix::CreateFromQuaternion(_localRot) * Matrix::CreateScale(_localSca);

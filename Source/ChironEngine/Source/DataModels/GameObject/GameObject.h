@@ -23,11 +23,16 @@ public:
         std::function<Component* (const std::unique_ptr<Component>&)>>;
 
     explicit GameObject(const std::string& name);
+    GameObject(const Field& meta);
     GameObject(const std::string& name, GameObject* parent);
     GameObject(const GameObject& copy);
     ~GameObject();
 
     void Save(Field& meta);
+    void Load(const Field& meta);
+
+    void ReGenerateUID();
+
     // ------------- CHILDREN METHODS ----------------------
 
     void LinkChild(GameObject* child);
