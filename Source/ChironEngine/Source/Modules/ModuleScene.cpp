@@ -91,7 +91,7 @@ void ModuleScene::SaveScene()
     const std::string& name = _loadedScene->GetRoot()->GetName();
     oss << SCENE_PATH << name << SCENE_EXT;
 
-    ModuleFileSystem::SaveFile(buffer.GetString(), oss.str().c_str(), buffer.GetSize());
+    ModuleFileSystem::SaveFile(oss.str().c_str(), buffer.GetString(), buffer.GetSize());
 }
 
 void ModuleScene::LoadScene(const std::string& scenePath, std::function<void(void)>&& callback, bool mantainCurrentScene /* = false */)

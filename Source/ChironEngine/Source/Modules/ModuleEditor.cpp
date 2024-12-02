@@ -231,7 +231,7 @@ void ModuleEditor::SaveWindowsState() const
     json[aboutWindow->GetName().c_str()] = aboutWindow->GetEnabled();
 
     auto buffer = json.ToBuffer();
-    ModuleFileSystem::SaveFile(buffer.GetString(), windowsStatePath.c_str(), buffer.GetSize());
+    ModuleFileSystem::SaveFile(windowsStatePath.c_str(), buffer.GetString(), buffer.GetSize());
 }
 
 void ModuleEditor::LoadWindowsState()
@@ -239,7 +239,7 @@ void ModuleEditor::LoadWindowsState()
     rapidjson::Document doc;
     Json json = Json(doc);
 
-    if (ModuleFileSystem::LoadJson(windowsStatePath.c_str(), json))
+    if (ModuleFileSystem::LoadJson(windowsStatePath.c_str(), json) != -1)
     {
         for (auto& window : _windows)
         {

@@ -107,7 +107,7 @@ namespace Chiron::Loader
 
                 rapidjson::Document doc;
                 Json json = Json(doc);
-                if (!ModuleFileSystem::LoadJson(loadingConfig->scenePath->c_str(), json))
+                if (ModuleFileSystem::LoadJson(loadingConfig->scenePath->c_str(), json) == -1)
                 {
                     LOG_ERROR("Couldn't load scene file.");
                     return;

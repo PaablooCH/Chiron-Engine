@@ -37,7 +37,7 @@ ConfigurationWindow::~ConfigurationWindow()
     }
 
     auto buffer = json.ToBuffer();
-    ModuleFileSystem::SaveFile(buffer.GetString(), configurationPath.c_str(), buffer.GetSize());
+    ModuleFileSystem::SaveFile(configurationPath.c_str(), buffer.GetString(), buffer.GetSize());
 }
 
 void ConfigurationWindow::DrawWindowContent(const std::shared_ptr<CommandList>& commandList)
@@ -56,7 +56,7 @@ void ConfigurationWindow::LoadConfiguration()
 {
     rapidjson::Document doc;
     Json json = Json(doc);
-    if (ModuleFileSystem::LoadJson(configurationPath.c_str(), json))
+    if (ModuleFileSystem::LoadJson(configurationPath.c_str(), json) != -1)
     {
         for (auto& window : _subWindows)
         {

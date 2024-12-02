@@ -101,24 +101,41 @@ const std::string ModuleFileSystem::GetPathWithoutFile(const std::string& path)
     return "";
 }
 
-bool ModuleFileSystem::SaveFile(const void* buffer, const char* filePath, size_t size)
+bool ModuleFileSystem::SaveFile(const char* filePath, const void* buffer, size_t size, bool append /*= false */)
 {
     PHYSFS_File* handle;
-    if (OpenFile(filePath, OpenFileMethod::WRITE, handle))
+    if (append)
     {
-        if (PHYSFS_writeBytes(handle, buffer, size) < static_cast<PHYSFS_sint64>(size))
+        if (OpenFile(filePath, OpenFileMethod::APPEND, handle))
         {
-            LOG_ERROR("Physfs has error {{}} when try to write {}", PHYSFS_getLastError(), filePath);
+            if (PHYSFS_writeBytes(handle, buffer, size) < static_cast<PHYSFS_sint64>(size))
+            {
+                LOG_ERROR("Physfs has error {{}} when try to append {}", PHYSFS_getLastError(), filePath);
+                PHYSFS_close(handle);
+                return false;
+            }
             PHYSFS_close(handle);
-            return false;
+            return true;
         }
-        PHYSFS_close(handle);
-        return true;
     }
-    return false;    
+    else
+    {
+        if (OpenFile(filePath, OpenFileMethod::WRITE, handle))
+        {
+            if (PHYSFS_writeBytes(handle, buffer, size) < static_cast<PHYSFS_sint64>(size))
+            {
+                LOG_ERROR("Physfs has error {{}} when try to write {}", PHYSFS_getLastError(), filePath);
+                PHYSFS_close(handle);
+                return false;
+            }
+            PHYSFS_close(handle);
+            return true;
+        }
+    }
+    return false;
 }
 
-bool ModuleFileSystem::LoadFile(const char* filePath, char*& buffer)
+int ModuleFileSystem::LoadFile(const char* filePath, char*& buffer)
 {
     PHYSFS_File* handle;
     if (OpenFile(filePath, OpenFileMethod::READ, handle))
@@ -132,24 +149,41 @@ bool ModuleFileSystem::LoadFile(const char* filePath, char*& buffer)
             return false;
         }
         PHYSFS_close(handle);
-        return true;
+        return static_cast<int>(size);
     }
-    return false;
+    return -1;
 }
 
-bool ModuleFileSystem::LoadJson(const char* filePath, Json& json)
+int ModuleFileSystem::LoadJson(const char* filePath, Json& json)
 {
     if (!ModuleFileSystem::ExistsFile(filePath))
     {
         return false;
     }
     char* buffer;
-    ModuleFileSystem::LoadFile(filePath, buffer);
+    int size = LoadFile(filePath, buffer);
 
     json.ToJson(buffer);
 
     delete buffer;
 
+    return size;
+}
+
+bool ModuleFileSystem::CopyFileC(const char* sourcePath, const char* destPath)
+{
+    if (!ExistsFile(sourcePath))
+    {
+        LOG_ERROR("Source file {} doesn't exist.", sourcePath);
+    }
+    char* buffer = nullptr;
+    int size = LoadFile(sourcePath, buffer);
+    if (size == -1)
+    {
+        return false;
+    }
+    SaveFile(destPath, buffer, size);
+    delete buffer;
     return true;
 }
 

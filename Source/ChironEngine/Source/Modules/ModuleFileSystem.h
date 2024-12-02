@@ -26,9 +26,10 @@ public:
 
     // ------------- PHYSFS METHODS ----------------------
 
-    static bool SaveFile(const void* buffer, const char* filePath, size_t size);
-    static bool LoadFile(const char* filePath, char*& buffer);
-    static bool LoadJson(const char* filePath, Json& json);
+    static bool SaveFile(const char* filePath, const void* buffer, size_t size, bool append = false);
+    static int LoadFile(const char* filePath, char*& buffer);
+    static int LoadJson(const char* filePath, Json& json);
+    static bool CopyFileC(const char* sourcePath, const char* destPath);
     static bool DeleteFileC(const char* path);
     static bool ExistsFile(const char* path);
     static bool CreateDirectoryC(const char* directoryName);
