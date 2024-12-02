@@ -41,6 +41,7 @@ public:
     // ------------- GETTERS ----------------------
 
     inline GameObject* GetRoot() const;
+    inline const std::vector<GameObject*>& GetSceneGameObjects() const;
     inline const std::vector<GameObject*>& GetStaticGOs() const;
     inline const std::vector<GameObject*>& GetDynamicsGOs() const;
     
@@ -81,6 +82,11 @@ inline void Scene::AddUpdatableComponent(Updatable* updatable)
 inline GameObject* Scene::GetRoot() const
 {
     return _root.get();
+}
+
+inline const std::vector<GameObject*>& Scene::GetSceneGameObjects() const
+{
+    return _sceneGameObjects;
 }
 
 inline const std::vector<GameObject*>& Scene::GetStaticGOs() const

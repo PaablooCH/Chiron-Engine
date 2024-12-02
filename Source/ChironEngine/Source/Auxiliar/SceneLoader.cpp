@@ -99,6 +99,14 @@ namespace Chiron::Loader
                     t.join();
                 }
             }
+
+            // ------------- ON AWAKE GAMEOBJECTS ----------------------
+
+            for (auto& gameObject : sceneModule->GetLoadedScene()->GetSceneGameObjects())
+            {
+                gameObject->OnAwake();
+            }
+
             // ------------- CORRECT SOME GAMEOBJECTS ----------------------
 
 

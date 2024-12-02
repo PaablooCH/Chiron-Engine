@@ -104,6 +104,14 @@ void GameObject::ReGenerateUID()
     _uid = Chiron::UIDGenerator::GenerateUID();
 }
 
+void GameObject::OnAwake()
+{
+    for (auto& component : _components)
+    {
+        component->OnAwake();
+    }
+}
+
 void GameObject::SetParent(GameObject* parent)
 {
     assert(parent);

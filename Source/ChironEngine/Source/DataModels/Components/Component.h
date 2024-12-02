@@ -13,6 +13,8 @@ public:
     Component(const Component& copy);
     virtual ~Component();
 
+    virtual void OnAwake() {};
+
     void Save(Field& meta);
     void Load(const Field& meta);
 

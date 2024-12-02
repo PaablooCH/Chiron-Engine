@@ -32,6 +32,7 @@ public:
     void Load(const Field& meta);
 
     void ReGenerateUID();
+    void OnAwake();
 
     // ------------- CHILDREN METHODS ----------------------
 
