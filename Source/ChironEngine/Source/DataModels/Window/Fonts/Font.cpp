@@ -78,7 +78,7 @@ void Font::GenerateInstance()
         // load fork awesome
         ImGuiIO& io = ImGui::GetIO();
         float baseFontSize = 16.0f;
-        float iconFontSize = baseFontSize * 2.0f / 3.0f;
+        float iconFontSize = baseFontSize * 0.80f;
 
         _instanceFont->_forkWebfont = std::unique_ptr<ImFont>(io.Fonts->AddFontFromFileTTF("Fonts/Roboto/Roboto-Regular.ttf", baseFontSize));
 
@@ -88,6 +88,7 @@ void Font::GenerateInstance()
         iconsConfig.MergeMode = true;
         iconsConfig.PixelSnapH = true;
         iconsConfig.GlyphMinAdvanceX = iconFontSize;
+        iconsConfig.GlyphOffset.y = -0.7f;
         io.Fonts->AddFontFromFileTTF("Fonts/ForkAwesome/forkawesome-webfont.ttf", iconFontSize, &iconsConfig, iconsRanges);
 
         io.Fonts->Build();

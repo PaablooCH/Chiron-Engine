@@ -64,8 +64,11 @@ void InspectorWindow::DrawGameObjectInfo()
     bool isRoot = _lastSelected->IsRoot();
     if (!isRoot)
     {
-        bool& enabled = _lastSelected->IsEnabled();
-        ImGui::Checkbox("###enableGameObject", &enabled);
+        bool enabled = _lastSelected->IsEnabled();
+        if (ImGui::Checkbox("###enableGameObject", &enabled))
+        {
+            _lastSelected->SetEnabled(enabled);
+        }
 
         ImGui::SameLine();
     }
@@ -161,7 +164,7 @@ void InspectorWindow::DrawAddComponent()
                     if (currentComponentGroup != action.componentGroup)
                     {
                         currentComponentGroup = action.componentGroup;
-                        ImGui::SeparatorText(ToString(currentComponentGroup).c_str());
+                        ImGui::SeparatorText(ComponentGroupUtils::ToString(currentComponentGroup).c_str());
                     }
                     if (ImGui::Selectable(action.name.c_str()))
                     {

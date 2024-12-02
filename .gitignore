@@ -439,3 +439,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Game/imgui.ini
+Game/Settings/*

@@ -3,6 +3,8 @@
 #include "DataModels/Components/Component.h"
 #include "DataModels/FileSystem/UID/UID.h"
 
+#include "DataModels/FileSystem/Json/Field.h"
+
 enum class HierarchyState
 {
     SELECTED,
@@ -21,9 +23,16 @@ public:
         std::function<Component* (const std::unique_ptr<Component>&)>>;
 
     explicit GameObject(const std::string& name);
+    GameObject(const Field& meta);
     GameObject(const std::string& name, GameObject* parent);
     GameObject(const GameObject& copy);
     ~GameObject();
+
+    void Save(Field& meta);
+    void Load(const Field& meta);
+
+    void ReGenerateUID();
+    void OnAwake();
 
     // ------------- CHILDREN METHODS ----------------------
 
@@ -56,7 +65,7 @@ public:
 
     inline const UID GetUID() const;
     inline const std::string& GetName();
-    inline bool& IsEnabled();
+    inline bool IsEnabled() const;
     inline bool IsActive() const;
     inline bool IsStatic() const;
     inline const std::string& GetTag();
@@ -76,6 +85,7 @@ public:
 
     inline void SetName(const std::string& name);
     void SetParent(GameObject* parent);
+    void SetEnabled(bool enabled);
     void SetStatic(bool isStatic);
     inline void SetTag(const std::string& tag);
     inline void SetHierarchyState(HierarchyState newState);
@@ -88,6 +98,10 @@ private:
         bool active,
         bool staticObject);
 
+    // ------------- CHILDREN METHODS ----------------------
+
+    void PropagateActive(bool active);
+
     // ------------- COMPONENTS METHODS ----------------------
 
     Component* CreateComponent(ComponentType type);
@@ -95,9 +109,9 @@ private:
     void AddComponent(Component* newComponent);
 
 private:
+    UID _uid;
     std::string _name;
     GameObject* _parent;
-    UID _uid;
 
     bool _enabled;
     bool _active;
@@ -120,7 +134,7 @@ inline const std::string& GameObject::GetName()
     return _name;
 }
 
-inline bool& GameObject::IsEnabled()
+inline bool GameObject::IsEnabled() const
 {
     return _enabled;
 }

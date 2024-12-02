@@ -9,6 +9,7 @@
 Scene::Scene(const std::string& sceneName)
 {
     _root = std::make_unique<GameObject>(sceneName);
+    AddGameObject(_root.get());
 }
 
 Scene::~Scene()
@@ -68,11 +69,48 @@ GameObject* Scene::SearchGameObjectByUID(UID uid)
     return (*gameObjectIt);
 }
 
+void Scene::Save(Json& json)
+{
+    auto gameObjects = json["GameObjects"];
+
+    for (int i = 0; i < _sceneGameObjects.size(); i++)
+    {
+        auto field = gameObjects[i]["GameObject"];
+        _sceneGameObjects[i]->Save(field);
+    }
+}
+
+void Scene::AddGameObject(GameObject* gameObject)
+{
+    _sceneGameObjects.push_back(gameObject);
+    if (gameObject->IsStatic())
+    {
+        AddStaticGO(gameObject);
+    }
+    else
+    {
+        AddDynamicGO(gameObject);
+    }
+}
+
 void Scene::RemoveGameObject(GameObject* gameObject)
 {
     if (gameObject && gameObject != _root.get())
     {
         delete gameObject->GetParent()->UnLinkChild(gameObject);
+    }
+}
+
+void Scene::RemoveFromScene(GameObject* gameObject)
+{
+    std::erase(_sceneGameObjects, gameObject);
+    if (gameObject->IsStatic())
+    {
+        RemoveStaticGO(gameObject);
+    }
+    else
+    {
+        RemoveDynamicGO(gameObject);
     }
 }
 

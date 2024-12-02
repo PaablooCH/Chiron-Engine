@@ -6,9 +6,14 @@ class AboutWindow;
 class MainMenuWindow : public Window
 {
 public:
-    MainMenuWindow(AboutWindow* aboutWindow);
+    MainMenuWindow();
+    ~MainMenuWindow() override;
 
     void Draw(const std::shared_ptr<CommandList>& commandList = nullptr) override;
+
+    // ------------- GETTERS ----------------------
+    
+    inline AboutWindow* GetAboutWindow() const;
 
 private:
     void DrawFileMenu();
@@ -16,5 +21,10 @@ private:
     void DrawHelpMenu();
 
 private:
-    AboutWindow* _aboutWindow;
+    std::unique_ptr<AboutWindow> _aboutWindow;
 };
+
+inline AboutWindow* MainMenuWindow::GetAboutWindow() const
+{
+    return _aboutWindow.get();
+}

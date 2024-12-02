@@ -22,6 +22,28 @@
     <ClCompile Include="ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="PhysFS\physfs.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_7z.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_dir.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_grp.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_hog.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_iso9660.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_mvl.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_qpak.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_slb.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_unpacked.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_vdf.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_wad.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_zip.c" />
+    <ClCompile Include="PhysFS\physfs_byteorder.c" />
+    <ClCompile Include="PhysFS\physfs_platform_haiku.cpp" />
+    <ClCompile Include="PhysFS\physfs_platform_os2.c" />
+    <ClCompile Include="PhysFS\physfs_platform_posix.c" />
+    <ClCompile Include="PhysFS\physfs_platform_qnx.c" />
+    <ClCompile Include="PhysFS\physfs_platform_unix.c" />
+    <ClCompile Include="PhysFS\physfs_platform_windows.c" />
+    <ClCompile Include="PhysFS\physfs_platform_winrt.cpp" />
+    <ClCompile Include="PhysFS\physfs_unicode.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h" />
@@ -36,6 +58,15 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="PhysFS\physfs.h" />
+    <ClInclude Include="PhysFS\physfs_casefolding.h" />
+    <ClInclude Include="PhysFS\physfs_internal.h" />
+    <ClInclude Include="PhysFS\physfs_lzmasdk.h" />
+    <ClInclude Include="PhysFS\physfs_miniz.h" />
+    <ClInclude Include="PhysFS\physfs_platforms.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PhysFS\physfs_platform_apple.m" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -86,7 +117,7 @@
       <ConformanceMode>Default</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\ExternalDependencies\;..\ExternalDependencies\assimp;..\ExternalDependencies\ImGui;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ExternalDependencies\ImGui;..\ExternalDependencies\;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <SupportJustMyCode>true</SupportJustMyCode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -98,7 +129,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib;Advapi32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTex\;$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTK12\;$(SolutionDir)$(ProjectName)\assimp;$(SolutionDir)$(ProjectName)\Optick\libs\Debug</AdditionalLibraryDirectories>
@@ -115,7 +146,7 @@
       <ConformanceMode>Default</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\ExternalDependencies\;..\ExternalDependencies\SDL\include;..\ExternalDependencies\ImGui;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ExternalDependencies\ImGui;..\ExternalDependencies\;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -127,7 +158,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib;Advapi32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTex\;$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTK12\;$(SolutionDir)$(ProjectName)\assimp;$(SolutionDir)$(ProjectName)\Optick\libs\Release</AdditionalLibraryDirectories>

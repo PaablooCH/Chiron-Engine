@@ -2,6 +2,8 @@
 
 #include "Enums/ComponentType.h"
 
+#include "DataModels/FileSystem/Json/Field.h"
+
 class GameObject;
 
 class Component
@@ -11,17 +13,26 @@ public:
     Component(const Component& copy);
     virtual ~Component();
 
+    virtual void OnAwake() {};
+
+    void Save(Field& meta);
+    void Load(const Field& meta);
+
     // ------------- GETTERS ----------------------
 
     inline ComponentType GetType() const;
     inline GameObject* GetOwner();
-    inline bool IsEnabled();
+    inline bool IsEnabled() const;
     bool IsActive();
 
     // ------------- GETTERS ----------------------
 
     inline void SetOwner(GameObject* owner);
     inline void SetEnabled(bool enabled);
+
+protected:
+    virtual void InternalSave(Field& meta) = 0;
+    virtual void InternalLoad(const Field& meta) = 0;
 
 protected:
     GameObject* _owner;
@@ -42,7 +53,7 @@ inline GameObject* Component::GetOwner()
     return _owner;
 }
 
-inline bool Component::IsEnabled()
+inline bool Component::IsEnabled() const
 {
     return _enabled;
 }

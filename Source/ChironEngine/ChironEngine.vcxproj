@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Auxiliar\SceneLoader.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Json\Field.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Auxiliar\Formatter.cpp" />
     <ClCompile Include="Source\Auxiliar\Log.cpp" />
@@ -34,6 +36,7 @@
     <ClCompile Include="Source\DataModels\FileSystem\Importers\ModelImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Importers\TextureImporter.cpp" />
     <ClCompile Include="Source\DataModels\Assets\ModelAsset.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Json\Json.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\UID\UIDGenerator.cpp" />
     <ClCompile Include="Source\DataModels\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\DataModels\Programs\GenerateMipsProgram.cpp" />
@@ -83,8 +86,12 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Auxiliar\SceneLoader.h" />
+    <ClInclude Include="Source\Interfaces\Serializable.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Updatable.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Json\Json.h" />
     <ClInclude Include="Source\DataModels\FileSystem\UID\UID.h" />
     <ClInclude Include="Source\DataModels\FileSystem\UID\UIDGenerator.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\HierarchyWindow.h" />
@@ -220,7 +227,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies\;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -250,7 +257,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ExternalDependencies\;$(SolutionDir)ChironEngine\Source;$(SolutionDir)DirectXTex\;$(SolutionDir)DirectXTK12\Inc</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
     </ClCompile>

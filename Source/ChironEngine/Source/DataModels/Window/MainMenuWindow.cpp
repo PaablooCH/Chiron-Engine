@@ -8,9 +8,16 @@
 
 #include "AboutWindow.h"
 
+#include "DataModels/Window/Fonts/Font.h"
+
 #include <ImGui/imgui.h>
 
-MainMenuWindow::MainMenuWindow(AboutWindow* aboutWindow) : Window("Main Menu"), _aboutWindow(aboutWindow)
+MainMenuWindow::MainMenuWindow() : Window("Main Menu")
+{
+    _aboutWindow = std::make_unique<AboutWindow>();
+}
+
+MainMenuWindow::~MainMenuWindow()
 {
 }
 
@@ -23,6 +30,8 @@ void MainMenuWindow::Draw(const std::shared_ptr<CommandList>& commandList)
         DrawHelpMenu();
     }
     ImGui::EndMainMenuBar();
+
+    _aboutWindow->Draw();
 }
 
 void MainMenuWindow::DrawFileMenu()
@@ -56,11 +65,13 @@ void MainMenuWindow::DrawHelpMenu()
     if (ImGui::BeginMenu("Help"))
     {
         bool& showAbout = _aboutWindow->GetEnabled();
-        ImGui::MenuItem("About", NULL, &showAbout);
-        if (ImGui::MenuItem("GitHub Link"))
+        ImGui::MenuItem(_aboutWindow->GetName().c_str(), NULL, &showAbout);
+        Font::PushForkWebfont();
+        if (ImGui::MenuItem(ICON_FK_GITHUB " GitHub Link"))
         {
             Chiron::Utils::OpenLink(REPOSITORY_URL);
         }
+        Font::PopFont();
         ImGui::EndMenu();
     }
 }
