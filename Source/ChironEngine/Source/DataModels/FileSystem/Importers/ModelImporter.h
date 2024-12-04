@@ -26,7 +26,7 @@ private:
         int parentIdx, const Matrix& accTransform);
     std::shared_ptr<MeshAsset> ImportMesh(const aiMesh* mesh, const std::string& fileName, int iteration,
         const std::shared_ptr<CommandList>& copyCommandList);
-    std::shared_ptr<MaterialAsset> ImportMaterial(const aiMaterial* material, const std::string& fileName, int iteration);
+    std::shared_ptr<MaterialAsset> ImportMaterial(const aiMaterial* material, const std::string& filePath, int iteration);
 
     void CheckPathMaterial(const char* filePath, const aiString& file, std::string& dataBuffer);
 };

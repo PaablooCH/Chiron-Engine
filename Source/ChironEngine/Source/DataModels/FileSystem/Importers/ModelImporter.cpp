@@ -103,7 +103,7 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             LOG_INFO("Importing material {}", material->GetName().C_Str());
 
             std::shared_ptr<MeshAsset> meshAsset = ImportMesh(mesh, name, i, copyCommandList);
-            std::shared_ptr<MaterialAsset> materialAsset = ImportMaterial(material, name, i);
+            std::shared_ptr<MaterialAsset> materialAsset = ImportMaterial(material, filePath, i);
 
             CHIRON_TODO("Move this to meshImporter");
             // Change states
@@ -200,7 +200,7 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     return resourceMesh;
 }
 
-std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* material, const std::string& fileName, int iteration)
+std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* material, const std::string& filePath, int iteration)
 {
     std::shared_ptr<MaterialAsset> materialAsset = std::make_shared<MaterialAsset>();
 
@@ -212,7 +212,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     {
         std::string diffusePath = "";
 
-        CheckPathMaterial(nullptr, file, diffusePath);
+        CheckPathMaterial(filePath.c_str(), file, diffusePath);
 
         if (diffusePath != "")
         {
@@ -227,7 +227,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     {
         std::string normalPath = "";
 
-        CheckPathMaterial(nullptr, file, normalPath);
+        CheckPathMaterial(filePath.c_str(), file, normalPath);
 
         if (normalPath != "")
         {
@@ -242,7 +242,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     {
         std::string occlusionPath = "";
 
-        CheckPathMaterial(nullptr, file, occlusionPath);
+        CheckPathMaterial(filePath.c_str(), file, occlusionPath);
 
         if (occlusionPath != "")
         {
@@ -258,7 +258,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     {
         std::string metalnessPath = "";
 
-        CheckPathMaterial(nullptr, file, metalnessPath);
+        CheckPathMaterial(filePath.c_str(), file, metalnessPath);
 
         if (metalnessPath != "")
         {
@@ -273,7 +273,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     {
         std::string emissivePath = "";
 
-        CheckPathMaterial(nullptr, file, emissivePath);
+        CheckPathMaterial(filePath.c_str(), file, emissivePath);
 
         if (emissivePath != "")
         {
@@ -289,9 +289,36 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
 
 void ModelImporter::CheckPathMaterial(const char* filePath, const aiString& file, std::string& dataBuffer)
 {
-    CHIRON_TODO("Check textures outside the project");
-    std::string name = ModuleFileSystem::GetFileName(file.data);
-    name += ModuleFileSystem::GetFileExtension(file.data);
+    // No exists in its file
+    if (!ModuleFileSystem::ExistsFile(file.data))
+    {
+        std::string name = ModuleFileSystem::GetFileName(file.data);
+        name += ModuleFileSystem::GetFileExtension(file.data);
 
-    dataBuffer = TEXTURES_PATH + name;
+        std::string modelPath = ModuleFileSystem::GetPathWithoutFile(filePath);
+        // No exists in its model path
+        if (!ModuleFileSystem::ExistsFile((modelPath + name).c_str()))
+        {
+            // No exists in the engine folder
+            if (!ModuleFileSystem::ExistsFile((TEXTURES_PATH + name).c_str()))
+            {
+                LOG_ERROR("Texture not found!!!");
+            }
+            else
+            {
+                // Exists in the engine folder
+                dataBuffer = TEXTURES_PATH + name;
+            }
+        }
+        else
+        {
+            // Exists in its model path
+            dataBuffer = modelPath + name;
+        }
+    }
+    else
+    {
+        // Exists in its file
+        dataBuffer = file.data;
+    }
 }
