@@ -5,6 +5,7 @@
 
 #include "Modules/ModuleID3D12.h"
 #include "Modules/ModuleFileSystem.h"
+#include "Modules/ModuleResources.h"
 
 #include "DataModels/Assets/MaterialAsset.h"
 #include "DataModels/Assets/MeshAsset.h"
@@ -203,7 +204,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
 {
     std::shared_ptr<MaterialAsset> materialAsset = std::make_shared<MaterialAsset>();
 
-    auto fileSystem = App->GetModule<ModuleFileSystem>();
+    auto resources = App->GetModule<ModuleResources>();
 
     aiString file;
 
@@ -217,7 +218,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::DIFFUSE);
 
-            fileSystem->Import(diffusePath.c_str(), textureAsset);
+            resources->Import(diffusePath.c_str(), textureAsset);
             materialAsset->SetDiffuse(textureAsset);
         }
     }
@@ -232,7 +233,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::NORMAL_MAP);
 
-            fileSystem->Import(normalPath.c_str(), textureAsset);
+            resources->Import(normalPath.c_str(), textureAsset);
             materialAsset->SetNormal(textureAsset);
         }
     }
@@ -247,7 +248,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::OCCLUSION);
 
-            fileSystem->Import(occlusionPath.c_str(), textureAsset);
+            resources->Import(occlusionPath.c_str(), textureAsset);
 
             materialAsset->SetOcclusion(textureAsset);
         }
@@ -263,7 +264,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::METALLIC);
 
-            fileSystem->Import(metalnessPath.c_str(), textureAsset);
+            resources->Import(metalnessPath.c_str(), textureAsset);
             materialAsset->SetMetalness(textureAsset);
         }
     }
@@ -278,7 +279,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::EMISSIVE);
 
-            fileSystem->Import(emissivePath.c_str(), textureAsset);
+            resources->Import(emissivePath.c_str(), textureAsset);
             materialAsset->SetEmissive(textureAsset);
         }
     }

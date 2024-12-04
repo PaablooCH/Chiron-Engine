@@ -1,12 +1,6 @@
 #include "Pch.h"
 #include "ModuleFileSystem.h"
 
-#include "DataModels/FileSystem/Importers/ModelImporter.h"
-#include "DataModels/FileSystem/Importers/TextureImporter.h"
-
-#include "DataModels/Assets/ModelAsset.h"
-#include "DataModels/Assets/TextureAsset.h"
-
 #include "PhysFS/physfs.h"
 
 ModuleFileSystem::ModuleFileSystem()
@@ -24,9 +18,6 @@ bool ModuleFileSystem::Init()
     PHYSFS_mount("..", nullptr, 0);
     PHYSFS_setWriteDir(".");
 
-    _textureImporter = std::make_unique<TextureImporter>();
-    _modelImporter = std::make_unique<ModelImporter>();
-
     return true;
 }
 
@@ -34,23 +25,6 @@ bool ModuleFileSystem::CleanUp()
 {
     int deinitResult = PHYSFS_deinit();
     return deinitResult != 0;
-}
-
-void ModuleFileSystem::Import(const char* filePath, const std::shared_ptr<Asset>& asset)
-{
-    switch (asset->GetType())
-    {
-    case AssetType::Model:
-        _modelImporter->Import(filePath, std::dynamic_pointer_cast<ModelAsset>(asset));
-        break;
-    case AssetType::Texture:
-        _textureImporter->Import(filePath, std::dynamic_pointer_cast<TextureAsset>(asset));
-        break;
-    case AssetType::Mesh:
-        break;
-    default:
-        break;
-    }
 }
 
 const std::string ModuleFileSystem::GetFileExtension(const char* path)
@@ -146,7 +120,7 @@ int ModuleFileSystem::LoadFile(const char* filePath, char*& buffer)
         {
             LOG_ERROR("Physfs has error {{}} when try to read {}", PHYSFS_getLastError(), filePath);
             PHYSFS_close(handle);
-            return false;
+            return -1;
         }
         PHYSFS_close(handle);
         return static_cast<int>(size);
@@ -158,7 +132,7 @@ int ModuleFileSystem::LoadJson(const char* filePath, Json& json)
 {
     if (!ModuleFileSystem::ExistsFile(filePath))
     {
-        return false;
+        return -1;
     }
     char* buffer;
     int size = LoadFile(filePath, buffer);

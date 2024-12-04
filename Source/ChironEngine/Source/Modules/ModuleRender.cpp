@@ -7,7 +7,7 @@
 #include "ModuleID3D12.h"
 #include "ModuleProgram.h"
 #include "ModuleWindow.h"
-#include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 
 #include "DataModels/Camera/Camera.h"
 
@@ -47,9 +47,9 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
     auto d3d12 = App->GetModule<ModuleID3D12>();
-    auto file = App->GetModule<ModuleFileSystem>();
+    auto resource = App->GetModule<ModuleResources>();
     model = std::make_shared<ModelAsset>();
-    file->Import("Assets/Models/BakerHouse.fbx", model);
+    resource->Import("Assets/Models/BakerHouse.fbx", model);
 
     auto commandQueue = d3d12->GetID3D12CommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
     _debugDraw = std::make_unique<DebugDrawPass>(d3d12->GetDevice(), commandQueue);

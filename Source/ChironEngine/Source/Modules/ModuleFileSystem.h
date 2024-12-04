@@ -3,10 +3,6 @@
 
 #include "DataModels/FileSystem/Json/Json.h"
 
-class TextureImporter;
-class ModelImporter;
-class Asset;
-
 struct PHYSFS_File;
 
 class ModuleFileSystem : public Module
@@ -17,8 +13,6 @@ public:
 
     bool Init() override;
     bool CleanUp() override;
-
-    void Import(const char* filePath, const std::shared_ptr<Asset>& asset);
 
     static const std::string GetFileExtension(const char* path);
     static const std::string GetFileName(const std::string& path);
@@ -43,8 +37,4 @@ private:
         WRITE
     };
     static bool OpenFile(const char* filePath, OpenFileMethod method, PHYSFS_File*& result);
-
-private:
-    std::unique_ptr<TextureImporter> _textureImporter;
-    std::unique_ptr<ModelImporter> _modelImporter;
 };
