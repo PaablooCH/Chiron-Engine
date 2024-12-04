@@ -567,6 +567,9 @@
     <ClInclude Include="Source\Auxiliar\SceneLoader.h">
       <Filter>Source\Auxiliar</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Enums\AssetType.h">
+      <Filter>Source\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\DataModels\GameObject\GameObject.inl">

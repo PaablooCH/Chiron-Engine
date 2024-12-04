@@ -1,13 +1,6 @@
 #pragma once
 
-enum class AssetType
-{
-    Unknown,
-    Model,
-    Texture,
-    Mesh,
-    Material
-};
+#include "Enums/AssetType.h"
 
 class Asset
 {
