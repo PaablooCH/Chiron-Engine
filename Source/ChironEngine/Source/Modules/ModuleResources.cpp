@@ -40,6 +40,16 @@ bool ModuleResources::CleanUp()
 
 void ModuleResources::Import(const char* filePath, const std::shared_ptr<Asset>& asset)
 {
+    rapidjson::Document doc;
+    Json json = Json(doc);
+
+    json["uid"] = asset->GetUID();
+    json["type"] = AssetTypeUtils::ToString(asset->GetType());
+    rapidjson::StringBuffer buffer = json.ToBuffer();
+    std::string metaPath = ASSETS_PATH + AssetTypeUtils::GetFolder(asset->GetType()) + '/' + 
+        ModuleFileSystem::GetFileName(filePath) + ModuleFileSystem::GetFileExtension(filePath) + META_EXT;
+    ModuleFileSystem::SaveFile(metaPath.c_str(), buffer.GetString(), (unsigned int)buffer.GetSize());
+
     switch (asset->GetType())
     {
     case AssetType::Model:
@@ -67,8 +77,8 @@ void ModuleResources::CreateAssetsAndLibraryFolders()
     }
 
     std::vector<std::string> folders = {
-        AssetTypeUtils::GetFolders(AssetType::Material), AssetTypeUtils::GetFolders(AssetType::Texture),
-        AssetTypeUtils::GetFolders(AssetType::Model), AssetTypeUtils::GetFolders(AssetType::Mesh)
+        AssetTypeUtils::GetFolder(AssetType::Material), AssetTypeUtils::GetFolder(AssetType::Texture),
+        AssetTypeUtils::GetFolder(AssetType::Model), AssetTypeUtils::GetFolder(AssetType::Mesh)
     };
 
     for (auto& folder : folders)

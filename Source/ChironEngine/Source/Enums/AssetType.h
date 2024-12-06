@@ -1,11 +1,11 @@
 #pragma once
 #include "EnumNames.h"
 
-DECLARE_ENUM_NAMES(AssetType, Model, Texture, Mesh, Material)
+DECLARE_ENUM_NAMES(AssetType, Model,Texture,Mesh,Material)
 
 namespace AssetTypeUtils
 {
-    inline std::string GetFolders(AssetType enumTmp)
+    inline std::string GetFolder(AssetType enumTmp)
     {
         switch (enumTmp)
         {

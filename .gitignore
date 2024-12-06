@@ -440,3 +440,4 @@ FodyWeavers.xsd
 *.sln.iml
 Game/imgui.ini
 Game/Settings/*
+/Game/Lib

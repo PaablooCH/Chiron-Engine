@@ -10,6 +10,34 @@ void Chiron::Utils::ThrowIfFailed(HRESULT hr, const std::string& message) noexce
     }
 }
 
+std::string Chiron::Utils::GetErrorMessage(HRESULT hr)
+{
+    LPWSTR errorText = nullptr;
+
+    // Get the message
+    DWORD formatResult = FormatMessage(
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPWSTR)&errorText, 0, nullptr);
+
+    std::string errorString;
+    if (formatResult > 0)
+    {
+        // Parse to string
+        std::wstring wErrorText(errorText);
+        errorString = WStringToString(wErrorText);
+
+        // Free memory
+        LocalFree(errorText);
+    }
+    else
+    {
+        errorString = "Unknown error";
+    }
+
+    return errorString;
+}
+
 std::string Chiron::Utils::WStringToString(const std::wstring& wstr)
 {
     // Get the buffer size
@@ -40,32 +68,4 @@ HANDLE Chiron::Utils::CreateEventHandle()
     assert(event && "Failed to create event.");
 
     return event;
-}
-
-std::string Chiron::Utils::GetErrorMessage(HRESULT hr)
-{
-    LPWSTR errorText = nullptr;
-
-    // Get the message
-    DWORD formatResult = FormatMessage(
-        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPWSTR)&errorText, 0, nullptr);
-
-    std::string errorString;
-    if (formatResult > 0)
-    {
-        // Parse to string
-        std::wstring wErrorText(errorText);
-        errorString = WStringToString(wErrorText);
-
-        // Free memory
-        LocalFree(errorText);
-    }
-    else
-    {
-        errorString = "Unknown error";
-    }
-
-    return errorString;
 }

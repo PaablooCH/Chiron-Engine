@@ -3,7 +3,7 @@
 #include "Enums/EnumNames.h"
 #include <functional>
 
-DECLARE_ENUM_NAMES(ComponentGroup, NONE, GRAPHICS, SPECIAL)
+DECLARE_ENUM_NAMES(ComponentGroup, NONE,GRAPHICS,SPECIAL)
 
 class GameObject;
 

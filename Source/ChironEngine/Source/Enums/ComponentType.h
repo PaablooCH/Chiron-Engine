@@ -4,7 +4,7 @@
 
 class TransformComponent;
 
-DECLARE_ENUM_NAMES(ComponentType, TRANSFORM, MESH_RENDERER)
+DECLARE_ENUM_NAMES(ComponentType, TRANSFORM,MESH_RENDERER)
 
 template<typename T>
 struct ComponentToEnum

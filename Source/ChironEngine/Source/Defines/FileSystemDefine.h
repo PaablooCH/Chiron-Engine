@@ -3,6 +3,8 @@
 #define SETTINGS_FOLDER "Settings"
 #define SETTINGS_PATH "Settings/"
 
+// ------------- ASSETS ----------------------
+
 #define ASSETS_FOLDER "Assets"
 #define ASSETS_PATH "Assets/"
 #define MODELS_FOLDER "Assets/Models"
@@ -17,10 +19,19 @@
 #define ANIMATION_PATH "Assets/Animation/"
 #define SCENE_FOLDER "Assets/Scenes"
 #define SCENE_PATH "Assets/Scenes/"
+
+// ------------- EXTENSIONS ----------------------
+
 #define SCENE_EXT ".chiron"
+#define META_EXT ".meta"
+#define GENERAL_BINARY_EXTENSION ".bin"
+#define DDS_EXTENSION ".dds"
+
+// ------------- LIBS ----------------------
 
 #define LIB_FOLDER "Lib"
 #define LIB_PATH "Lib/"
-#define MESHES_LIB_PATH "Lib/Meshes/"
 #define MATERIAL_LIB_PATH "Lib/Materials/"
-#define ANIMATION_LIB_PATH "Lib/Animation/"
+#define MESHES_LIB_PATH "Lib/Meshes/"
+#define MODEL_LIB_PATH "Lib/Models/"
+#define TEXTURES_LIB_PATH "Lib/Textures/"
