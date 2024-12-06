@@ -2,6 +2,8 @@
 #include "Module.h"
 
 class TextureImporter;
+class MaterialImporter;
+class MeshImporter;
 class ModelImporter;
 class Asset;
 
@@ -23,6 +25,8 @@ private:
 
 private:
     std::unique_ptr<TextureImporter> _textureImporter;
+    std::unique_ptr<MaterialImporter> _materialImporter;
+    std::unique_ptr<MeshImporter> _meshImporter;
     std::unique_ptr<ModelImporter> _modelImporter;
 };
 

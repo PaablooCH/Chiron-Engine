@@ -3,9 +3,13 @@
 
 #include "ModuleFileSystem.h"
 
+#include "DataModels/FileSystem/Importers/MaterialImporter.h"
+#include "DataModels/FileSystem/Importers/MeshImporter.h"
 #include "DataModels/FileSystem/Importers/ModelImporter.h"
 #include "DataModels/FileSystem/Importers/TextureImporter.h"
 
+#include "DataModels/Assets/MaterialAsset.h"
+#include "DataModels/Assets/MeshAsset.h"
 #include "DataModels/Assets/ModelAsset.h"
 #include "DataModels/Assets/TextureAsset.h"
 
@@ -22,6 +26,8 @@ ModuleResources::~ModuleResources()
 bool ModuleResources::Init()
 {
     _textureImporter = std::make_unique<TextureImporter>();
+    _materialImporter = std::make_unique<MaterialImporter>();
+    _meshImporter = std::make_unique<MeshImporter>();
     _modelImporter = std::make_unique<ModelImporter>();
 
     return true;
@@ -52,13 +58,17 @@ void ModuleResources::Import(const char* filePath, const std::shared_ptr<Asset>&
 
     switch (asset->GetType())
     {
+    case AssetType::Material:
+        _materialImporter->Import(filePath, std::dynamic_pointer_cast<MaterialAsset>(asset));
+        break;
+    case AssetType::Mesh:
+        _meshImporter->Import(filePath, std::dynamic_pointer_cast<MeshAsset>(asset));
+        break;
     case AssetType::Model:
         _modelImporter->Import(filePath, std::dynamic_pointer_cast<ModelAsset>(asset));
         break;
     case AssetType::Texture:
         _textureImporter->Import(filePath, std::dynamic_pointer_cast<TextureAsset>(asset));
-        break;
-    case AssetType::Mesh:
         break;
     default:
         break;

@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Auxiliar\SceneLoader.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MaterialImporter.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MeshImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Json\Field.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Auxiliar\Formatter.cpp" />
@@ -88,6 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Auxiliar\SceneLoader.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MaterialImporter.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h" />
     <ClInclude Include="Source\Enums\AssetType.h" />
     <ClInclude Include="Source\Interfaces\Serializable.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h" />

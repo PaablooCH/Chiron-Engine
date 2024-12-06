@@ -315,6 +315,12 @@
     <ClCompile Include="Source\Modules\ModuleResources.cpp">
       <Filter>Source\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MaterialImporter.cpp">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MeshImporter.cpp">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -575,6 +581,12 @@
     </ClInclude>
     <ClInclude Include="Source\Enums\AssetType.h">
       <Filter>Source\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MaterialImporter.h">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
