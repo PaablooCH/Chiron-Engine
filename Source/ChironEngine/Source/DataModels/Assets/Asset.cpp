@@ -1,7 +1,9 @@
 #include "Pch.h"
 #include "Asset.h"
 
-Asset::Asset(AssetType type) : _type(type)
+#include "DataModels/FileSystem/UID/UIDGenerator.h"
+
+Asset::Asset(AssetType type) : _uid(Chiron::UIDGenerator::GenerateUID()), _type(type)
 {
 }
 

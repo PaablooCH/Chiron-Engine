@@ -12,8 +12,21 @@ enum class TextureType
     NORMAL_MAP,
     EMISSIVE,
     OCCLUSION,
+    HDR,
     DEPTH,
     RENDER_TARGET
+};
+
+enum TexConversionFlags
+{
+    kSRGB = 0x00000001,             // Texture contains sRGB colors
+    kPreserveAlpha = 0x00000002,    // Keep four channels
+    kNormalMap = 0x00000004,        // Texture contains normals
+    kBumpToNormal = 0X00000008,     // Generate a normal map from a bump map
+    kDefaultBC = 0X00000010,        // Apply standard block compression (BC1-5)
+    kQualityBC = 0X00000020,        // Apply quality block compression (BC6H/7)
+    kFlipVertical = 0X00000040,
+    kFlipHorizontal = 0X00000080,
 };
 
 class TextureAsset : public Asset
@@ -22,21 +35,26 @@ public:
     TextureAsset(TextureType type);
     ~TextureAsset() override;
 
+    void AddConversionFlags(unsigned int flags);
+    void RemoveConversionFlags(unsigned int flags);
+
     // ------------- GETTERS ----------------------
 
     inline std::shared_ptr<Texture> GetTexture() const;
     inline TextureType GetTextureType() const;
-    const std::string& GetName() const override;
+    inline bool GetFlag(TexConversionFlags flag) const;
+    inline unsigned int GetFlags() const;
 
     // ------------- SETTERS ----------------------
 
-    inline void SetTexture(std::shared_ptr<Texture>& newTexture);
+    void SetTexture(std::shared_ptr<Texture>& newTexture);
     inline void SetTextureType(TextureType newType);
 
 private:
     std::shared_ptr<Texture> _texture;
 
     TextureType _type;
+    unsigned int _texConversionFlags;
 };
 
 inline std::shared_ptr<Texture> TextureAsset::GetTexture() const
@@ -49,9 +67,14 @@ inline TextureType TextureAsset::GetTextureType() const
     return _type;
 }
 
-inline void TextureAsset::SetTexture(std::shared_ptr<Texture>& newTexture)
+inline bool TextureAsset::GetFlag(TexConversionFlags flag) const
 {
-    _texture = newTexture;
+    return (_texConversionFlags & flag) != 0;
+}
+
+inline unsigned int TextureAsset::GetFlags() const
+{
+    return _texConversionFlags;
 }
 
 inline void TextureAsset::SetTextureType(TextureType newType)
