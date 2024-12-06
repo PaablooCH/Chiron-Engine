@@ -12,8 +12,6 @@
     #include "Optick/optick.h"
 #endif // OPTICK
 
-#include "Modules/ModuleRender.h"
-
 BOOL                            CreateApplication(HINSTANCE hInstance);
 ATOM                            CreateWindowClass(HINSTANCE hInstance);
 LRESULT CALLBACK                WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -226,7 +224,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             std::string droppedFilePathString(filePath);
             std::replace(droppedFilePathString.begin(), droppedFilePathString.end(), '\\', '/');
             CHIRON_TODO("Load Model into a future scene");
-            App->GetModule<ModuleRender>()->LoadNewModel(droppedFilePathString);
         }
 
         DragFinish(hDrop);

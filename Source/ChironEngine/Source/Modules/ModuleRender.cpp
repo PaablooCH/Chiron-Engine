@@ -27,14 +27,6 @@
     #include "Optick/optick.h"
 #endif // OPTICK
 
-void ModuleRender::LoadNewModel(std::string modelPath)
-{
-    CHIRON_TODO("Delete");
-    auto file = App->GetModule<ModuleFileSystem>();
-    model.reset(new ModelAsset());
-    file->Import(modelPath.c_str(), model);
-}
-
 ModuleRender::ModuleRender() : _scissor(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX)), _sceneTexture(nullptr),
 _depthStencilTexture(nullptr)
 {
