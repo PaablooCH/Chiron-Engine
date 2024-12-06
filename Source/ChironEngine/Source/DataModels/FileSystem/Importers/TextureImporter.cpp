@@ -144,6 +144,9 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     }
 
     uint32_t numSubresources = static_cast<uint32_t>(imgResult->GetImageCount());
+}
+void TextureImporter::Load(const char* fileBuffer, std::shared_ptr<TextureAsset>& texture)
+{
     std::vector<D3D12_SUBRESOURCE_DATA> subresources(numSubresources);
     const DirectX::Image* pImages = imgResult->GetImages();
     for (uint32_t i = 0; i < numSubresources; ++i)
@@ -171,7 +174,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     imgResult->Release();
 }
 
-int TextureImporter::CalculateMipLevels(int width, int height)
+void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
 {
     int maxDimension = std::max(width, height);
     return static_cast<int>(std::log2(maxDimension)) + 1;
