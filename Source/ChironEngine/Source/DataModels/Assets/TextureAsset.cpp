@@ -3,7 +3,8 @@
 
 #include "DataModels/DX12/Resource/Texture.h"
 
-TextureAsset::TextureAsset(TextureType type) : Asset(AssetType::Texture), _type(type), _texConversionFlags(0)
+TextureAsset::TextureAsset(TextureType type) : Asset(AssetType::Texture), _type(type), _texConversionFlags(0), 
+_texConfigFlags(isBottomLeft)
 {
     if (_type == TextureType::ALBEDO)
     {

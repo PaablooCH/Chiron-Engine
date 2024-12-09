@@ -17,6 +17,11 @@ enum class TextureType
     RENDER_TARGET
 };
 
+enum TexConfig
+{
+    isBottomLeft = 0x00000001,         // Where start when reading the textures
+};
+
 enum TexConversionFlags
 {
     kSRGB = 0x00000001,             // Texture contains sRGB colors
@@ -35,6 +40,8 @@ public:
     TextureAsset(TextureType type);
     ~TextureAsset() override;
 
+    inline void AddConfigFlags(unsigned int flags);
+    inline void RemoveConfigFlags(unsigned int flags);
     void AddConversionFlags(unsigned int flags);
     void RemoveConversionFlags(unsigned int flags);
 
@@ -42,6 +49,7 @@ public:
 
     inline std::shared_ptr<Texture> GetTexture() const;
     inline TextureType GetTextureType() const;
+    inline unsigned int GetConfigFlags() const;
     inline bool GetConversionFlag(TexConversionFlags flag) const;
     inline unsigned int GetConversionFlags() const;
 
@@ -54,8 +62,19 @@ private:
     std::shared_ptr<Texture> _texture;
 
     TextureType _type;
+    unsigned int _texConfigFlags;
     unsigned int _texConversionFlags;
 };
+
+void TextureAsset::AddConfigFlags(unsigned int flags)
+{
+    _texConfigFlags |= flags;
+}
+
+void TextureAsset::RemoveConfigFlags(unsigned int flags)
+{
+    _texConfigFlags &= ~flags;
+}
 
 inline std::shared_ptr<Texture> TextureAsset::GetTexture() const
 {
@@ -71,6 +90,8 @@ inline unsigned int TextureAsset::GetConfigFlags() const
 {
     return _texConfigFlags;
 }
+
+inline bool TextureAsset::GetConversionFlag(TexConversionFlags flag) const
 {
     return (_texConversionFlags & flag) != 0;
 }

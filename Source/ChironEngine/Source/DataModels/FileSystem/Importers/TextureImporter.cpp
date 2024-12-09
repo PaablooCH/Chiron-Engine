@@ -349,6 +349,7 @@ void TextureImporter::Load(const char* fileBuffer, const std::shared_ptr<Texture
     rapidjson::Document doc;
     Json meta = Json(doc);
     ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
+    texture->AddConfigFlags(meta["texConfigFlags"]);
     texture->AddConversionFlags(meta["texConversionFlags"]);
 
     // ------------- LOAD DDS ----------------------
@@ -428,6 +429,7 @@ void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
     rapidjson::Document doc;
     Json meta = Json(doc);
     ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
+    meta["texConfigFlags"] = texture->GetConfigFlags();
     meta["texConversionFlags"] = texture->GetConversionFlags();
 
     rapidjson::StringBuffer buffer = meta.ToBuffer();
