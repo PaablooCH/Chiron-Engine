@@ -7,11 +7,9 @@
 #include "ModuleID3D12.h"
 #include "ModuleProgram.h"
 #include "ModuleWindow.h"
-#include "ModuleResources.h"
 
 #include "DataModels/Camera/Camera.h"
 
-#include "DataModels/Assets/ModelAsset.h"
 
 #include "DataModels/DX12/CommandList/CommandList.h"
 #include "DataModels/DX12/RootSignature/RootSignature.h"
@@ -39,9 +37,6 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
     auto d3d12 = App->GetModule<ModuleID3D12>();
-    auto resource = App->GetModule<ModuleResources>();
-    model = std::make_shared<ModelAsset>();
-    resource->Import("Assets/Models/BakerHouse.fbx", model);
 
     auto commandQueue = d3d12->GetID3D12CommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
     _debugDraw = std::make_unique<DebugDrawPass>(d3d12->GetDevice(), commandQueue);
@@ -113,7 +108,6 @@ UpdateStatus ModuleRender::Update()
     auto dsv = _depthStencilTexture->GetDepthStencilView().GetCPUDescriptorHandle();
     _drawCommandList->SetRenderTargets(1, &rtv, FALSE, &dsv);
 
-    model->Draw(_drawCommandList);
 
     // ------------- DEBUG DRAW ----------------------
 
@@ -140,8 +134,6 @@ bool ModuleRender::CleanUp()
     _drawCommandList.reset();
     _depthStencilTexture.reset();
     _debugDraw.reset();
-    model.reset();
-    model = nullptr;
     _drawCommandList = nullptr;
 
     return true;

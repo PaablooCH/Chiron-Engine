@@ -3,7 +3,6 @@
 
 class CommandList;
 class DebugDrawPass;
-class ModelAsset;
 class Texture;
 
 class ModuleRender : public Module
@@ -24,7 +23,6 @@ public:
 
     inline const Texture* GetSceneTexture() const;
 
-    std::shared_ptr<ModelAsset> model;
 private:
     void CreateTextures();
 

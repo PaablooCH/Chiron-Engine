@@ -5,7 +5,6 @@
 class MaterialAsset;
 class MeshAsset;
 
-class CommandList;
 
 class ModelAsset : public Asset
 {
@@ -13,7 +12,6 @@ public:
     ModelAsset();
     ~ModelAsset() override;
 
-    void Draw(const std::shared_ptr<CommandList>& commandList);
 
     inline void AddMaterial(std::shared_ptr<MaterialAsset>& material);
     inline void AddMesh(std::shared_ptr<MeshAsset>& mesh);
@@ -27,7 +25,6 @@ private:
     std::vector<std::shared_ptr<MaterialAsset>> _materials;
     std::vector<std::shared_ptr<MeshAsset>> _meshes;
 
-    bool _isTopLeft;
 };
 
 inline const std::vector<std::shared_ptr<MaterialAsset>>& ModelAsset::GetMaterials() const
