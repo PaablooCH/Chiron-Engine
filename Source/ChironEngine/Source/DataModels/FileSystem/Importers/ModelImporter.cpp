@@ -47,7 +47,7 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
     }
 }
 
-void ModelImporter::Load(const char* fileBuffer, std::shared_ptr<ModelAsset>& resource)
+void ModelImporter::Load(const char* fileBuffer, const std::shared_ptr<ModelAsset>& resource)
 {
 }
 

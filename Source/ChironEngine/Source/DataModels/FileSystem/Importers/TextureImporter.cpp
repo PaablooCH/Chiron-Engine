@@ -341,7 +341,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     }
 }
 
-void TextureImporter::Load(const char* fileBuffer, std::shared_ptr<TextureAsset>& texture)
+void TextureImporter::Load(const char* fileBuffer, const std::shared_ptr<TextureAsset>& texture)
 {
     // ------------- META ----------------------
 

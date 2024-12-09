@@ -20,7 +20,7 @@ public:
     ~ModelImporter() override;
 
     void Import(const char* filePath, const std::shared_ptr<ModelAsset>& model) override;
-    void Load(const char* fileBuffer, std::shared_ptr<ModelAsset>& resource) override;
+    void Load(const char* fileBuffer, const std::shared_ptr<ModelAsset>& resource) override;
 
 private:
     void Save(const std::shared_ptr<ModelAsset>& model) override;

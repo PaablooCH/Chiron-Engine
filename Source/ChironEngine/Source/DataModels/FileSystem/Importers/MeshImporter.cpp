@@ -13,7 +13,7 @@ void MeshImporter::Import(const char* filePath, const std::shared_ptr<MeshAsset>
 {
 }
 
-void MeshImporter::Load(const char* fileBuffer, std::shared_ptr<MeshAsset>& mesh)
+void MeshImporter::Load(const char* fileBuffer, const std::shared_ptr<MeshAsset>& mesh)
 {
 }
 

@@ -10,7 +10,7 @@ public:
     ~TextureImporter() override;
 
     void Import(const char* filePath, const std::shared_ptr<TextureAsset>& texture) override;
-    void Load(const char* fileBuffer, std::shared_ptr<TextureAsset>& texture) override;
+    void Load(const char* fileBuffer, const std::shared_ptr<TextureAsset>& texture) override;
 
 private:
     void Save(const std::shared_ptr<TextureAsset>& texture) override;
