@@ -321,6 +321,9 @@
     <ClCompile Include="Source\DataModels\FileSystem\Importers\MeshImporter.cpp">
       <Filter>Source\DataModels\FileSystem\Importers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataModels\Components\MeshRendererComponent.cpp">
+      <Filter>Source\DataModels\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -587,6 +590,12 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h">
       <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Components\MeshRendererComponent.h">
+      <Filter>Source\DataModels\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Components\Interfaces\Renderable.h">
+      <Filter>Source\DataModels\Components\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
