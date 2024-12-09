@@ -94,17 +94,32 @@ namespace Chiron::Loader
                 }
             }
 
-            for (auto& t : threads) {
-                if (t.joinable()) {
+            for (auto& t : threads) 
+            {
+                if (t.joinable()) 
+                {
                     t.join();
                 }
             }
+
+            threads.clear();
 
             // ------------- ON AWAKE GAMEOBJECTS ----------------------
 
             for (auto& gameObject : sceneModule->GetLoadedScene()->GetSceneGameObjects())
             {
-                gameObject->OnAwake();
+                threads.emplace_back(
+                    [&]() {
+                        gameObject->OnAwake();
+                    });
+            }
+
+            for (auto& t : threads) 
+            {
+                if (t.joinable()) 
+                {
+                    t.join();
+                }
             }
 
             // ------------- CORRECT SOME GAMEOBJECTS ----------------------
