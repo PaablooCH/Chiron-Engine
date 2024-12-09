@@ -3,6 +3,12 @@
 
 class TextureAsset;
 
+enum MatConfig
+{
+    usePBR = 0x00000001,            // Use PBR or Specular as shaderType
+    isOpaque = 0x00000002,          // Is opaque or translucent
+};
+
 class MaterialAsset : public Asset
 {
 public:
@@ -16,6 +22,9 @@ public:
     inline TextureAsset* GetPropertyTexture() const;
     inline TextureAsset* GetEmissiveTexture() const;
     inline TextureAsset* GetAmbientOcclusion() const;
+    inline const Color& GetBaseColor() const;
+    inline const Color& GetSpecularColor() const;
+    inline int GetOptions() const;
 
     // ------------- SETTERS ----------------------
 
@@ -24,6 +33,9 @@ public:
     inline void SetPropertyTexture(std::shared_ptr<TextureAsset>& metalness);
     inline void SetEmissiveTexture(std::shared_ptr<TextureAsset>& emissive);
     inline void SetAmbientOcclusion(std::shared_ptr<TextureAsset>& occlusion);
+    inline void SetBaseColor(Color& color);
+    inline void SetSpecularColor(Color& color);
+    inline void SetOptions(int options);
 
 private:
     std::shared_ptr<TextureAsset> _baseTexture;
@@ -32,6 +44,10 @@ private:
     std::shared_ptr<TextureAsset> _emissiveTexture;
     std::shared_ptr<TextureAsset> _ambientOcclusion;
 
+    Color _baseColor;
+    Color _specularColor;
+
+    int _options;
 };
 
 inline TextureAsset* MaterialAsset::GetBaseTexture() const
@@ -58,13 +74,20 @@ inline TextureAsset* MaterialAsset::GetAmbientOcclusion() const
 {
     return _ambientOcclusion.get();
 }
+
+inline const Color& MaterialAsset::GetBaseColor() const
 {
-    return _textureDiffuse.get();
+    return _baseColor;
 }
 
-inline TextureAsset* MaterialAsset::GetNormal() const
+inline const Color& MaterialAsset::GetSpecularColor() const
 {
-    return _textureNormal.get();
+    return _specularColor;
+}
+
+inline int MaterialAsset::GetOptions() const
+{
+    return _options;
 }
 
 inline void MaterialAsset::SetBaseTexture(std::shared_ptr<TextureAsset>& diffuse)
@@ -92,17 +115,17 @@ inline void MaterialAsset::SetAmbientOcclusion(std::shared_ptr<TextureAsset>& oc
     _ambientOcclusion = occlusion;
 }
 
-inline void MaterialAsset::SetMetalness(std::shared_ptr<TextureAsset>& metalness)
+inline void MaterialAsset::SetBaseColor(Color& color)
 {
-    _textureMetalness = metalness;
+    _baseColor = color;
 }
 
-inline void MaterialAsset::SetEmissive(std::shared_ptr<TextureAsset>& emissive)
+inline void MaterialAsset::SetSpecularColor(Color& color)
 {
-    _textureEmissive = emissive;
+    _baseColor = color;
 }
 
-inline void MaterialAsset::SetOcclusion(std::shared_ptr<TextureAsset>& occlusion)
+inline void MaterialAsset::SetOptions(int options)
 {
-    _textureOcclusion = occlusion;
+    _options = options;
 }
