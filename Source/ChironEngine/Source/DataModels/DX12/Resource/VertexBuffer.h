@@ -13,6 +13,8 @@ public:
     // ------------- GETTERS ----------------------
 
     inline const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
+    inline const size_t GetNumVertex() const;
+    inline const size_t GetVertexStride() const;
 
 private:
     VertexBuffer();
@@ -26,4 +28,14 @@ private:
 inline const D3D12_VERTEX_BUFFER_VIEW& VertexBuffer::GetVertexBufferView() const
 {
     return _vertexBufferView;
+}
+
+inline const size_t VertexBuffer::GetNumVertex() const
+{
+    return _numVertices;
+}
+
+inline const size_t VertexBuffer::GetVertexStride() const
+{
+    return _vertexStride;
 }

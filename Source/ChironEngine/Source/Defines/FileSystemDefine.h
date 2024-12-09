@@ -23,6 +23,7 @@
 // ------------- EXTENSIONS ----------------------
 
 #define SCENE_EXT ".chiron"
+#define MESH_EXT ".mesh"
 #define META_EXT ".meta"
 #define GENERAL_BINARY_EXTENSION ".bin"
 #define DDS_EXTENSION ".dds"

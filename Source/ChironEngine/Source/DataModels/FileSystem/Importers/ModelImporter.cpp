@@ -171,7 +171,7 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     }
     const UINT vertexBufferSize = static_cast<UINT>(triangleVertices.size() * sizeof(Vertex));
 
-    std::string newFileName = "Vertex " + fileName + "_" + std::to_string(iteration);
+    std::string newFileName = "Vertex " + resourceMesh->GetName();
     resourceMesh->SetVertexBuffer(CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
         triangleVertices.size(), newFileName);
 
@@ -183,10 +183,10 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
 
     // -------------- INDEX ---------------------
 
-    UINT numIndexes = mesh->mNumFaces * 3;
+    UINT numIndices = mesh->mNumFaces * 3;
 
     std::vector<UINT> indexBufferData;
-    indexBufferData.reserve(numIndexes);
+    indexBufferData.reserve(numIndices);
     for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
     {
         indexBufferData.push_back(mesh->mFaces[i].mIndices[0]);
@@ -195,7 +195,7 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     }
     const UINT indexBufferSize = static_cast<UINT>(indexBufferData.size() * sizeof(UINT));
 
-    newFileName = "Index " + fileName + "_" + std::to_string(iteration);
+    newFileName = "Index " + resourceMesh->GetName();
     resourceMesh->SetIndexBuffer(CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize), indexBufferData.size(),
         DXGI_FORMAT_R32_UINT, newFileName);
 
@@ -204,6 +204,33 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     subresourceData2.RowPitch = indexBufferSize;
     subresourceData2.SlicePitch = indexBufferSize;
     copyCommandList->UpdateBufferResource(resourceMesh->GetIndexBuffer(), 0, 1, &subresourceData2);
+
+    // ------------- SAVE MESH FILE ----------------------
+
+                        //Vertex                                //Indices
+    unsigned int size = (sizeof(Vertex) * mesh->mNumVertices) + (sizeof(UINT) * (mesh->mNumFaces * 3));
+
+    unsigned int header[2] = { static_cast<unsigned int>(mesh->mNumVertices), mesh->mNumFaces * 3 };
+    size += sizeof(header);
+
+    char* fileBuffer = new char[size] {};
+    char* cursor = fileBuffer;
+
+    unsigned int bytes = sizeof(header);
+    memcpy(cursor, header, bytes);
+    cursor += bytes;
+
+    bytes = sizeof(Vertex) * mesh->mNumVertices;
+    memcpy(cursor, triangleVertices.data(), bytes);
+    cursor += bytes;
+
+    bytes = sizeof(UINT) * (mesh->mNumFaces * 3);
+    memcpy(cursor, indexBufferData.data(), bytes);
+    cursor += bytes;
+
+    ModuleFileSystem::SaveFile((MESHES_PATH + resourceMesh->GetName()).c_str(), fileBuffer, size);
+
+    delete[] fileBuffer;
 
     return resourceMesh;
 }
