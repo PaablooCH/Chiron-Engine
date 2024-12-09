@@ -19,8 +19,6 @@ public:
 
     // ------------- SETTERS ----------------------
 
-    inline void SetName(const std::string& name) override;
-
     inline void SetDiffuse(std::shared_ptr<TextureAsset>& diffuse);
     inline void SetNormal(std::shared_ptr<TextureAsset>& normal);
     inline void SetMetalness(std::shared_ptr<TextureAsset>& metalness);
@@ -58,11 +56,6 @@ inline TextureAsset* MaterialAsset::GetEmissive() const
 inline TextureAsset* MaterialAsset::GetOcclusion() const
 {
     return _textureOcclusion.get();
-}
-
-inline void MaterialAsset::SetName(const std::string& name)
-{
-    SetInternalName("Material " + name);
 }
 
 inline void MaterialAsset::SetDiffuse(std::shared_ptr<TextureAsset>& diffuse)

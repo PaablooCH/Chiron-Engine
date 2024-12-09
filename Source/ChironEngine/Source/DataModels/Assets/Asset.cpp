@@ -9,5 +9,4 @@ Asset::Asset(AssetType type) : _uid(Chiron::UIDGenerator::GenerateUID()), _type(
 
 Asset::~Asset()
 {
-    CHIRON_TODO("Guardar los binarios cuando se destruyan?");
 }

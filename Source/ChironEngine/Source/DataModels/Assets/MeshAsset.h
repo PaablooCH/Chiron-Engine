@@ -26,8 +26,6 @@ public:
 
     // ------------- SETTERS ----------------------
 
-    inline void SetName(const std::string& name) override;
-
     void SetIndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numIndices, const DXGI_FORMAT& indexFormat,
         const std::string& name = "");
     void SetVertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numVertices, const std::string& name = "");
@@ -45,9 +43,4 @@ inline IndexBuffer* MeshAsset::GetIndexBuffer() const
 inline VertexBuffer* MeshAsset::GetVertexBuffer() const
 {
     return _vertexBuffer.get();
-}
-
-inline void MeshAsset::SetName(const std::string& name)
-{
-    SetInternalName("Mesh " + name);
 }

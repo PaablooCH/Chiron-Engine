@@ -15,13 +15,11 @@ public:
 
     // ------------- SETTERS ----------------------
 
-    inline virtual void SetName(const std::string& name);
+    inline void SetName(const std::string& name);
 
 protected:
     Asset(AssetType type);
     virtual ~Asset();
-
-    inline void SetInternalName(const std::string& name);
 
 private:
     Asset();
@@ -48,11 +46,6 @@ inline AssetType Asset::GetType() const
 }
 
 inline void Asset::SetName(const std::string& name)
-{
-    SetInternalName(name);
-}
-
-inline void Asset::SetInternalName(const std::string& name)
 {
     _name = name;
 }
