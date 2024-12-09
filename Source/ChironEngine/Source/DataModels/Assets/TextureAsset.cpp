@@ -34,9 +34,9 @@ void TextureAsset::AddConversionFlags(unsigned int flags)
     assert(!bInterpretAsSRGB || !bContainsNormals);
     assert(!bPreserveAlpha || !bContainsNormals);
 
-    bool ownInterpretAsSRGB = GetFlag(kSRGB);
-    bool ownContainsNormals = GetFlag(kNormalMap);
-    bool ownPreserveAlpha = GetFlag(kPreserveAlpha);
+    bool ownInterpretAsSRGB = GetConversionFlag(kSRGB);
+    bool ownContainsNormals = GetConversionFlag(kNormalMap);
+    bool ownPreserveAlpha = GetConversionFlag(kPreserveAlpha);
 
     assert(!ownInterpretAsSRGB || !bContainsNormals);
     assert(!ownPreserveAlpha || !bContainsNormals);

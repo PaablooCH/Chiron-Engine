@@ -42,8 +42,8 @@ public:
 
     inline std::shared_ptr<Texture> GetTexture() const;
     inline TextureType GetTextureType() const;
-    inline bool GetFlag(TexConversionFlags flag) const;
-    inline unsigned int GetFlags() const;
+    inline bool GetConversionFlag(TexConversionFlags flag) const;
+    inline unsigned int GetConversionFlags() const;
 
     // ------------- SETTERS ----------------------
 
@@ -67,12 +67,15 @@ inline TextureType TextureAsset::GetTextureType() const
     return _type;
 }
 
-inline bool TextureAsset::GetFlag(TexConversionFlags flag) const
+inline unsigned int TextureAsset::GetConfigFlags() const
+{
+    return _texConfigFlags;
+}
 {
     return (_texConversionFlags & flag) != 0;
 }
 
-inline unsigned int TextureAsset::GetFlags() const
+inline unsigned int TextureAsset::GetConversionFlags() const
 {
     return _texConversionFlags;
 }

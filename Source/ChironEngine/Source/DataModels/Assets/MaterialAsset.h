@@ -11,29 +11,53 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline TextureAsset* GetDiffuse() const;
-    inline TextureAsset* GetNormal() const;
-    inline TextureAsset* GetMetalness() const;
-    inline TextureAsset* GetEmissive() const;
-    inline TextureAsset* GetOcclusion() const;
+    inline TextureAsset* GetBaseTexture() const;
+    inline TextureAsset* GetNormalMap() const;
+    inline TextureAsset* GetPropertyTexture() const;
+    inline TextureAsset* GetEmissiveTexture() const;
+    inline TextureAsset* GetAmbientOcclusion() const;
 
     // ------------- SETTERS ----------------------
 
-    inline void SetDiffuse(std::shared_ptr<TextureAsset>& diffuse);
-    inline void SetNormal(std::shared_ptr<TextureAsset>& normal);
-    inline void SetMetalness(std::shared_ptr<TextureAsset>& metalness);
-    inline void SetEmissive(std::shared_ptr<TextureAsset>& emissive);
-    inline void SetOcclusion(std::shared_ptr<TextureAsset>& occlusion);
+    inline void SetBaseTexture(std::shared_ptr<TextureAsset>& diffuse);
+    inline void SetNormalMap(std::shared_ptr<TextureAsset>& normal);
+    inline void SetPropertyTexture(std::shared_ptr<TextureAsset>& metalness);
+    inline void SetEmissiveTexture(std::shared_ptr<TextureAsset>& emissive);
+    inline void SetAmbientOcclusion(std::shared_ptr<TextureAsset>& occlusion);
 
 private:
-    std::shared_ptr<TextureAsset> _textureDiffuse;
-    std::shared_ptr<TextureAsset> _textureNormal;
-    std::shared_ptr<TextureAsset> _textureMetalness;
-    std::shared_ptr<TextureAsset> _textureEmissive;
-    std::shared_ptr<TextureAsset> _textureOcclusion;
+    std::shared_ptr<TextureAsset> _baseTexture;
+    std::shared_ptr<TextureAsset> _normalMap;
+    std::shared_ptr<TextureAsset> _propertyTexture;
+    std::shared_ptr<TextureAsset> _emissiveTexture;
+    std::shared_ptr<TextureAsset> _ambientOcclusion;
+
 };
 
-inline TextureAsset* MaterialAsset::GetDiffuse() const
+inline TextureAsset* MaterialAsset::GetBaseTexture() const
+{
+    return _baseTexture.get();
+}
+
+inline TextureAsset* MaterialAsset::GetNormalMap() const
+{
+    return _normalMap.get();
+}
+
+inline TextureAsset* MaterialAsset::GetPropertyTexture() const
+{
+    return _propertyTexture.get();
+}
+
+inline TextureAsset* MaterialAsset::GetEmissiveTexture() const
+{
+    return _emissiveTexture.get();
+}
+
+inline TextureAsset* MaterialAsset::GetAmbientOcclusion() const
+{
+    return _ambientOcclusion.get();
+}
 {
     return _textureDiffuse.get();
 }
@@ -43,29 +67,29 @@ inline TextureAsset* MaterialAsset::GetNormal() const
     return _textureNormal.get();
 }
 
-inline TextureAsset* MaterialAsset::GetMetalness() const
+inline void MaterialAsset::SetBaseTexture(std::shared_ptr<TextureAsset>& diffuse)
 {
-    return _textureMetalness.get();
+    _baseTexture = diffuse;
 }
 
-inline TextureAsset* MaterialAsset::GetEmissive() const
+inline void MaterialAsset::SetNormalMap(std::shared_ptr<TextureAsset>& normal)
 {
-    return _textureEmissive.get();
+    _normalMap = normal;
 }
 
-inline TextureAsset* MaterialAsset::GetOcclusion() const
+inline void MaterialAsset::SetPropertyTexture(std::shared_ptr<TextureAsset>& metalness)
 {
-    return _textureOcclusion.get();
+    _propertyTexture = metalness;
 }
 
-inline void MaterialAsset::SetDiffuse(std::shared_ptr<TextureAsset>& diffuse)
+inline void MaterialAsset::SetEmissiveTexture(std::shared_ptr<TextureAsset>& emissive)
 {
-    _textureDiffuse = diffuse;
+    _emissiveTexture = emissive;
 }
 
-inline void MaterialAsset::SetNormal(std::shared_ptr<TextureAsset>& normal)
+inline void MaterialAsset::SetAmbientOcclusion(std::shared_ptr<TextureAsset>& occlusion)
 {
-    _textureNormal = normal;
+    _ambientOcclusion = occlusion;
 }
 
 inline void MaterialAsset::SetMetalness(std::shared_ptr<TextureAsset>& metalness)

@@ -29,14 +29,14 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     std::wstring wFilePath = std::wstring(sFilePath.begin(), sFilePath.end());
     const wchar_t* path = wFilePath.c_str();
 
-    bool bInterpretAsSRGB = texture->GetFlag(kSRGB);
-    bool bPreserveAlpha = texture->GetFlag(kPreserveAlpha);
-    bool bContainsNormals = texture->GetFlag(kNormalMap);
-    bool bBumpMap = texture->GetFlag(kBumpToNormal);
-    bool bBlockCompress = texture->GetFlag(kDefaultBC);
-    bool bUseBestBC = texture->GetFlag(kQualityBC);
-    bool bFlipVerticalImage = texture->GetFlag(kFlipVertical);
-    bool bFlipHorizontalImage = texture->GetFlag(kFlipHorizontal);
+    bool bInterpretAsSRGB = texture->GetConversionFlag(kSRGB);
+    bool bPreserveAlpha = texture->GetConversionFlag(kPreserveAlpha);
+    bool bContainsNormals = texture->GetConversionFlag(kNormalMap);
+    bool bBumpMap = texture->GetConversionFlag(kBumpToNormal);
+    bool bBlockCompress = texture->GetConversionFlag(kDefaultBC);
+    bool bUseBestBC = texture->GetConversionFlag(kQualityBC);
+    bool bFlipVerticalImage = texture->GetConversionFlag(kFlipVertical);
+    bool bFlipHorizontalImage = texture->GetConversionFlag(kFlipHorizontal);
 
     // Can't be both
     assert(!bInterpretAsSRGB || !bContainsNormals);
@@ -428,7 +428,7 @@ void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
     rapidjson::Document doc;
     Json meta = Json(doc);
     ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
-    meta["texConversionFlags"] = texture->GetFlags();
+    meta["texConversionFlags"] = texture->GetConversionFlags();
 
     rapidjson::StringBuffer buffer = meta.ToBuffer();
     ModuleFileSystem::SaveFile(metaPath.c_str(), buffer.GetString(), (unsigned int)buffer.GetSize());

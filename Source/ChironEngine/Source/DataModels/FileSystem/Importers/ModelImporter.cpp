@@ -245,77 +245,77 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
 
     if (material->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
     {
-        std::string diffusePath = "";
+        std::string baseTexturePath = "";
 
-        CheckPathMaterial(filePath.c_str(), file, diffusePath);
+        CheckPathMaterial(filePath.c_str(), file, baseTexturePath);
 
-        if (diffusePath != "")
+        if (baseTexturePath != "")
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::DIFFUSE);
 
-            resources->Import(diffusePath.c_str(), textureAsset);
-            materialAsset->SetDiffuse(textureAsset);
+            resources->Import(baseTexturePath.c_str(), textureAsset);
+            materialAsset->SetBaseTexture(textureAsset);
         }
     }
 
     if (material->GetTexture(aiTextureType_NORMALS, 0, &file) == AI_SUCCESS)
     {
-        std::string normalPath = "";
+        std::string normalMapPath = "";
 
-        CheckPathMaterial(filePath.c_str(), file, normalPath);
+        CheckPathMaterial(filePath.c_str(), file, normalMapPath);
 
-        if (normalPath != "")
+        if (normalMapPath != "")
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::NORMAL_MAP);
 
-            resources->Import(normalPath.c_str(), textureAsset);
-            materialAsset->SetNormal(textureAsset);
+            resources->Import(normalMapPath.c_str(), textureAsset);
+            materialAsset->SetNormalMap(textureAsset);
         }
     }
 
     if (material->GetTexture(aiTextureType_LIGHTMAP, 0, &file) == AI_SUCCESS)
     {
-        std::string occlusionPath = "";
+        std::string ambientOcclusionPath = "";
 
-        CheckPathMaterial(filePath.c_str(), file, occlusionPath);
+        CheckPathMaterial(filePath.c_str(), file, ambientOcclusionPath);
 
-        if (occlusionPath != "")
+        if (ambientOcclusionPath != "")
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::OCCLUSION);
 
-            resources->Import(occlusionPath.c_str(), textureAsset);
+            resources->Import(ambientOcclusionPath.c_str(), textureAsset);
 
-            materialAsset->SetOcclusion(textureAsset);
+            materialAsset->SetAmbientOcclusion(textureAsset);
         }
     }
 
     if (material->GetTexture(aiTextureType_METALNESS, 0, &file) == AI_SUCCESS)
     {
-        std::string metalnessPath = "";
+        std::string propertyTexturePath = "";
 
-        CheckPathMaterial(filePath.c_str(), file, metalnessPath);
+        CheckPathMaterial(filePath.c_str(), file, propertyTexturePath);
 
-        if (metalnessPath != "")
+        if (propertyTexturePath != "")
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::METALLIC);
 
-            resources->Import(metalnessPath.c_str(), textureAsset);
-            materialAsset->SetMetalness(textureAsset);
+            resources->Import(propertyTexturePath.c_str(), textureAsset);
+            materialAsset->SetPropertyTexture(textureAsset);
         }
     }
 
     if (material->GetTexture(aiTextureType_EMISSIVE, 0, &file) == AI_SUCCESS)
     {
-        std::string emissivePath = "";
+        std::string emissiveTexturePath = "";
 
-        CheckPathMaterial(filePath.c_str(), file, emissivePath);
+        CheckPathMaterial(filePath.c_str(), file, emissiveTexturePath);
 
-        if (emissivePath != "")
+        if (emissiveTexturePath != "")
         {
             std::shared_ptr<TextureAsset> textureAsset = std::make_shared<TextureAsset>(TextureType::EMISSIVE);
 
-            resources->Import(emissivePath.c_str(), textureAsset);
-            materialAsset->SetEmissive(textureAsset);
+            resources->Import(emissiveTexturePath.c_str(), textureAsset);
+            materialAsset->SetEmissiveTexture(textureAsset);
         }
     }
 
