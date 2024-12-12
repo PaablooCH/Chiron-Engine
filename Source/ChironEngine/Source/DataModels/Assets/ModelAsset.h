@@ -15,6 +15,8 @@ public:
 
     inline void AddMaterial(std::shared_ptr<MaterialAsset>& material);
     inline void AddMesh(std::shared_ptr<MeshAsset>& mesh);
+    inline std::string GetAssetPath() const override;
+    inline std::string GetLibraryPath() const override;
 
     // ------------- GETTERS ----------------------
 
@@ -32,14 +34,14 @@ inline const std::vector<std::shared_ptr<MaterialAsset>>& ModelAsset::GetMateria
     return _materials;
 }
 
-inline const std::vector<std::shared_ptr<MeshAsset>>& ModelAsset::GetMeshes() const
+inline std::string ModelAsset::GetAssetPath() const
 {
-    return _meshes;
+    return MODELS_PATH + GetName();
 }
 
-inline void ModelAsset::AddMaterial(std::shared_ptr<MaterialAsset>& material)
+inline std::string ModelAsset::GetLibraryPath() const
 {
-    _materials.push_back(material);
+    return MODEL_LIB_PATH + std::to_string(GetUID()) + GENERAL_BINARY_EXTENSION;
 }
 
 inline void ModelAsset::AddMesh(std::shared_ptr<MeshAsset>& mesh)

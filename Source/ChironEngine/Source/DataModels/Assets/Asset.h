@@ -2,6 +2,7 @@
 
 #include "Enums/AssetType.h"
 #include "DataModels/FileSystem/UID/UID.h"
+#include "Defines/FileSystemDefine.h"
 
 class Asset
 {
@@ -12,6 +13,8 @@ public:
     inline const UID GetUID() const;
     inline virtual const std::string& GetName() const;
     inline virtual AssetType GetType() const;
+    inline virtual std::string GetAssetPath() const = 0;
+    inline virtual std::string GetLibraryPath() const = 0;
 
     // ------------- SETTERS ----------------------
 

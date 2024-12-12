@@ -1,6 +1,8 @@
 #include "Pch.h"
 #include "TextureAsset.h"
 
+#include "Modules/ModuleFileSystem.h"
+
 #include "DataModels/DX12/Resource/Texture.h"
 
 TextureAsset::TextureAsset(TextureType type) : Asset(AssetType::Texture), _type(type), _texConversionFlags(0), 
@@ -50,6 +52,11 @@ void TextureAsset::AddConversionFlags(unsigned int flags)
 void TextureAsset::RemoveConversionFlags(unsigned int flags)
 {
     _texConversionFlags &= ~flags;
+}
+
+std::string TextureAsset::GetLibraryDDSPath() const
+{
+    return TEXTURES_LIB_PATH + ModuleFileSystem::GetFileName(GetName()) + DDS_EXTENSION;
 }
 
 void TextureAsset::SetTexture(std::shared_ptr<Texture>& newTexture)

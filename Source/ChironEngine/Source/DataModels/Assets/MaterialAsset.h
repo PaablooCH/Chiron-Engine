@@ -24,7 +24,9 @@ public:
     inline TextureAsset* GetAmbientOcclusion() const;
     inline const Color& GetBaseColor() const;
     inline const Color& GetSpecularColor() const;
-    inline int GetOptions() const;
+    inline UINT GetOptions() const;
+    inline std::string GetAssetPath() const override;
+    inline std::string GetLibraryPath() const override;
 
     // ------------- SETTERS ----------------------
 
@@ -35,7 +37,7 @@ public:
     inline void SetAmbientOcclusion(std::shared_ptr<TextureAsset>& occlusion);
     inline void SetBaseColor(Color& color);
     inline void SetSpecularColor(Color& color);
-    inline void SetOptions(int options);
+    inline void SetOptions(UINT options);
 
 private:
     std::shared_ptr<TextureAsset> _baseTexture;
@@ -47,7 +49,7 @@ private:
     Color _baseColor;
     Color _specularColor;
 
-    int _options;
+    UINT _options;
 };
 
 inline TextureAsset* MaterialAsset::GetBaseTexture() const
@@ -85,9 +87,19 @@ inline const Color& MaterialAsset::GetSpecularColor() const
     return _specularColor;
 }
 
-inline int MaterialAsset::GetOptions() const
+inline UINT MaterialAsset::GetOptions() const
 {
     return _options;
+}
+
+inline std::string MaterialAsset::GetAssetPath() const
+{
+    return MATERIAL_PATH + GetName();
+}
+
+inline std::string MaterialAsset::GetLibraryPath() const
+{
+    return MATERIAL_LIB_PATH + std::to_string(GetUID()) + GENERAL_BINARY_EXTENSION;
 }
 
 inline void MaterialAsset::SetBaseTexture(std::shared_ptr<TextureAsset>& diffuse)
@@ -125,7 +137,7 @@ inline void MaterialAsset::SetSpecularColor(Color& color)
     _baseColor = color;
 }
 
-inline void MaterialAsset::SetOptions(int options)
+inline void MaterialAsset::SetOptions(UINT options)
 {
     _options = options;
 }

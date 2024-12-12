@@ -23,6 +23,8 @@ public:
 
     inline IndexBuffer* GetIndexBuffer() const;
     inline VertexBuffer* GetVertexBuffer() const;
+    inline std::string GetAssetPath() const override;
+    inline std::string GetLibraryPath() const override;
 
     // ------------- SETTERS ----------------------
 
@@ -43,4 +45,14 @@ inline IndexBuffer* MeshAsset::GetIndexBuffer() const
 inline VertexBuffer* MeshAsset::GetVertexBuffer() const
 {
     return _vertexBuffer.get();
+}
+
+inline std::string MeshAsset::GetAssetPath() const
+{
+    return MESHES_PATH + GetName();
+}
+
+inline std::string MeshAsset::GetLibraryPath() const
+{
+    return MESHES_LIB_PATH + std::to_string(GetUID()) + GENERAL_BINARY_EXTENSION;
 }

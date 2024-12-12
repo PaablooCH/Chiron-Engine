@@ -52,6 +52,9 @@ public:
     inline unsigned int GetConfigFlags() const;
     inline bool GetConversionFlag(TexConversionFlags flag) const;
     inline unsigned int GetConversionFlags() const;
+    inline std::string GetAssetPath() const override;
+    inline std::string GetLibraryPath() const override;
+    std::string GetLibraryDDSPath() const;
 
     // ------------- SETTERS ----------------------
 
@@ -99,6 +102,16 @@ inline bool TextureAsset::GetConversionFlag(TexConversionFlags flag) const
 inline unsigned int TextureAsset::GetConversionFlags() const
 {
     return _texConversionFlags;
+}
+
+inline std::string TextureAsset::GetAssetPath() const
+{
+    return TEXTURES_PATH + GetName();
+}
+
+inline std::string TextureAsset::GetLibraryPath() const
+{
+    return TEXTURES_LIB_PATH + std::to_string(GetUID()) + GENERAL_BINARY_EXTENSION;
 }
 
 inline void TextureAsset::SetTextureType(TextureType newType)
