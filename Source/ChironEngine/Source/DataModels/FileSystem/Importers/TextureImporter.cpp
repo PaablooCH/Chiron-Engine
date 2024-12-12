@@ -330,7 +330,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     // ------------- SAVE DDS ----------------------
 
     // Rename file extension to DDS
-    std::string dest = TEXTURES_LIB_PATH + ModuleFileSystem::GetFileName(filePath) + ".dds";
+    std::string dest = texture->GetLibraryDDSPath();
     std::wstring wDest = std::wstring(dest.begin(), dest.end());
 
     // Save DDS
@@ -345,16 +345,24 @@ void TextureImporter::Load(const char* fileBuffer, const std::shared_ptr<Texture
 {
     // ------------- META ----------------------
 
-    std::string metaPath = TEXTURES_PATH + texture->GetName() + META_EXT;
+    std::string metaPath = texture->GetAssetPath();
     rapidjson::Document doc;
     Json meta = Json(doc);
     ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
     texture->AddConfigFlags(meta["texConfigFlags"]);
     texture->AddConversionFlags(meta["texConversionFlags"]);
 
+    // ------------- BINARY ----------------------
+
+    UINT header[1];
+    memcpy(header, fileBuffer, sizeof(header));
+
+    UINT configFlag = header[0];
+    texture->AddConfigFlags(configFlag);
+
     // ------------- LOAD DDS ----------------------
 
-    std::string filePath = TEXTURES_LIB_PATH + ModuleFileSystem::GetFileName(texture->GetName()) + ".dds";
+    std::string filePath = texture->GetLibraryDDSPath();
     std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
     const wchar_t* path = wFilePath.c_str();
 
@@ -425,7 +433,7 @@ void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
 {
     // ------------- META ----------------------
 
-    std::string metaPath = TEXTURES_PATH + texture->GetName() + META_EXT;
+    std::string metaPath = texture->GetAssetPath() + META_EXT;
     rapidjson::Document doc;
     Json meta = Json(doc);
     ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
@@ -434,4 +442,21 @@ void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
 
     rapidjson::StringBuffer buffer = meta.ToBuffer();
     ModuleFileSystem::SaveFile(metaPath.c_str(), buffer.GetString(), (unsigned int)buffer.GetSize());
+
+    // ------------- BINARY ----------------------
+
+    UINT configFlags = texture->GetConfigFlags();
+
+    unsigned int header[1] = { configFlags };
+    UINT size = sizeof(header);
+
+    char* fileBuffer = new char[size] {};
+    char* cursor = fileBuffer;
+
+    unsigned int bytes = sizeof(header);
+    memcpy(cursor, header, bytes);
+
+    ModuleFileSystem::SaveFile(texture->GetLibraryPath().c_str(), fileBuffer, size);
+
+    delete[] fileBuffer;
 }
