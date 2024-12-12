@@ -6,6 +6,7 @@
 #include "Modules/ModuleScene.h"
 
 #include "DataModels/Components/TransformComponent.h"
+#include "DataModels/Components/MeshRendererComponent.h"
 #include "DataModels/Components/Interfaces/Drawable.h"
 #include "DataModels/Components/Interfaces/Updatable.h"
 #include "DataModels/Components/Interfaces/Renderable.h"
@@ -291,6 +292,7 @@ Component* GameObject::CreateComponent(ComponentType type)
         newComponent = new TransformComponent(this);
         break;
     case ComponentType::MESH_RENDERER:
+        newComponent = new MeshRendererComponent(this);
         break;
     case ComponentType::UNKNOWN:
         LOG_ERROR("UNKNOWN component type");

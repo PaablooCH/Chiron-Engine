@@ -10,6 +10,7 @@
 #include "Structs/AddComponentAction.h"
 
 #include "DataModels/Components/TransformComponent.h"
+#include "DataModels/Components/MeshRendererComponent.h"
 
 #include "DataModels/Window/EditorWindow/SubWindows/Inspector/TransformComponentWindow.h"
 
@@ -195,6 +196,5 @@ void InspectorWindow::FillComponentsWindows()
 
 void InspectorWindow::AddMeshRendererComponent()
 {
-    CHIRON_TODO("Implement when component is ready");
-    //_lastSelected->CreateComponent<MeshRendererComponent>();
+    _lastSelected->CreateComponent<MeshRendererComponent>();
 }
