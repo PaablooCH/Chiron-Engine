@@ -6,7 +6,7 @@ IndexBuffer::IndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numIndi
     _numIndices(numIndices), _format(indexFormat)
 {
     int stride = _format == DXGI_FORMAT_R32_UINT ? 4 : 2;
-    _indexBufferView.BufferLocation = _resource->GetGPUVirtualAddress();
+    
     _indexBufferView.SizeInBytes = static_cast<UINT>(numIndices * stride);
     _indexBufferView.Format = indexFormat;
 }
@@ -18,4 +18,14 @@ _indexBufferView(copy._indexBufferView)
 
 IndexBuffer::~IndexBuffer()
 {
+}
+
+void IndexBuffer::InternalLoad()
+{
+    _indexBufferView.BufferLocation = _resource->GetGPUVirtualAddress();
+}
+
+void IndexBuffer::InternalUnload()
+{
+    _indexBufferView.BufferLocation = -1;
 }

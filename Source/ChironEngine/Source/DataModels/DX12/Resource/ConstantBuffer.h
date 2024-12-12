@@ -12,6 +12,8 @@ public:
 private:
     void CreateView();
 
+    void InternalLoad() override;
+
 private:
     size_t _sizeInBytes;
 

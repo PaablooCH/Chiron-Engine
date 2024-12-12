@@ -3,16 +3,19 @@
 class Resource
 {
 public:
-    inline bool IsValid();
+    inline bool IsValid() const;
 
     void Reset();
 
     bool CheckFormatSupport(D3D12_FORMAT_SUPPORT1 formatSupport) const;
     bool CheckFormatSupport(D3D12_FORMAT_SUPPORT2 formatSupport) const;
 
+    void Load();
+    void Unload();
+
     // ------------- GETTERS ----------------------
 
-    inline ID3D12Resource* GetResource() const;
+    inline ID3D12Resource* GetResource();
     inline const std::string& GetName() const;
 
     /*virtual D3D12_CPU_DESCRIPTOR_HANDLE GetCPURenderTargetView() const = 0;
@@ -37,6 +40,9 @@ protected:
     Resource& operator=(const Resource& other) = delete;
     Resource& operator=(Resource&& other) = delete;
 
+    virtual void InternalLoad() {};
+    virtual void InternalUnload() {};
+
 private:
     void CheckFeatureSupport();
 
@@ -48,15 +54,22 @@ protected:
 private:
     D3D12_FEATURE_DATA_FORMAT_SUPPORT _featureSupport;
     std::unique_ptr<D3D12_CLEAR_VALUE> _clearValue;
+    D3D12_RESOURCE_DESC _resourceDesc;
+
+    bool _loaded;
 };
 
-inline bool Resource::IsValid()
+inline bool Resource::IsValid() const
 {
-    return _resource;
+    return _loaded;
 }
 
-inline ID3D12Resource* Resource::GetResource() const
+inline ID3D12Resource* Resource::GetResource()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _resource.Get();
 }
 

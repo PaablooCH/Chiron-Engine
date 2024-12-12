@@ -15,7 +15,6 @@ Texture::Texture() : Resource()
 Texture::Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name,
     const D3D12_CLEAR_VALUE* clearValue) : Resource(resourceDesc, name, clearValue)
 {
-    CreateViews();
 }
 
 Texture::Texture(ComPtr<ID3D12Resource> resource) : Resource(resource)
@@ -359,4 +358,9 @@ D3D12_UNORDERED_ACCESS_VIEW_DESC Texture::CreateUAVDesc(const D3D12_RESOURCE_DES
     }
 
     return uavDesc;
+}
+
+void Texture::InternalLoad()
+{
+    CreateViews();
 }

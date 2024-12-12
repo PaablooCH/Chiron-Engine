@@ -12,11 +12,14 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
+    inline const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView();
     inline const size_t& GetNumIndices() const;
 
 private:
     IndexBuffer();
+
+    void InternalLoad() override;
+    void InternalUnload() override;
 
 private:
     size_t _numIndices;
@@ -24,8 +27,12 @@ private:
     D3D12_INDEX_BUFFER_VIEW _indexBufferView;
 };
 
-inline const D3D12_INDEX_BUFFER_VIEW& IndexBuffer::GetIndexBufferView() const
+inline const D3D12_INDEX_BUFFER_VIEW& IndexBuffer::GetIndexBufferView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _indexBufferView;
 }
 

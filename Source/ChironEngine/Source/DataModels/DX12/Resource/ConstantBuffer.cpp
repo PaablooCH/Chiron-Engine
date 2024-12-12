@@ -10,7 +10,6 @@
 ConstantBuffer::ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, const std::string& name) :
     Resource(resourceDesc, name), _sizeInBytes(sizeInBytes)
 {
-    CreateView();
 }
 
 ConstantBuffer::~ConstantBuffer()
@@ -30,4 +29,9 @@ void ConstantBuffer::CreateView()
 
     // Create CBV
     _device->CreateConstantBufferView(&cbvDesc, _constantBufferView.GetCPUDescriptorHandle());
+}
+
+void ConstantBuffer::InternalLoad()
+{
+    CreateView();
 }

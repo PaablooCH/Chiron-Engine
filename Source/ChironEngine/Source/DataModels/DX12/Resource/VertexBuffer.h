@@ -12,12 +12,15 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
+    inline const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView();
     inline const size_t GetNumVertex() const;
     inline const size_t GetVertexStride() const;
 
 private:
     VertexBuffer();
+
+    void InternalLoad() override;
+    void InternalUnload() override;
 
 private:
     size_t _numVertices;
@@ -25,8 +28,12 @@ private:
     D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
 };
 
-inline const D3D12_VERTEX_BUFFER_VIEW& VertexBuffer::GetVertexBufferView() const
+inline const D3D12_VERTEX_BUFFER_VIEW& VertexBuffer::GetVertexBufferView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _vertexBufferView;
 }
 

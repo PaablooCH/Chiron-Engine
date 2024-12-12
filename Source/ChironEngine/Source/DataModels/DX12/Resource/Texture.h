@@ -37,10 +37,10 @@ public:
     inline D3D12_CPU_DESCRIPTOR_HANDLE GetCPUShaderResourceView(uint32_t mips) const override;
     inline D3D12_CPU_DESCRIPTOR_HANDLE GetCPUUnorderedAccessView(uint32_t mips) const override;*/
 
-    inline const DescriptorAllocation& GetRenderTargetView() const;
-    inline const DescriptorAllocation& GetDepthStencilView() const;
-    inline const DescriptorAllocation& GetShaderResourceView() const;
-    inline const DescriptorAllocation& GetUnorderedAccessView() const;
+    inline const DescriptorAllocation& GetRenderTargetView();
+    inline const DescriptorAllocation& GetDepthStencilView();
+    inline const DescriptorAllocation& GetShaderResourceView();
+    inline const DescriptorAllocation& GetUnorderedAccessView();
 
     // ------------- SETTERS ----------------------
 
@@ -52,6 +52,8 @@ private:
     D3D12_SHADER_RESOURCE_VIEW_DESC CreateSRVDesc(const D3D12_RESOURCE_DESC& resourceDesc);
     D3D12_UNORDERED_ACCESS_VIEW_DESC CreateUAVDesc(const D3D12_RESOURCE_DESC& resourceDesc, UINT mipSlice,
         UINT arraySlice = 0, UINT planeSlice = 0);
+
+    void InternalLoad() override;
 
 private:
     mutable DescriptorAllocation _renderTargetView;
@@ -141,22 +143,38 @@ inline bool Texture::IsSRGBFormat(DXGI_FORMAT format)
 //	return _unorderedAccessView.GetCPUDescriptorHandle(mips);
 //}
 
-inline const DescriptorAllocation& Texture::GetRenderTargetView() const
+inline const DescriptorAllocation& Texture::GetRenderTargetView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _renderTargetView;
 }
 
-inline const DescriptorAllocation& Texture::GetDepthStencilView() const
+inline const DescriptorAllocation& Texture::GetDepthStencilView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _depthStencilView;
 }
 
-inline const DescriptorAllocation& Texture::GetShaderResourceView() const
+inline const DescriptorAllocation& Texture::GetShaderResourceView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _shaderResourceView;
 }
 
-inline const DescriptorAllocation& Texture::GetUnorderedAccessView() const
+inline const DescriptorAllocation& Texture::GetUnorderedAccessView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _unorderedAccessView;
 }
