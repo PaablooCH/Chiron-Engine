@@ -69,6 +69,106 @@ void ModelImporter::Load(const char* fileBuffer, const std::shared_ptr<ModelAsse
 
 void ModelImporter::Save(const std::shared_ptr<ModelAsset>& model)
 {
+    // ------------- META ----------------------
+
+    std::string metaPath = MODELS_PATH + model->GetName() + META_EXT;
+    rapidjson::Document doc;
+    Json meta = Json(doc);
+    ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
+    auto meshes = meta["MeshesAssetPaths"];
+    auto mat = meta["MatAssetPaths"];
+    unsigned int countMeshes = 0;
+    unsigned int countMat = 0;
+
+    // ------------- BINARY ----------------------
+
+                        //transform         //parent    //node header
+    unsigned int size = (sizeof(Matrix) + sizeof(int) + (sizeof(unsigned int) * 2)) * static_cast<unsigned int>(model->GetNodes().size());
+
+    for (auto& node : model->GetNodes())
+    {
+        size += sizeof(UID) * 2 * static_cast<unsigned int>(node->meshMaterial.size());
+        size += sizeof(char) * static_cast<unsigned int>(node->name.size());
+    }
+
+    unsigned int header[1] = { static_cast<unsigned int>(model->GetNodes().size()) };
+    size += sizeof(header);
+
+    char* fileBuffer = new char[size] {};
+    char* cursor = fileBuffer;
+
+    unsigned int bytes = sizeof(header);
+    memcpy(cursor, header, bytes);
+    cursor += bytes;
+
+    for (auto& node : model->GetNodes())
+    {
+        unsigned int nodeHeader[2] = { static_cast<unsigned int>(node->name.size()),
+                                       static_cast<unsigned int>(node->meshMaterial.size()) };
+
+        bytes = sizeof(nodeHeader);
+        memcpy(cursor, nodeHeader, bytes);
+        cursor += bytes;
+
+        bytes = sizeof(char) * static_cast<unsigned int>(node->name.size());
+        memcpy(cursor, &(node->name[0]), bytes);
+        cursor += bytes;
+
+        bytes = sizeof(Matrix);
+        memcpy(cursor, &(node->transform), bytes);
+        cursor += bytes;
+
+        bytes = sizeof(int);
+        memcpy(cursor, &(node->parent), bytes);
+        cursor += bytes;
+
+        std::vector<UID> meshesUIDs;
+        meshesUIDs.reserve(node->meshMaterial.size());
+        for (int i = 0; i < node->meshMaterial.size(); ++i)
+        {
+            // ------------- META ----------------------
+
+            meshes[countMeshes] = (MESHES_PATH + node->meshMaterial[i].first->GetName());
+            ++countMeshes;
+
+            // ------------- BINARY ----------------------
+            
+            meshesUIDs.push_back(node->meshMaterial[i].first->GetUID());
+            bytes = sizeof(UID);
+            memcpy(cursor, &(meshesUIDs[0]), bytes);
+
+            cursor += bytes;
+        }
+
+        std::vector<UID> materialsUIDs;
+        materialsUIDs.reserve(node->meshMaterial.size());
+        for (int i = 0; i < node->meshMaterial.size(); ++i)
+        {
+            // ------------- META ----------------------
+            
+            mat[countMat] = (MATERIAL_PATH + node->meshMaterial[i].second->GetName());
+            ++countMat;
+
+            // ------------- BINARY ----------------------
+
+            materialsUIDs.push_back(node->meshMaterial[i].second->GetUID());
+            bytes = sizeof(UID);
+            memcpy(cursor, &(materialsUIDs[0]), bytes);
+
+            cursor += bytes;
+        }
+    }
+    
+    // ------------- META ----------------------
+    
+    rapidjson::StringBuffer buffer = meta.ToBuffer();
+    ModuleFileSystem::SaveFile(metaPath.c_str(), buffer.GetString(), (unsigned int)buffer.GetSize());
+
+    // ------------- BINARY ----------------------
+
+    ModuleFileSystem::SaveFile(model->GetLibraryPath().c_str(), fileBuffer, size);
+
+    delete[] fileBuffer;
 }
 
 void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const std::shared_ptr<ModelAsset>& model, const aiNode* node,
