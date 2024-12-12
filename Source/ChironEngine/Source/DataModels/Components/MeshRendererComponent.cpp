@@ -18,7 +18,8 @@
 
 #include "Structs/ModelAttributes.h"
 
-MeshRendererComponent::MeshRendererComponent(GameObject* owner) : Component(ComponentType::MESH_RENDERER, owner)
+MeshRendererComponent::MeshRendererComponent(GameObject* owner) : Component(ComponentType::MESH_RENDERER, owner), _material(nullptr),
+_mesh(nullptr)
 {
 }
 
@@ -39,7 +40,7 @@ void MeshRendererComponent::Render(const std::shared_ptr<CommandList>& commandLi
     Matrix model = _owner->GetInternalComponent<TransformComponent>()->GetGlobalMatrix();
 
     ModelAttributes modelAttributes;
-    modelAttributes.model = model;
+    modelAttributes.model = model.Transpose();
     modelAttributes.uvCorrector = texture->GetConfigFlags() | isBottomLeft;
     CHIRON_TODO("CorrectUV for each texture");
 
