@@ -1,14 +1,20 @@
 #include "Pch.h"
 #include "ModuleScene.h"
 
+#include "Application.h"
+
 #include "ModuleFileSystem.h"
+#include "ModuleResources.h"
+
 #include "DataModels/Scene/Scene.h"
 
-#include "DataModels/GameObject/GameObject.h"
-#include "DataModels/Components/TransformComponent.h"
+#include "DataModels/Assets/MeshAsset.h"
+#include "DataModels/Assets/ModelAsset.h"
 
-#include "DataModels/FileSystem/Json/Json.h"
-#include "Defines/FileSystemDefine.h"
+#include "DataModels/GameObject/GameObject.h"
+
+#include "DataModels/Components/TransformComponent.h"
+#include "DataModels/Components/MeshRendererComponent.h"
 
 #include "Auxiliar/SceneLoader.h"
 
@@ -97,6 +103,61 @@ void ModuleScene::SaveScene()
 void ModuleScene::LoadScene(const std::string& scenePath, std::function<void(void)>&& callback, bool mantainCurrentScene /* = false */)
 {
     Chiron::Loader::LoadScene(scenePath, std::move(callback), mantainCurrentScene);
+}
+
+void ModuleScene::ModelToGameObject(std::string& modelPath)
+{
+    std::shared_ptr<ModelAsset> modelAsset = std::make_shared<ModelAsset>();
+    App->GetModule<ModuleResources>()->Import(modelPath.c_str(), modelAsset);
+    modelAsset->SetName(ModuleFileSystem::GetFileName(modelPath));
+
+    GameObject* gameObjectModel = CreateGameObject(modelAsset->GetName(), _loadedScene->GetRoot());
+
+    const std::vector<std::unique_ptr<Node>>& nodes = modelAsset->GetNodes();
+    std::vector<GameObject*> gameObjectsNodes;
+    std::unordered_map<int, GameObject*> parentsGameObjects;
+
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        Node* node = nodes[i].get();
+
+        GameObject* parent = gameObjectModel;
+        if (node->parent != -1)
+        {
+            parent = parentsGameObjects[node->parent];
+        }
+
+        GameObject* gameObjectNode = CreateGameObject(&node->name[0], parent);
+        gameObjectsNodes.push_back(gameObjectNode);
+        parentsGameObjects[i] = gameObjectNode;
+        
+        Vector3 pos;
+        Vector3 scale;
+        Quaternion rot;
+        node->transform.Decompose(scale, rot, pos);
+
+        TransformComponent* transformNode = gameObjectNode->GetInternalComponent<TransformComponent>();
+        transformNode->SetLocalPos(pos);
+        transformNode->SetLocalRot(rot);
+        transformNode->SetLocalSca(scale);
+
+        for (std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>> meshMaterial :
+            node->meshMaterial)
+        {
+            std::shared_ptr<MeshAsset> mesh = meshMaterial.first;
+            std::shared_ptr<MaterialAsset> material = meshMaterial.second;
+
+            std::string meshName = ModuleFileSystem::GetFileName(mesh->GetName());
+            GameObject* gameObjectModelMesh = CreateGameObject(meshName.c_str(), gameObjectNode);
+
+            MeshRendererComponent* meshMaterial = gameObjectModelMesh->CreateComponent<MeshRendererComponent>();
+            meshMaterial->SetMesh(mesh);
+            meshMaterial->SetMaterial(material);
+
+            gameObjectsNodes.push_back(gameObjectModelMesh);
+        }
+    }
+    gameObjectModel->GetInternalComponent<TransformComponent>()->UpdateMatrices();
 }
 
 GameObject* ModuleScene::GetRoot() const

@@ -6,6 +6,7 @@
 
 #include "Modules/ModuleID3D12.h"
 #include "Modules/ModuleWindow.h"
+#include "Modules/ModuleScene.h"
 #include <ImGui/imgui.h>
 
 #if OPTICK
@@ -223,7 +224,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DragQueryFileA(hDrop, i, filePath, MAX_PATH);
             std::string droppedFilePathString(filePath);
             std::replace(droppedFilePathString.begin(), droppedFilePathString.end(), '\\', '/');
-            CHIRON_TODO("Load Model into a future scene");
+            CHIRON_TODO("Next step is clone the file in our system, load models or anything else must do through a browser");
+            App->GetModule<ModuleScene>()->ModelToGameObject(droppedFilePathString);
         }
 
         DragFinish(hDrop);

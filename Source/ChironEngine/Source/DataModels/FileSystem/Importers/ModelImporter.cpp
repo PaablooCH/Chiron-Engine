@@ -38,7 +38,23 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
         aiImportFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
     if (scene)
     {
-        ImportNode(scene, filePath, model, scene->mRootNode, -1, Matrix::Identity);
+        model->SetName(ModuleFileSystem::GetFileName(filePath) + ModuleFileSystem::GetFileExtension(filePath));
+        auto d3d12 = App->GetModule<ModuleID3D12>();
+        auto copyCommandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
+        auto directCommandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
+        ImportNode(scene, filePath, model, scene->mRootNode, -1, Matrix::Identity, copyCommandList, directCommandList);
+
+        Save(model);
+
+        // Copy data to resources
+        auto queueType = copyCommandList->GetType();
+        uint64_t initFenceValue = d3d12->ExecuteCommandList(copyCommandList);
+        d3d12->WaitForFenceValue(queueType, initFenceValue);
+
+        queueType = directCommandList->GetType();
+        initFenceValue = d3d12->ExecuteCommandList(directCommandList);
+        d3d12->WaitForFenceValue(queueType, initFenceValue);
+
         aiReleaseImport(scene);
     }
     else
@@ -56,7 +72,8 @@ void ModelImporter::Save(const std::shared_ptr<ModelAsset>& model)
 }
 
 void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const std::shared_ptr<ModelAsset>& model, const aiNode* node,
-    int parentIdx, const Matrix& accTransform)
+    int parentIdx, const Matrix& accTransform, const std::shared_ptr<CommandList>& copyCommandList,
+    const std::shared_ptr<CommandList>& directCommandList)
 {
     std::string name = node->mName.C_Str();
     Matrix transform = (*(Matrix*)&node->mTransformation);
@@ -67,11 +84,17 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
         {
             const Matrix& newAcctransform = accTransform * transform;
 
-            ImportNode(scene, filePath, model, node->mChildren[i], parentIdx, newAcctransform);
+            ImportNode(scene, filePath, model, node->mChildren[i], parentIdx, newAcctransform, copyCommandList,
+                directCommandList);
         }
     }
     else
     {
+        Node* modelNode = new Node();
+        modelNode->name = name;
+        modelNode->parent = parentIdx;
+        modelNode->transform = transform * accTransform;
+
         LOG_INFO("Node name: {}", name);
         if (node->mParent)
         {
@@ -96,12 +119,6 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             scale.y,
             scale.z);
 
-        // loading meshes and materials
-        auto d3d12 = App->GetModule<ModuleID3D12>();
-        CHIRON_TODO("Move this to meshImporter");
-        auto copyCommandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
-        auto directCommandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_DIRECT);
-
         for (unsigned int i = 0; i < node->mNumMeshes; ++i)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -113,26 +130,20 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             std::shared_ptr<MeshAsset> meshAsset = ImportMesh(mesh, name, i, copyCommandList);
             std::shared_ptr<MaterialAsset> materialAsset = ImportMaterial(material, filePath, i);
 
-            CHIRON_TODO("Move this to meshImporter");
             // Change states
             directCommandList->TransitionBarrier(meshAsset->GetIndexBuffer(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
             directCommandList->TransitionBarrier(meshAsset->GetVertexBuffer(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
-            model->AddMaterial(materialAsset);
-            model->AddMesh(meshAsset);
+            std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>> meshMat = std::make_pair(meshAsset, materialAsset);
+            modelNode->meshMaterial.push_back(meshMat);
         }
 
-        // Copy data to resources
-        auto queueType = copyCommandList->GetType();
-        uint64_t initFenceValue = d3d12->ExecuteCommandList(copyCommandList);
-        d3d12->WaitForFenceValue(queueType, initFenceValue);
-
-        initFenceValue = d3d12->ExecuteCommandList(directCommandList);
-        d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_DIRECT, initFenceValue);
+        model->AddNode(modelNode);
+        int newParentId = static_cast<int>(model->GetNodes().size()) - 1;
 
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            ImportNode(scene, filePath, model, node->mChildren[i], 0, Matrix::Identity);
+            ImportNode(scene, filePath, model, node->mChildren[i], newParentId, Matrix::Identity, copyCommandList, directCommandList);
         }
     }
 }
@@ -140,7 +151,8 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
 std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const std::string& fileName, int iteration,
     const std::shared_ptr<CommandList>& copyCommandList)
 {
-    std::shared_ptr<MeshAsset> resourceMesh = std::make_shared<MeshAsset>();
+    std::shared_ptr<MeshAsset> meshAsset = std::make_shared<MeshAsset>();
+    meshAsset->SetName(fileName + "_" + std::to_string(iteration) + MESH_EXT);
 
     // -------------- VERTEX ---------------------
 
@@ -171,15 +183,15 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     }
     const UINT vertexBufferSize = static_cast<UINT>(triangleVertices.size() * sizeof(Vertex));
 
-    std::string newFileName = "Vertex " + resourceMesh->GetName();
-    resourceMesh->SetVertexBuffer(CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
+    std::string newFileName = "Vertex " + meshAsset->GetName();
+    meshAsset->SetVertexBuffer(CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
         triangleVertices.size(), newFileName);
 
     D3D12_SUBRESOURCE_DATA subresourceData = {};
     subresourceData.pData = triangleVertices.data();
     subresourceData.RowPitch = vertexBufferSize;
     subresourceData.SlicePitch = vertexBufferSize;
-    copyCommandList->UpdateBufferResource(resourceMesh->GetVertexBuffer(), 0, 1, &subresourceData);
+    copyCommandList->UpdateBufferResource(meshAsset->GetVertexBuffer(), 0, 1, &subresourceData);
 
     // -------------- INDEX ---------------------
 
@@ -195,15 +207,15 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     }
     const UINT indexBufferSize = static_cast<UINT>(indexBufferData.size() * sizeof(UINT));
 
-    newFileName = "Index " + resourceMesh->GetName();
-    resourceMesh->SetIndexBuffer(CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize), indexBufferData.size(),
+    newFileName = "Index " + meshAsset->GetName();
+    meshAsset->SetIndexBuffer(CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize), indexBufferData.size(),
         DXGI_FORMAT_R32_UINT, newFileName);
 
     D3D12_SUBRESOURCE_DATA subresourceData2 = {};
     subresourceData2.pData = indexBufferData.data();
     subresourceData2.RowPitch = indexBufferSize;
     subresourceData2.SlicePitch = indexBufferSize;
-    copyCommandList->UpdateBufferResource(resourceMesh->GetIndexBuffer(), 0, 1, &subresourceData2);
+    copyCommandList->UpdateBufferResource(meshAsset->GetIndexBuffer(), 0, 1, &subresourceData2);
 
     // ------------- SAVE MESH FILE ----------------------
 
@@ -228,20 +240,38 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
     memcpy(cursor, indexBufferData.data(), bytes);
     cursor += bytes;
 
-    ModuleFileSystem::SaveFile((MESHES_PATH + resourceMesh->GetName()).c_str(), fileBuffer, size);
+    ModuleFileSystem::SaveFile(meshAsset->GetAssetPath().c_str(), fileBuffer, size);
 
     delete[] fileBuffer;
 
-    return resourceMesh;
+    return meshAsset;
 }
 
 std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* material, const std::string& filePath, int iteration)
 {
     std::shared_ptr<MaterialAsset> materialAsset = std::make_shared<MaterialAsset>();
+    materialAsset->SetName(ModuleFileSystem::GetFileName(filePath) + MAT_EXT);
 
     auto resources = App->GetModule<ModuleResources>();
 
     aiString file;
+
+    rapidjson::Document doc;
+    Json json = Json(doc);
+    json["BaseTexturePath"] = "";
+    json["NormalMapPath"] = "";
+    json["AmbientOcclusionPath"] = "";
+    json["PropertyTexturePath"] = "";
+    json["EmissiveTexturePath"] = "";
+    json["BaseColor"]["R"] = materialAsset->GetBaseColor().R();
+    json["BaseColor"]["G"] = materialAsset->GetBaseColor().G();
+    json["BaseColor"]["B"] = materialAsset->GetBaseColor().B();
+    json["BaseColor"]["A"] = materialAsset->GetBaseColor().A();
+    json["SpecularColor"]["R"] = materialAsset->GetSpecularColor().R();
+    json["SpecularColor"]["G"] = materialAsset->GetSpecularColor().G();
+    json["SpecularColor"]["B"] = materialAsset->GetSpecularColor().B();
+    json["SpecularColor"]["A"] = materialAsset->GetSpecularColor().A();
+    json["Options"] = materialAsset->GetOptions();
 
     if (material->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
     {
@@ -256,6 +286,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
             resources->Import(baseTexturePath.c_str(), textureAsset);
             materialAsset->SetBaseTexture(textureAsset);
         }
+        json["BaseTexturePath"] = baseTexturePath;
     }
 
     if (material->GetTexture(aiTextureType_NORMALS, 0, &file) == AI_SUCCESS)
@@ -271,6 +302,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
             resources->Import(normalMapPath.c_str(), textureAsset);
             materialAsset->SetNormalMap(textureAsset);
         }
+        json["NormalMapPath"] = normalMapPath;
     }
 
     if (material->GetTexture(aiTextureType_LIGHTMAP, 0, &file) == AI_SUCCESS)
@@ -287,6 +319,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
 
             materialAsset->SetAmbientOcclusion(textureAsset);
         }
+        json["AmbientOcclusionPath"] = ambientOcclusionPath;
     }
 
     if (material->GetTexture(aiTextureType_METALNESS, 0, &file) == AI_SUCCESS)
@@ -302,6 +335,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
             resources->Import(propertyTexturePath.c_str(), textureAsset);
             materialAsset->SetPropertyTexture(textureAsset);
         }
+        json["PropertyTexturePath"] = propertyTexturePath;
     }
 
     if (material->GetTexture(aiTextureType_EMISSIVE, 0, &file) == AI_SUCCESS)
@@ -317,8 +351,14 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
             resources->Import(emissiveTexturePath.c_str(), textureAsset);
             materialAsset->SetEmissiveTexture(textureAsset);
         }
+        json["EmissiveTexturePath"] = emissiveTexturePath;
     }
 
+    // ------------- SAVE MATERIAL FILE ----------------------
+
+    auto filebuffer = json.ToBuffer();
+    ModuleFileSystem::SaveFile(materialAsset->GetAssetPath().c_str(), filebuffer.GetString(), filebuffer.GetSize());
+    
     return materialAsset;
 }
 

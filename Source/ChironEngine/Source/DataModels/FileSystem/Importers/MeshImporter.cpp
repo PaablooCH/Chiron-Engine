@@ -162,7 +162,7 @@ void MeshImporter::Save(const std::shared_ptr<MeshAsset>& mesh)
         LOG_ERROR("Couldn't map the mesh resource to save all the indices.");
     }
 
-    ModuleFileSystem::SaveFile((MESHES_LIB_PATH + std::to_string(mesh->GetUID()) + GENERAL_BINARY_EXTENSION).c_str(), filebuffer, size);
+    ModuleFileSystem::SaveFile(mesh->GetLibraryPath().c_str(), filebuffer, size);
 
     delete[] filebuffer;
 }

@@ -21,6 +21,8 @@ public:
     UpdateStatus PostUpdate() override;
     bool CleanUp() override;
 
+    void ModelToGameObject(std::string& modelPath);
+
     // ------------- SCENE METHODS ----------------------
 
     void SaveScene();
