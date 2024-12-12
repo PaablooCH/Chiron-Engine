@@ -69,11 +69,11 @@ void Camera::Move()
     {
         _position += right * moveSpeed; // Right
     }
-    if (keyState.Q)
+    if (keyState.E)
     {
         _position += _up * moveSpeed; // Up
     }
-    if (keyState.E)
+    if (keyState.Q)
     {
         _position -= _up * moveSpeed; // Down
     }
