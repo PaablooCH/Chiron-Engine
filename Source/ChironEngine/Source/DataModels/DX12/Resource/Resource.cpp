@@ -35,7 +35,7 @@ Resource::Resource(ComPtr<ID3D12Resource> resource) : _resource(resource), _name
 }
 
 Resource::Resource(const Resource& copy) : _resource(copy._resource), _name(copy._name), _device(copy._device),
-_featureSupport(copy._featureSupport), _resourceDesc(copy._resourceDesc)
+_featureSupport(copy._featureSupport), _resourceDesc(copy._resourceDesc), _loaded(copy._loaded)
 {
     if (copy._clearValue)
     {

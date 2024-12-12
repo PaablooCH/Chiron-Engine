@@ -24,8 +24,3 @@ void IndexBuffer::InternalLoad()
 {
     _indexBufferView.BufferLocation = _resource->GetGPUVirtualAddress();
 }
-
-void IndexBuffer::InternalUnload()
-{
-    _indexBufferView.BufferLocation = -1;
-}

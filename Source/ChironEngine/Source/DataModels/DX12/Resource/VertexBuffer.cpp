@@ -22,8 +22,3 @@ void VertexBuffer::InternalLoad()
 {
     _vertexBufferView.BufferLocation = _resource->GetGPUVirtualAddress();
 }
-
-void VertexBuffer::InternalUnload()
-{
-    _vertexBufferView.BufferLocation = -1;
-}

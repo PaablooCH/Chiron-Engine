@@ -20,7 +20,6 @@ private:
     VertexBuffer();
 
     void InternalLoad() override;
-    void InternalUnload() override;
 
 private:
     size_t _numVertices;
