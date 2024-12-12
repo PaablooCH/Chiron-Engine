@@ -25,6 +25,8 @@ public:
     inline const Vector3& GetLocalRotXYZ() const;
     inline const Vector3& GetLocalSca() const;
 
+    inline const Matrix& GetGlobalMatrix() const;
+
     inline const bool GetUniformScale() const;
 
     // ------------- SETTERS ----------------------
@@ -83,6 +85,11 @@ inline const Vector3& TransformComponent::GetLocalRotXYZ() const
 inline const Vector3& TransformComponent::GetLocalSca() const
 {
     return _localSca;
+}
+
+inline const Matrix& TransformComponent::GetGlobalMatrix() const
+{
+    return _globalMatrix;
 }
 
 inline const bool TransformComponent::GetUniformScale() const

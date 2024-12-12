@@ -8,6 +8,7 @@
 #include "DataModels/Components/TransformComponent.h"
 #include "DataModels/Components/Interfaces/Drawable.h"
 #include "DataModels/Components/Interfaces/Updatable.h"
+#include "DataModels/Components/Interfaces/Renderable.h"
 
 #include "DataModels/FileSystem/UID/UIDGenerator.h"
 
@@ -109,6 +110,17 @@ void GameObject::OnAwake()
     for (auto& component : _components)
     {
         component->OnAwake();
+    }
+}
+
+void GameObject::Render(const std::shared_ptr<CommandList>& commandList) const
+{
+    for (auto& component : _components)
+    {
+        if (auto* renderable = dynamic_cast<Renderable*>(component.get()))
+        {
+            renderable->Render(commandList);
+        }
     }
 }
 

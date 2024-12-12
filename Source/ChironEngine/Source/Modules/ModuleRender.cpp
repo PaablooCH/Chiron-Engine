@@ -6,10 +6,12 @@
 #include "ModuleCamera.h"
 #include "ModuleID3D12.h"
 #include "ModuleProgram.h"
+#include "ModuleScene.h"
 #include "ModuleWindow.h"
 
 #include "DataModels/Camera/Camera.h"
-
+#include "DataModels/GameObject/GameObject.h"
+#include "DataModels/Scene/Scene.h"
 
 #include "DataModels/DX12/CommandList/CommandList.h"
 #include "DataModels/DX12/RootSignature/RootSignature.h"
@@ -108,6 +110,10 @@ UpdateStatus ModuleRender::Update()
     auto dsv = _depthStencilTexture->GetDepthStencilView().GetCPUDescriptorHandle();
     _drawCommandList->SetRenderTargets(1, &rtv, FALSE, &dsv);
 
+    for (auto gameObject : App->GetModule<ModuleScene>()->GetLoadedScene()->GetSceneGameObjects())
+    {
+        gameObject->Render(_drawCommandList);
+    }
 
     // ------------- DEBUG DRAW ----------------------
 
