@@ -16,7 +16,7 @@ public:
     TransformComponent(const TransformComponent& copy);
     ~TransformComponent() override;
 
-    void UpdateMatrices();
+    void UpdateMatrices(bool notify = true);
     void CalculateLocalFromNewGlobal(const TransformComponent* newTransformFrom);
 
     // ------------- GETTERS ----------------------
@@ -33,6 +33,7 @@ public:
 
     inline void SetLocalPos(const Vector3& pos);
     inline void SetLocalRot(const Vector3& rotXYZ);
+    inline void SetLocalRot(const Quaternion& rot);
     inline void SetLocalSca(const Vector3& scale);
     inline void SetScaleUniform(const Vector3& localSca, Axis axis);
 
@@ -107,6 +108,15 @@ inline void TransformComponent::SetLocalRot(const Vector3& rotXYZ)
     _rotXYZ = rotXYZ;
     _localRot = Quaternion::CreateFromYawPitchRoll(DirectX::XMConvertToRadians(_rotXYZ.y),
         DirectX::XMConvertToRadians(_rotXYZ.x), DirectX::XMConvertToRadians(_rotXYZ.z));
+}
+
+inline void TransformComponent::SetLocalRot(const Quaternion& rot)
+{
+    _localRot = rot;
+    Vector3 euler = _localRot.ToEuler();
+    _rotXYZ.x = DirectX::XMConvertToDegrees(euler.x);
+    _rotXYZ.y = DirectX::XMConvertToDegrees(euler.y);
+    _rotXYZ.z = DirectX::XMConvertToDegrees(euler.z);
 }
 
 inline void TransformComponent::SetLocalSca(const Vector3& scale)
