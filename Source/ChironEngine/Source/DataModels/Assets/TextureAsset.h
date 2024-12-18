@@ -3,6 +3,13 @@
 
 class Texture;
 
+struct MyImage
+{
+    std::vector<uint8_t> pixels;
+    size_t rowPitch;
+    size_t slicePitch;
+};
+
 enum class TextureType
 {
     ALBEDO,
@@ -60,6 +67,7 @@ public:
 
     void SetTexture(std::shared_ptr<Texture>& newTexture);
     inline void SetTextureType(TextureType newType);
+    inline void SetImages(const std::vector<MyImage>& images);
 
 private:
     bool InternalLoad() override;
@@ -71,6 +79,8 @@ private:
     TextureType _type;
     unsigned int _texConfigFlags;
     unsigned int _texConversionFlags;
+
+    std::vector<MyImage> _images;
 };
 
 void TextureAsset::AddConfigFlags(unsigned int flags)
@@ -132,7 +142,7 @@ inline void TextureAsset::SetTextureType(TextureType newType)
     _texConversionFlags |= kDefaultBC;
 }
 
-inline void TextureAsset::SetTextureType(TextureType newType)
+inline void TextureAsset::SetImages(const std::vector<MyImage>& images)
 {
-    _type = newType;
+    _images = images;
 }

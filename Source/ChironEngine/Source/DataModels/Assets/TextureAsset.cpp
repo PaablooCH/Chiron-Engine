@@ -102,6 +102,28 @@ bool TextureAsset::InternalLoad()
     {
         result = result && _texture->Load();
     }
+    if (!_images.empty())
+    {
+        auto d3d12 = App->GetModule<ModuleID3D12>();
+
+        auto commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
+
+        std::vector<D3D12_SUBRESOURCE_DATA> subresources(_images.size());
+        for (uint32_t i = 0; i < _images.size(); ++i)
+        {
+            auto& subresource = subresources[i];
+            subresource.pData = _images[i].pixels.data();
+            subresource.RowPitch = _images[i].rowPitch;
+            subresource.SlicePitch = _images[i].slicePitch;
+        }
+
+        commandList->UpdateBufferResource(_texture.get(), 0, static_cast<uint32_t>(subresources.size()), subresources.data());
+
+        auto signal = d3d12->ExecuteCommandList(commandList);
+        d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, signal);
+        
+        result = result && true;
+    }
     return result;
 }
 
