@@ -14,6 +14,7 @@ public:
     bool Init() override;
     bool CleanUp() override;
 
+    static const std::string GetFile(const char* path);
     static const std::string GetFileExtension(const char* path);
     static const std::string GetFileName(const std::string& path);
     static const std::string GetPathWithoutFile(const std::string& path);
@@ -28,6 +29,9 @@ public:
     static bool ExistsFile(const char* path);
     static bool CreateDirectoryC(const char* directoryName);
     static bool IsDirectory(const char* path);
+    static long long GetModificationDate(const char* path);
+    static std::vector<std::string> ListFiles(const char* directoryPath);
+    static std::vector<std::string> ListFilesWithPath(const char* directoryPath);
 
 private:
     enum class OpenFileMethod
