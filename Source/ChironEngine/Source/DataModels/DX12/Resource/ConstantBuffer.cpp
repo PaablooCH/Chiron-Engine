@@ -7,8 +7,8 @@
 
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
 
-ConstantBuffer::ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, const std::string& name) :
-    Resource(resourceDesc, name), _sizeInBytes(sizeInBytes)
+ConstantBuffer::ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, 
+    const std::string& name /* = "" */, bool load /* = false */) : Resource(resourceDesc, name, load), _sizeInBytes(sizeInBytes)
 {
 }
 
@@ -31,7 +31,8 @@ void ConstantBuffer::CreateView()
     _device->CreateConstantBufferView(&cbvDesc, _constantBufferView.GetCPUDescriptorHandle());
 }
 
-void ConstantBuffer::InternalLoad()
+bool ConstantBuffer::InternalLoad()
 {
     CreateView();
+    return true;
 }

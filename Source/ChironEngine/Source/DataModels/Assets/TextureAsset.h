@@ -38,6 +38,8 @@ class TextureAsset : public Asset
 {
 public:
     TextureAsset(TextureType type);
+    TextureAsset(TextureType type, UID uid, const std::string& assetPath, const std::string& libraryPath);
+    TextureAsset(UID uid, const std::string& assetPath, const std::string& libraryPath);
     ~TextureAsset() override;
 
     inline void AddConfigFlags(unsigned int flags);
@@ -47,19 +49,21 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline std::shared_ptr<Texture> GetTexture() const;
+    inline std::shared_ptr<Texture> GetTexture();
     inline TextureType GetTextureType() const;
     inline unsigned int GetConfigFlags() const;
     inline bool GetConversionFlag(TexConversionFlags flag) const;
     inline unsigned int GetConversionFlags() const;
-    inline std::string GetAssetPath() const override;
-    inline std::string GetLibraryPath() const override;
     std::string GetLibraryDDSPath() const;
 
     // ------------- SETTERS ----------------------
 
     void SetTexture(std::shared_ptr<Texture>& newTexture);
     inline void SetTextureType(TextureType newType);
+
+private:
+    bool InternalLoad() override;
+    bool InternalUnload() override;
 
 private:
     std::shared_ptr<Texture> _texture;
@@ -79,8 +83,12 @@ void TextureAsset::RemoveConfigFlags(unsigned int flags)
     _texConfigFlags &= ~flags;
 }
 
-inline std::shared_ptr<Texture> TextureAsset::GetTexture() const
+inline std::shared_ptr<Texture> TextureAsset::GetTexture()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _texture;
 }
 
@@ -104,14 +112,24 @@ inline unsigned int TextureAsset::GetConversionFlags() const
     return _texConversionFlags;
 }
 
-inline std::string TextureAsset::GetAssetPath() const
+inline void TextureAsset::SetTextureType(TextureType newType)
 {
-    return TEXTURES_PATH + GetName();
-}
-
-inline std::string TextureAsset::GetLibraryPath() const
-{
-    return TEXTURES_LIB_PATH + std::to_string(GetUID()) + GENERAL_BINARY_EXTENSION;
+    _type = newType;
+    _texConversionFlags = 0;
+    if (_type == TextureType::ALBEDO)
+    {
+        _texConversionFlags |= kSRGB;
+        _texConversionFlags |= kPreserveAlpha;
+    }
+    else if (_type == TextureType::NORMAL_MAP)
+    {
+        _texConversionFlags |= kNormalMap;
+    }
+    else if (_type == TextureType::HDR)
+    {
+        _texConversionFlags |= kQualityBC;
+    }
+    _texConversionFlags |= kDefaultBC;
 }
 
 inline void TextureAsset::SetTextureType(TextureType newType)

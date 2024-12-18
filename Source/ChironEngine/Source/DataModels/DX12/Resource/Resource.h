@@ -10,8 +10,8 @@ public:
     bool CheckFormatSupport(D3D12_FORMAT_SUPPORT1 formatSupport) const;
     bool CheckFormatSupport(D3D12_FORMAT_SUPPORT2 formatSupport) const;
 
-    void Load();
-    void Unload();
+    bool Load();
+    bool Unload();
 
     // ------------- GETTERS ----------------------
 
@@ -30,7 +30,7 @@ public:
 
 protected:
     Resource();
-    Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "",
+    Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "", bool load = false,
         const D3D12_CLEAR_VALUE* clearValue = nullptr);
     Resource(ComPtr<ID3D12Resource> resource);
     Resource(const Resource& copy);
@@ -40,8 +40,8 @@ protected:
     Resource& operator=(const Resource& other) = delete;
     Resource& operator=(Resource&& other) = delete;
 
-    virtual void InternalLoad() {};
-    virtual void InternalUnload() {};
+    virtual bool InternalLoad() { return true; };
+    virtual bool InternalUnload() { return false; };
 
 private:
     void CheckFeatureSupport();

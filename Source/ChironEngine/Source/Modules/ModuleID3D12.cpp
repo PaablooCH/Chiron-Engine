@@ -341,7 +341,7 @@ std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::string& nam
     CD3DX12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, width, height, 1, 0, 1, 0,
         D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
-    return std::make_unique<Texture>(desc, name, &clearValue);
+    return std::make_unique<Texture>(desc, name, true, &clearValue);
 }
 
 void ModuleID3D12::ObtainRTVFromSwapChain()

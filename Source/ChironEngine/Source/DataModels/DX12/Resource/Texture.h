@@ -7,7 +7,7 @@ class Texture : public Resource
 {
 public:
     Texture();
-    Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "",
+    Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "", bool load = false,
         const D3D12_CLEAR_VALUE* clearValue = nullptr);
     Texture(ComPtr<ID3D12Resource> resource);
     Texture(const Texture& copy);
@@ -37,10 +37,10 @@ public:
     inline D3D12_CPU_DESCRIPTOR_HANDLE GetCPUShaderResourceView(uint32_t mips) const override;
     inline D3D12_CPU_DESCRIPTOR_HANDLE GetCPUUnorderedAccessView(uint32_t mips) const override;*/
 
-    inline const DescriptorAllocation& GetRenderTargetView();
-    inline const DescriptorAllocation& GetDepthStencilView();
-    inline const DescriptorAllocation& GetShaderResourceView();
-    inline const DescriptorAllocation& GetUnorderedAccessView();
+    inline const DescriptorAllocation& GetRenderTargetView() const;
+    inline const DescriptorAllocation& GetDepthStencilView() const;
+    inline const DescriptorAllocation& GetShaderResourceView() const;
+    inline const DescriptorAllocation& GetUnorderedAccessView() const;
 
     // ------------- SETTERS ----------------------
 
@@ -53,7 +53,7 @@ private:
     D3D12_UNORDERED_ACCESS_VIEW_DESC CreateUAVDesc(const D3D12_RESOURCE_DESC& resourceDesc, UINT mipSlice,
         UINT arraySlice = 0, UINT planeSlice = 0);
 
-    void InternalLoad() override;
+    bool InternalLoad() override;
 
 private:
     mutable DescriptorAllocation _renderTargetView;
@@ -143,38 +143,22 @@ inline bool Texture::IsSRGBFormat(DXGI_FORMAT format)
 //	return _unorderedAccessView.GetCPUDescriptorHandle(mips);
 //}
 
-inline const DescriptorAllocation& Texture::GetRenderTargetView()
+inline const DescriptorAllocation& Texture::GetRenderTargetView() const
 {
-    if (!IsValid())
-    {
-        Load();
-    }
     return _renderTargetView;
 }
 
-inline const DescriptorAllocation& Texture::GetDepthStencilView()
+inline const DescriptorAllocation& Texture::GetDepthStencilView() const
 {
-    if (!IsValid())
-    {
-        Load();
-    }
     return _depthStencilView;
 }
 
-inline const DescriptorAllocation& Texture::GetShaderResourceView()
+inline const DescriptorAllocation& Texture::GetShaderResourceView() const
 {
-    if (!IsValid())
-    {
-        Load();
-    }
     return _shaderResourceView;
 }
 
-inline const DescriptorAllocation& Texture::GetUnorderedAccessView()
+inline const DescriptorAllocation& Texture::GetUnorderedAccessView() const
 {
-    if (!IsValid())
-    {
-        Load();
-    }
     return _unorderedAccessView;
 }

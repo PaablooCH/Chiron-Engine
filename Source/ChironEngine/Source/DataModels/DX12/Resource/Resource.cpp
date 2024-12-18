@@ -12,8 +12,8 @@ _resourceDesc(), _loaded(false)
 {
 }
 
-Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name, const D3D12_CLEAR_VALUE* clearValue) : 
-    _resourceDesc(resourceDesc), _loaded(false)
+Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name /* = "" */, bool load /* = false */, 
+    const D3D12_CLEAR_VALUE* clearValue /* = nullptr */) : _resourceDesc(resourceDesc), _loaded(load)
 {
     if (clearValue)
     {
@@ -21,6 +21,15 @@ Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& n
     }
 
     _device = App->GetModule<ModuleID3D12>()->GetDevice();
+
+    if (_loaded)
+    {
+        CD3DX12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+        Chiron::Utils::ThrowIfFailed(_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &_resourceDesc,
+            D3D12_RESOURCE_STATE_COMMON, _clearValue.get(), IID_PPV_ARGS(&_resource)));
+
+        ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
+    }
 
     SetName(name);
     CheckFeatureSupport();
@@ -93,7 +102,7 @@ bool Resource::CheckFormatSupport(D3D12_FORMAT_SUPPORT2 formatSupport) const
     return (_featureSupport.Support2 & formatSupport) != 0;
 }
 
-void Resource::Load()
+bool Resource::Load()
 {
     if (!_loaded)
     {
@@ -104,27 +113,26 @@ void Resource::Load()
         SetName(_name);
         ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
 
-        InternalLoad();
-
-        _loaded = true;
+        _loaded = InternalLoad();
     }
+    return _loaded;
 }
 
-void Resource::Unload()
+bool Resource::Unload()
 {
     if (_loaded)
     {
         ResourceStateTracker::RemoveGlobalResourceState(_resource.Get());
         _resource.Reset();
 
-        InternalUnload();
-
-        _loaded = false;
+        _loaded = InternalUnload();
     }
+    return _loaded;
 }
 
 void Resource::SetResource(ComPtr<ID3D12Resource> resource)
 {
+    ResourceStateTracker::RemoveGlobalResourceState(_resource.Get());
     _resource = resource;
     _resourceDesc = _resource->GetDesc();
     _loaded = true;

@@ -16,7 +16,7 @@ struct Node
 class ModelAsset : public Asset
 {
 public:
-    ModelAsset();
+    ModelAsset(UID uid, const std::string& assetPath, const std::string& libraryPath);
     ~ModelAsset() override;
 
     inline void AddNode(Node* node);
@@ -24,8 +24,6 @@ public:
     // ------------- GETTERS ----------------------
 
     inline const std::vector<std::unique_ptr<Node>>& GetNodes() const;
-    inline std::string GetAssetPath() const override;
-    inline std::string GetLibraryPath() const override;
 
     // ------------- GETTERS ----------------------
 
@@ -43,16 +41,6 @@ inline void ModelAsset::AddNode(Node* node)
 inline const std::vector<std::unique_ptr<Node>>& ModelAsset::GetNodes() const
 {
     return _nodes;
-}
-
-inline std::string ModelAsset::GetAssetPath() const
-{
-    return MODELS_PATH + GetName();
-}
-
-inline std::string ModelAsset::GetLibraryPath() const
-{
-    return MODEL_LIB_PATH + std::to_string(GetUID()) + GENERAL_BINARY_EXTENSION;
 }
 
 inline void ModelAsset::SetNodes(std::vector<std::unique_ptr<Node>>& nodes)

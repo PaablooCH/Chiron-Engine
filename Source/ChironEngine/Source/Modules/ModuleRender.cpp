@@ -155,7 +155,7 @@ void ModuleRender::ResizeBuffers(unsigned newWidth, unsigned newHeight)
     D3D12_RESOURCE_DESC textureDesc =
         CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, newWidth, newHeight, 1, 1, 1, 0,
             D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", &clearValue);
+    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", true, &clearValue);
 
     _depthStencilTexture = App->GetModule<ModuleID3D12>()->
         CreateDepthStencil("Scene Depth Stencil Texture", newWidth, newHeight);
@@ -175,7 +175,7 @@ void ModuleRender::CreateTextures()
     D3D12_RESOURCE_DESC textureDesc =
         CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, 1, 1, 1, 0,
             D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", &clearValue);
+    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", true, &clearValue);
 
     _depthStencilTexture = App->GetModule<ModuleID3D12>()->CreateDepthStencil("Scene Depth Stencil Texture", width, height);
 }
