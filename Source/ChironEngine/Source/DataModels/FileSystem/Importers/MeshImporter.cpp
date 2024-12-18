@@ -99,10 +99,8 @@ void MeshImporter::Load(const char* libraryPath, const std::shared_ptr<MeshAsset
     mesh->SetName(std::string(fileBuffer, header[0]));
     fileBuffer += header[0];
 
-    UINT numVertices = header[0];
-    UINT numIndices = header[1];
-
-    fileBuffer += sizeof(header);
+    UINT numVertices = header[1];
+    UINT numIndices = header[2];
 
     // -------------- VERTEX ---------------------
 
