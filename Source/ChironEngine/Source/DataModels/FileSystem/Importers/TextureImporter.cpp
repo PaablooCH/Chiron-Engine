@@ -51,7 +51,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
 
     bool isDDS = false;
     bool isHDR = false;
-    if (ext == ".dds")
+    if (ext == DDS_EXT)
     {
         isDDS = true;
         HRESULT hr = LoadFromDDSFile(path, DirectX::DDS_FLAGS_NONE, &info, *image);
@@ -72,7 +72,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
             image.swap(dcmprsdImg);
         }
     }
-    else if (ext == ".tga")
+    else if (ext == TGA_EXT)
     {
         HRESULT hr = LoadFromTGAFile(path, &info, *image);
         if (FAILED(hr))
@@ -81,7 +81,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
             return;
         }
     }
-    else if (ext == ".hdr")
+    else if (ext == HDR_EXT)
     {
         isHDR = true;
         HRESULT hr = LoadFromHDRFile(path, &info, *image);
@@ -281,21 +281,24 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
         textureDesc = CD3DX12_RESOURCE_DESC::Tex1D(
             info.format,
             static_cast<UINT64>(info.width),
-            static_cast<UINT16>(info.arraySize));
+            static_cast<UINT16>(info.arraySize),
+            static_cast<UINT16>(info.mipLevels));
         break;
     case DirectX::TEX_DIMENSION_TEXTURE2D:
         textureDesc = CD3DX12_RESOURCE_DESC::Tex2D(
             info.format,
             static_cast<UINT64>(info.width),
             static_cast<UINT>(info.height),
-            static_cast<UINT16>(info.arraySize));
+            static_cast<UINT16>(info.arraySize),
+            static_cast<UINT16>(info.mipLevels));
         break;
     case DirectX::TEX_DIMENSION_TEXTURE3D:
         textureDesc = CD3DX12_RESOURCE_DESC::Tex3D(
             info.format,
             static_cast<UINT64>(info.width),
             static_cast<UINT>(info.height),
-            static_cast<UINT16>(info.depth));
+            static_cast<UINT16>(info.depth),
+            static_cast<UINT16>(info.mipLevels));
         break;
     default:
         throw std::exception("Invalid texture dimension.");
@@ -306,24 +309,20 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, textureName);
     texture->SetTexture(newTexture);
 
-    uint32_t numSubresources = static_cast<uint32_t>(info.mipLevels * info.arraySize);
-    std::vector<D3D12_SUBRESOURCE_DATA> subresources(numSubresources);
+    uint32_t imageSize = static_cast<uint32_t>(info.mipLevels * info.arraySize);
+    std::vector<MyImage> images(imageSize);
     const DirectX::Image* pImages = image->GetImages();
-    for (uint32_t i = 0; i < numSubresources; ++i)
+    for (uint32_t i = 0; i < imageSize; ++i)
     {
-        auto& subresource = subresources[i];
-        subresource.pData = pImages[i].pixels;
-        subresource.RowPitch = pImages[i].rowPitch;
-        subresource.SlicePitch = pImages[i].slicePitch;
+        auto& subresource = images[i];
+        subresource.rowPitch = pImages[i].rowPitch;
+        subresource.slicePitch = pImages[i].slicePitch;
+
+        size_t dataSize = pImages[i].slicePitch;
+        subresource.pixels.resize(dataSize);
+        memcpy(subresource.pixels.data(), pImages[i].pixels, dataSize);
     }
-
-    auto d3d12 = App->GetModule<ModuleID3D12>();
-
-    auto commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
-    commandList->UpdateBufferResource(texture->GetTexture().get(), 0, numSubresources, subresources.data());
-
-    uint64_t initFenceValue = d3d12->ExecuteCommandList(commandList);
-    d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, initFenceValue);
+    texture->SetImages(images);
 
     Save(texture);
 
@@ -341,29 +340,47 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
     }
 }
 
-void TextureImporter::Load(const char* fileBuffer, const std::shared_ptr<TextureAsset>& texture)
+void TextureImporter::Load(const char* libraryPath, const std::shared_ptr<TextureAsset>& texture)
 {
-    // ------------- META ----------------------
+    if (!ModuleFileSystem::ExistsFile(libraryPath))
+    {
+        // ------------- META ----------------------
 
-    std::string metaPath = texture->GetAssetPath();
-    rapidjson::Document doc;
-    Json meta = Json(doc);
-    ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
-    texture->AddConfigFlags(meta["texConfigFlags"]);
-    texture->AddConversionFlags(meta["texConversionFlags"]);
+        std::string metaPath = texture->GetAssetPath() + META_EXT;
+        rapidjson::Document doc;
+        Json meta = Json(doc);
+        ModuleFileSystem::LoadJson(metaPath.c_str(), meta);
+        texture->AddConfigFlags(meta["texConfigFlags"]);
+        texture->AddConversionFlags(meta["texConversionFlags"]);
+
+        // ------------- REIMPORT FILE ----------------------
+
+        std::string assetPath = meta["assetPath"];
+        Import(assetPath.c_str(), texture);
+
+        return;
+    }
+    
+    char* fileBuffer;
+    ModuleFileSystem::LoadFile(libraryPath, fileBuffer);
+    char* originalFileBuffer = fileBuffer;
 
     // ------------- BINARY ----------------------
 
-    UINT header[1];
+    unsigned int header[2];
     memcpy(header, fileBuffer, sizeof(header));
+    fileBuffer += sizeof(header);
 
-    UINT configFlag = header[0];
+    texture->SetName(std::string(fileBuffer, header[0]));
+    fileBuffer += header[0];
+
+    UINT configFlag = header[1];
     texture->AddConfigFlags(configFlag);
 
     // ------------- LOAD DDS ----------------------
 
-    std::string filePath = texture->GetLibraryDDSPath();
-    std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
+    std::string ddsPath = texture->GetLibraryDDSPath();
+    std::wstring wFilePath = std::wstring(ddsPath.begin(), ddsPath.end());
     const wchar_t* path = wFilePath.c_str();
 
     DirectX::TexMetadata info;
@@ -371,9 +388,10 @@ void TextureImporter::Load(const char* fileBuffer, const std::shared_ptr<Texture
     HRESULT hr = LoadFromDDSFile(path, DirectX::DDS_FLAGS_NONE, &info, *image);
     if (FAILED(hr))
     {
-        LOG_ERROR("Could not load texture {} (DDS: {}).", filePath, Chiron::Utils::GetErrorMessage(hr));
+        LOG_ERROR("Could not load texture {} (DDS: {}).", libraryPath, Chiron::Utils::GetErrorMessage(hr));
         return;
     }
+    DirectX::IsCompressed(image->GetMetadata().format);
 
     // ------------- LOAD INTO RESOURCE ----------------------
 
@@ -405,28 +423,25 @@ void TextureImporter::Load(const char* fileBuffer, const std::shared_ptr<Texture
         break;
     }
 
-    std::string textureName = texture->GetName();
-    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, textureName);
+    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureDesc, texture->GetName());
     texture->SetTexture(newTexture);
 
     uint32_t numSubresources = static_cast<uint32_t>(info.mipLevels * info.arraySize);
-    std::vector<D3D12_SUBRESOURCE_DATA> subresources(numSubresources);
+    std::vector<MyImage> images(numSubresources);
     const DirectX::Image* pImages = image->GetImages();
     for (uint32_t i = 0; i < numSubresources; ++i)
     {
-        auto& subresource = subresources[i];
-        subresource.pData = pImages[i].pixels;
-        subresource.RowPitch = pImages[i].rowPitch;
-        subresource.SlicePitch = pImages[i].slicePitch;
+        auto& subresource = images[i];
+        subresource.rowPitch = pImages[i].rowPitch;
+        subresource.slicePitch = pImages[i].slicePitch;
+
+        size_t dataSize = pImages[i].slicePitch;
+        subresource.pixels.resize(dataSize);
+        memcpy(subresource.pixels.data(), pImages[i].pixels, dataSize);
     }
+    texture->SetImages(images);
 
-    auto d3d12 = App->GetModule<ModuleID3D12>();
-
-    auto commandList = d3d12->GetCommandList(D3D12_COMMAND_LIST_TYPE_COPY);
-    commandList->UpdateBufferResource(texture->GetTexture().get(), 0, numSubresources, subresources.data());
-
-    uint64_t initFenceValue = d3d12->ExecuteCommandList(commandList);
-    d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, initFenceValue);
+    delete[] originalFileBuffer;
 }
 
 void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
@@ -447,14 +462,21 @@ void TextureImporter::Save(const std::shared_ptr<TextureAsset>& texture)
 
     UINT configFlags = texture->GetConfigFlags();
 
-    unsigned int header[1] = { configFlags };
+    unsigned int header[2] = { static_cast<unsigned int>(texture->GetName().size()), configFlags };
     UINT size = sizeof(header);
+
+    size += sizeof(char) * static_cast<unsigned int>(texture->GetName().size());
 
     char* fileBuffer = new char[size] {};
     char* cursor = fileBuffer;
 
     unsigned int bytes = sizeof(header);
     memcpy(cursor, header, bytes);
+    cursor += bytes;
+
+    bytes = sizeof(char) * static_cast<unsigned int>(texture->GetName().size());
+    memcpy(cursor, &texture->GetName()[0], bytes);
+    cursor += bytes;
 
     ModuleFileSystem::SaveFile(texture->GetLibraryPath().c_str(), fileBuffer, size);
 
