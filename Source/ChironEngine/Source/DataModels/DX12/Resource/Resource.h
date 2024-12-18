@@ -15,7 +15,7 @@ public:
 
     // ------------- GETTERS ----------------------
 
-    inline ID3D12Resource* GetResource();
+    inline ID3D12Resource* GetResource() const;
     inline const std::string& GetName() const;
 
     /*virtual D3D12_CPU_DESCRIPTOR_HANDLE GetCPURenderTargetView() const = 0;
@@ -64,12 +64,8 @@ inline bool Resource::IsValid() const
     return _loaded;
 }
 
-inline ID3D12Resource* Resource::GetResource()
+inline ID3D12Resource* Resource::GetResource() const
 {
-    if (!IsValid())
-    {
-        Load();
-    }
     return _resource.Get();
 }
 
