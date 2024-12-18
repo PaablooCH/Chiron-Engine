@@ -83,9 +83,9 @@ bool ModuleScene::CleanUp()
 
 void ModuleScene::SaveScene()
 {
-    if (!ModuleFileSystem::IsDirectory(SCENE_FOLDER))
+    if (!ModuleFileSystem::IsDirectory(SCENES_FOLDER))
     {
-        ModuleFileSystem::CreateDirectoryC(SCENE_FOLDER);
+        ModuleFileSystem::CreateDirectoryC(SCENES_FOLDER);
     }
     rapidjson::Document doc;
     Json json = Json(doc);
@@ -95,7 +95,7 @@ void ModuleScene::SaveScene()
 
     std::ostringstream oss;
     const std::string& name = _loadedScene->GetRoot()->GetName();
-    oss << SCENE_PATH << name << SCENE_EXT;
+    oss << SCENES_PATH << name << SCENE_EXT;
 
     ModuleFileSystem::SaveFile(oss.str().c_str(), buffer.GetString(), buffer.GetSize());
 }
@@ -107,14 +107,11 @@ void ModuleScene::LoadScene(const std::string& scenePath, std::function<void(voi
 
 void ModuleScene::ModelToGameObject(std::string& modelPath)
 {
-    std::shared_ptr<ModelAsset> modelAsset = std::make_shared<ModelAsset>();
-    App->GetModule<ModuleResources>()->Import(modelPath.c_str(), modelAsset);
-    modelAsset->SetName(ModuleFileSystem::GetFileName(modelPath));
+    std::shared_ptr<ModelAsset> modelAsset = App->GetModule<ModuleResources>()->RequestAsset<ModelAsset>(modelPath.c_str());
 
     GameObject* gameObjectModel = CreateGameObject(modelAsset->GetName(), _loadedScene->GetRoot());
 
     const std::vector<std::unique_ptr<Node>>& nodes = modelAsset->GetNodes();
-    std::vector<GameObject*> gameObjectsNodes;
     std::unordered_map<int, GameObject*> parentsGameObjects;
 
     for (int i = 0; i < nodes.size(); ++i)
@@ -128,7 +125,6 @@ void ModuleScene::ModelToGameObject(std::string& modelPath)
         }
 
         GameObject* gameObjectNode = CreateGameObject(&node->name[0], parent);
-        gameObjectsNodes.push_back(gameObjectNode);
         parentsGameObjects[i] = gameObjectNode;
         
         Vector3 pos;
@@ -153,8 +149,6 @@ void ModuleScene::ModelToGameObject(std::string& modelPath)
             MeshRendererComponent* meshMaterial = gameObjectModelMesh->CreateComponent<MeshRendererComponent>();
             meshMaterial->SetMesh(mesh);
             meshMaterial->SetMaterial(material);
-
-            gameObjectsNodes.push_back(gameObjectModelMesh);
         }
     }
     gameObjectModel->GetInternalComponent<TransformComponent>()->UpdateMatrices();
