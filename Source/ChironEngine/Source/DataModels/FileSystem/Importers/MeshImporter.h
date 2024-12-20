@@ -15,4 +15,3 @@ public:
 private:
     void Save(const std::shared_ptr<MeshAsset>& mesh) override;
 };
-

@@ -20,11 +20,11 @@ GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, Chir
 }
 
 // JSON constructor
-GameObject::GameObject(const Field& meta) : _uid(meta["uid"]), _name(meta["name"]), _parent(nullptr), 
+GameObject::GameObject(const Field& meta) : _uid(meta["uid"]), _name(meta["name"]), _parent(nullptr),
 _enabled(meta["enabled"]), _active(false), _static(meta["static"]), _tag(meta["tag"]), _hierarchyState(HierarchyState::NONE)
 {
     App->GetModule<ModuleScene>()->AddGameObject(this);
-    
+
     auto components = meta["Components"];
     for (int i = 0; i < components.Size(); i++)
     {
@@ -146,7 +146,7 @@ void GameObject::SetParent(GameObject* parent)
 void GameObject::SetEnabled(bool enabled)
 {
     _enabled = enabled;
-    
+
     for (auto& child : _children)
     {
         child->PropagateActive(_enabled && _active);

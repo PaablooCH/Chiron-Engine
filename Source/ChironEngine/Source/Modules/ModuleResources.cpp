@@ -203,8 +203,8 @@ AssetType ModuleResources::GetTypeByExtension(const std::string& path)
         return AssetType::Model;
     }
     else if (normalizedExtension == JPG_EXT || normalizedExtension == PNG_EXT ||
-             normalizedExtension == TIF_EXT || normalizedExtension == DDS_EXT ||
-             normalizedExtension == TGA_EXT || normalizedExtension == HDR_EXT)
+        normalizedExtension == TIF_EXT || normalizedExtension == DDS_EXT ||
+        normalizedExtension == TGA_EXT || normalizedExtension == HDR_EXT)
     {
         return AssetType::Texture;
     }

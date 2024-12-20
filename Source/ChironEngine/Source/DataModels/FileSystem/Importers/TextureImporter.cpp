@@ -258,7 +258,7 @@ void TextureImporter::Import(const char* filePath, const std::shared_ptr<Texture
         {
             std::unique_ptr<DirectX::ScratchImage> timage(new DirectX::ScratchImage);
 
-            HRESULT hr = DirectX::Compress(image->GetImages(), image->GetImageCount(), image->GetMetadata(), cformat, 
+            HRESULT hr = DirectX::Compress(image->GetImages(), image->GetImageCount(), image->GetMetadata(), cformat,
                 DirectX::TEX_COMPRESS_DEFAULT, 0.5f, *timage);
             if (FAILED(hr))
             {
@@ -360,7 +360,7 @@ void TextureImporter::Load(const char* libraryPath, const std::shared_ptr<Textur
 
         return;
     }
-    
+
     char* fileBuffer;
     ModuleFileSystem::LoadFile(libraryPath, fileBuffer);
     char* originalFileBuffer = fileBuffer;

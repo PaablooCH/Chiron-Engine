@@ -37,6 +37,6 @@ Field Json::operator[](const char* key) const
     {
         _document.AddMember(rapidjson::StringRef(key), rapidjson::Value(), _document.GetAllocator());
     }
-    
+
     return Field(_document[key], _document);
 }

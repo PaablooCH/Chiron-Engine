@@ -47,11 +47,11 @@ const std::string ModuleFileSystem::GetFileExtension(const char* path)
     std::string sPath(path);
     size_t dotPosition = sPath.find_last_of('.');
     size_t slashPosition = sPath.find_last_of("/");
-    if (dotPosition != std::string::npos && (slashPosition == std::string::npos || dotPosition > slashPosition)) 
+    if (dotPosition != std::string::npos && (slashPosition == std::string::npos || dotPosition > slashPosition))
     {
         return sPath.substr(dotPosition);
     }
-    else 
+    else
     {
         return ""; // No extension found or dot is in a directory name
     }
@@ -62,17 +62,17 @@ const std::string ModuleFileSystem::GetFileName(const std::string& path)
     std::string result = "";
 
     size_t lastSlash = path.find_last_of("/\\");
-    if (lastSlash != std::string::npos) 
+    if (lastSlash != std::string::npos)
     {
         result = path.substr(lastSlash + 1);
     }
-    else 
+    else
     {
         result = path;
     }
 
     size_t lastDot = result.find_last_of(".");
-    if (lastDot != std::string::npos) 
+    if (lastDot != std::string::npos)
     {
         result = result.substr(0, lastDot);
     }
@@ -81,14 +81,14 @@ const std::string ModuleFileSystem::GetFileName(const std::string& path)
 
 const std::string ModuleFileSystem::GetPathWithoutFile(const std::string& path)
 {
-    if (path.empty()) 
+    if (path.empty())
     {
         return "";
     }
 
     // Find the last directory separator
     size_t lastSeparator = path.find_last_of("/\\");
-    if (lastSeparator != std::string::npos) 
+    if (lastSeparator != std::string::npos)
     {
         return path.substr(0, lastSeparator + 1); // Include the separator
     }

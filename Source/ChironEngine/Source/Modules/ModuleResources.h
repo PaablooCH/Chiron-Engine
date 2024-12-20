@@ -25,7 +25,6 @@ public:
     bool Start() override;
     bool CleanUp() override;
 
-    
     // Request resource and Import if is necessary
     template<class A = Asset>
     const std::shared_ptr<A> RequestAsset(const std::string path);
@@ -33,7 +32,7 @@ public:
     // Search resource
     template<class A = Asset>
     const std::shared_ptr<A> SearchAsset(UID uid);
-    
+
     void ImportAsset(const char* filePath, const std::shared_ptr<Asset>& asset);
 
 private:
@@ -54,7 +53,6 @@ private:
     AssetType GetTypeByLibraryPath(const std::string& path);
     AssetType GetTypeByFolderName(std::string& pathWithOutFile);
 
-    
     void CreateAssetsAndLibraryFolders();
 
 private:
@@ -78,7 +76,7 @@ inline const std::shared_ptr<A> ModuleResources::RequestAsset(const std::string 
 
     std::string filePath = GetAssetPathByType(type) + ModuleFileSystem::GetFile(path.c_str());
     std::string metaPath = filePath + META_EXT;
-    
+
     if (ModuleFileSystem::ExistsFile(metaPath.c_str()))
     {
         rapidjson::Document doc;
@@ -109,7 +107,6 @@ inline const std::shared_ptr<A> ModuleResources::RequestAsset(const std::string 
     if (!ModuleFileSystem::ExistsFile(filePath.c_str()))
     {
         CHIRON_TODO("copy the file outside the project into the project");
-
     }
     auto asset = CreateNewAsset(filePath, type);
     ImportAsset(filePath.c_str(), asset);

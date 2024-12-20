@@ -52,7 +52,6 @@ inline std::vector<std::string> CreateEnumNamesVector(const std::string& names)
             }                                                                                                                   \
             return E::UNKNOWN;                                                                                                  \
         }                                                                                                                       \
-    }                                                                                                                   
-    
+    }
 
 #define DECLARE_ENUM_NAMES(E, ...) DECLARE_ENUM_WITH_TYPE(E, int32_t, __VA_ARGS__)

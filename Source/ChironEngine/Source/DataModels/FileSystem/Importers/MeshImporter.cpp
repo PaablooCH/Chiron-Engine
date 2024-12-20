@@ -26,7 +26,7 @@ void MeshImporter::Import(const char* filePath, const std::shared_ptr<MeshAsset>
 {
     char* fileBuffer;
     ModuleFileSystem::LoadFile(filePath, fileBuffer);
-    
+
     char* fileBufferOriginal = fileBuffer;
 
     mesh->SetName(ModuleFileSystem::GetFile(filePath));
@@ -137,7 +137,7 @@ void MeshImporter::Save(const std::shared_ptr<MeshAsset>& mesh)
                         //Vertex                                      //Indices
     size_t size = static_cast<UINT>(sizeof(Vertex) * triangle.size()) + (sizeof(UINT) * index.size());
 
-    unsigned int header[3] = { static_cast<unsigned int>(mesh->GetName().size()), 
+    unsigned int header[3] = { static_cast<unsigned int>(mesh->GetName().size()),
         static_cast<unsigned int>(triangle.size()), static_cast<unsigned int>(index.size()) };
     size += sizeof(header);
 

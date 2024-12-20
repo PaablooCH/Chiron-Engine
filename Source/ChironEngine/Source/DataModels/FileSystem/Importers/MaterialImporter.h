@@ -15,4 +15,3 @@ public:
 private:
     void Save(const std::shared_ptr<MaterialAsset>& material) override;
 };
-

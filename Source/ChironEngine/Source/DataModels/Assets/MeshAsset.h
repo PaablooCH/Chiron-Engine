@@ -42,7 +42,7 @@ private:
 private:
     std::unique_ptr<IndexBuffer> _indexBuffer;
     std::unique_ptr<VertexBuffer> _vertexBuffer;
-    
+
     std::vector<UINT> _indexBufferData;
     std::vector<Vertex> _triangleVertices;
 };

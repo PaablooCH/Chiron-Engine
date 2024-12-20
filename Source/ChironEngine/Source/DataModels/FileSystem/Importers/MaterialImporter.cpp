@@ -25,7 +25,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     ModuleFileSystem::LoadJson(filePath, json);
 
     auto resources = App->GetModule<ModuleResources>();
-    
+
     std::string path = json["BaseTexturePath"];
     if (path != "")
     {
@@ -118,7 +118,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
         material->SetNormalMap(texture);
     }
     fileBuffer += bytes;
-    
+
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
@@ -126,7 +126,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
         material->SetAmbientOcclusion(texture);
     }
     fileBuffer += bytes;
-    
+
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
@@ -134,7 +134,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
         material->SetPropertyTexture(texture);
     }
     fileBuffer += bytes;
-    
+
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
@@ -172,7 +172,7 @@ void MaterialImporter::Save(const std::shared_ptr<MaterialAsset>& material)
     json["BaseColor"]["G"] = material->GetBaseColor().G();
     json["BaseColor"]["B"] = material->GetBaseColor().B();
     json["BaseColor"]["A"] = material->GetBaseColor().A();
-    
+
     json["SpecularColor"]["R"] = material->GetSpecularColor().R();
     json["SpecularColor"]["G"] = material->GetSpecularColor().G();
     json["SpecularColor"]["B"] = material->GetSpecularColor().B();
@@ -184,7 +184,7 @@ void MaterialImporter::Save(const std::shared_ptr<MaterialAsset>& material)
 
     // ------------- BINARY ----------------------
 
-                //textures' uid     //base/specular color  //options    
+                //textures' uid     //base/specular color  //options
     UINT size = (sizeof(UID) * 5) + sizeof(Color) * 2 + sizeof(UINT);
 
     unsigned int header[1] = { static_cast<unsigned int>(material->GetName().size()) };
