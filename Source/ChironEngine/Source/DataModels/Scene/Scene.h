@@ -44,7 +44,7 @@ public:
     inline const std::vector<GameObject*>& GetSceneGameObjects() const;
     inline const std::vector<GameObject*>& GetStaticGOs() const;
     inline const std::vector<GameObject*>& GetDynamicsGOs() const;
-    
+
     // ------------- SETTERS ----------------------
 
     inline void SetRoot(GameObject* root);

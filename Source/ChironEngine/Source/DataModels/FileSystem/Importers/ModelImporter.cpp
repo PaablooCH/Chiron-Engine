@@ -113,7 +113,7 @@ void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAss
         fileBuffer += sizeof(int);
 
         node->meshMaterial.reserve(nodeHeader[1]);
-        
+
         // NOT ENGINE
         std::vector<UID> meshesUIDs(nodeHeader[1]);
         memcpy(meshesUIDs.data(), fileBuffer, sizeof(UID) * nodeHeader[1]);
@@ -206,7 +206,7 @@ void ModelImporter::Save(const std::shared_ptr<ModelAsset>& model)
             ++countMeshes;
 
             // ------------- BINARY ----------------------
-            
+
             UID meshUID = node->meshMaterial[i].first->GetUID();
             memcpy(cursor, &meshUID, sizeof(UID));
             cursor += sizeof(UID);
@@ -215,7 +215,7 @@ void ModelImporter::Save(const std::shared_ptr<ModelAsset>& model)
         for (int i = 0; i < node->meshMaterial.size(); ++i)
         {
             // ------------- META ----------------------
-            
+
             mat[countMat] = (MATERIALS_PATH + node->meshMaterial[i].second->GetName());
             ++countMat;
 
@@ -226,9 +226,9 @@ void ModelImporter::Save(const std::shared_ptr<ModelAsset>& model)
             cursor += sizeof(UID);
         }
     }
-    
+
     // ------------- META ----------------------
-    
+
     rapidjson::StringBuffer buffer = meta.ToBuffer();
     ModuleFileSystem::SaveFile(metaPath.c_str(), buffer.GetString(), (unsigned int)buffer.GetSize());
 
@@ -295,7 +295,7 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
 std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const std::string& fileName, int iteration)
 {
     std::string meshPath = MESHES_PATH + fileName + "_" + std::to_string(iteration) + MESH_EXT;
-    
+
     if (ModuleFileSystem::ExistsFile(meshPath.c_str()))
     {
         std::shared_ptr<MeshAsset> meshAsset = App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
@@ -439,12 +439,12 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     // ------------- SAVE MATERIAL FILE ----------------------
 
     auto filebuffer = json.ToBuffer();
-    
-    ModuleFileSystem::SaveFile(matPath.c_str(), 
+
+    ModuleFileSystem::SaveFile(matPath.c_str(),
         filebuffer.GetString(), filebuffer.GetSize());
 
     std::shared_ptr<MaterialAsset> materialAsset = resources->RequestAsset<MaterialAsset>(matPath);
-    
+
     return materialAsset;
 }
 

@@ -58,7 +58,7 @@ UpdateStatus ModuleScene::Update()
     if (keyState.LeftControl && keyState.D)
     {
         auto start = std::chrono::steady_clock::now();
-        LoadScene("Assets/Scenes/New Scene.chiron", 
+        LoadScene("Assets/Scenes/New Scene.chiron",
             [start]()
             {
                 auto end = std::chrono::steady_clock::now();
@@ -126,7 +126,7 @@ void ModuleScene::ModelToGameObject(std::string& modelPath)
 
         GameObject* gameObjectNode = CreateGameObject(&node->name[0], parent);
         parentsGameObjects[i] = gameObjectNode;
-        
+
         Vector3 pos;
         Vector3 scale;
         Quaternion rot;

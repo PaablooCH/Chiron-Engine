@@ -22,7 +22,7 @@ MeshAsset::~MeshAsset()
 {
 }
 
-void MeshAsset::SetIndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, std::vector<UINT>& indexBufferData, 
+void MeshAsset::SetIndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, std::vector<UINT>& indexBufferData,
     const DXGI_FORMAT& indexFormat, const std::string& name)
 {
     _indexBuffer = std::make_unique<IndexBuffer>(resourceDesc, indexBufferData.size(), indexFormat, name);
@@ -70,7 +70,7 @@ bool MeshAsset::InternalLoad()
         directCommandList->TransitionBarrier(_indexBuffer.get(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
         commandsUsed = true;
     }
-    
+
     if (commandsUsed)
     {
         auto signal = id3d12->ExecuteCommandList(copyCommandList);
@@ -78,7 +78,7 @@ bool MeshAsset::InternalLoad()
         signal = id3d12->ExecuteCommandList(directCommandList);
         id3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_DIRECT, signal);
     }
-    
+
     return result;
 }
 

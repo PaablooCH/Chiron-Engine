@@ -12,7 +12,7 @@ public:
     void Draw(const std::shared_ptr<CommandList>& commandList = nullptr) override;
 
     // ------------- GETTERS ----------------------
-    
+
     inline AboutWindow* GetAboutWindow() const;
 
 private:

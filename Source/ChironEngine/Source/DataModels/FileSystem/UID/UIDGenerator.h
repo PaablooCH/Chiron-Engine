@@ -25,4 +25,3 @@ namespace Chiron
         std::uniform_int_distribution<UID> _uniforDistribution;
     };
 }
-

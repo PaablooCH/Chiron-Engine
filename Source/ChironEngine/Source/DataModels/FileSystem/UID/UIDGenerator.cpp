@@ -33,4 +33,3 @@ namespace Chiron
         return std::mt19937_64(seeds);
     }
 }
-

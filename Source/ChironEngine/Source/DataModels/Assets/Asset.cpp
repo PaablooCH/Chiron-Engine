@@ -8,7 +8,7 @@ _assetPath(assetPath), _libraryPath(libraryPath), _loaded(false)
 {
 }
 
-Asset::Asset(AssetType type) : _uid(Chiron::UIDGenerator::GenerateUID()), 
+Asset::Asset(AssetType type) : _uid(Chiron::UIDGenerator::GenerateUID()),
 _type(type), _assetPath(""), _libraryPath(""), _loaded(false)
 {
 }

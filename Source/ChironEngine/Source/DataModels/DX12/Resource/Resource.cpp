@@ -7,12 +7,12 @@
 
 #include "DataModels/DX12/ResourceStateTracker/ResourceStateTracker.h"
 
-Resource::Resource() : _resource(nullptr), _name(""), _device(nullptr), _featureSupport(), _clearValue(nullptr), 
+Resource::Resource() : _resource(nullptr), _name(""), _device(nullptr), _featureSupport(), _clearValue(nullptr),
 _resourceDesc(), _loaded(false)
 {
 }
 
-Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name /* = "" */, bool load /* = false */, 
+Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name /* = "" */, bool load /* = false */,
     const D3D12_CLEAR_VALUE* clearValue /* = nullptr */) : _resourceDesc(resourceDesc), _loaded(load)
 {
     if (clearValue)
@@ -109,7 +109,7 @@ bool Resource::Load()
         CD3DX12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
         Chiron::Utils::ThrowIfFailed(_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &_resourceDesc,
             D3D12_RESOURCE_STATE_COMMON, _clearValue.get(), IID_PPV_ARGS(&_resource)));
-        
+
         SetName(_name);
         ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
 

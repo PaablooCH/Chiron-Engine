@@ -51,7 +51,7 @@ namespace Chiron::Loader
             }
 
             // ------------- LINK COMPONENTS/PARENT ----------------------
-            
+
             std::vector<std::thread> threads;
             for (int i = 0; i < gameObjects.Size(); i++)
             {
@@ -68,7 +68,7 @@ namespace Chiron::Loader
                 auto components = gameObjectField["Components"];
                 threads.emplace_back(
                     [&]() {
-                    gameObject->Load(components);
+                        gameObject->Load(components);
                     });
 
                 // ------------- LINK PARENT ----------------------
@@ -94,9 +94,9 @@ namespace Chiron::Loader
                 }
             }
 
-            for (auto& t : threads) 
+            for (auto& t : threads)
             {
-                if (t.joinable()) 
+                if (t.joinable())
                 {
                     t.join();
                 }
@@ -114,16 +114,15 @@ namespace Chiron::Loader
                     });
             }
 
-            for (auto& t : threads) 
+            for (auto& t : threads)
             {
-                if (t.joinable()) 
+                if (t.joinable())
                 {
                     t.join();
                 }
             }
 
             // ------------- CORRECT SOME GAMEOBJECTS ----------------------
-
 
             // ------------- CALLBACK AND RESET ----------------------
 
