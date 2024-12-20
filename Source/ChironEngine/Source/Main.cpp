@@ -9,7 +9,7 @@
 #include "Modules/ModuleScene.h"
 #include <ImGui/imgui.h>
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -39,7 +39,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
     bool running = true;
     while (running)
     {
-#if OPTICK
+#ifdef PROFILE
         OPTICK_FRAME("MainThread");
 #endif // OPTICK
 
