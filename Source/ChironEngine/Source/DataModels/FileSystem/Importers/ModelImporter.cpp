@@ -40,6 +40,7 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
     if (scene)
     {
 #ifdef PROFILE
+        OPTICK_THREAD("ImportThread");
         OPTICK_CATEGORY("ImportModel", Optick::Category::Debug);
 #endif // DEBUG
         model->SetName(ModuleFileSystem::GetFileName(filePath));
@@ -58,6 +59,7 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
 void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAsset>& model)
 {
 #ifdef PROFILE
+    OPTICK_THREAD("LoadThread");
     OPTICK_CATEGORY("Load Model", Optick::Category::Debug);
 #endif // OPTICK
     if (!ModuleFileSystem::ExistsFile(libraryPath))
