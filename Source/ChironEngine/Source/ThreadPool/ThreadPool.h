@@ -8,6 +8,11 @@ public:
 
     void AddTask(const std::function<void()>& task);
 
+    inline bool IsEmpty() const;
+
+private:
+    ThreadPool();
+
 private:
     std::vector<std::thread> _workers;
 
@@ -18,3 +23,8 @@ private:
 
     bool _stop;
 };
+
+inline bool ThreadPool::IsEmpty() const
+{
+    return _tasks.empty();
+}
