@@ -74,9 +74,9 @@ bool MeshAsset::InternalLoad()
     if (commandsUsed)
     {
         auto signal = id3d12->ExecuteCommandList(copyCommandList);
-        id3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, signal);
+        //id3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, signal);
         signal = id3d12->ExecuteCommandList(directCommandList);
-        id3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_DIRECT, signal);
+        //id3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_DIRECT, signal);
     }
 
     return result;
