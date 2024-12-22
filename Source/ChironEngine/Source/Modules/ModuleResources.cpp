@@ -1,8 +1,6 @@
 #include "Pch.h"
 #include "ModuleResources.h"
 
-#include "ModuleFileSystem.h"
-
 #include "DataModels/FileSystem/Importers/MaterialImporter.h"
 #include "DataModels/FileSystem/Importers/MeshImporter.h"
 #include "DataModels/FileSystem/Importers/ModelImporter.h"
@@ -29,6 +27,8 @@ bool ModuleResources::Init()
     _materialImporter = std::make_unique<MaterialImporter>();
     _meshImporter = std::make_unique<MeshImporter>();
     _modelImporter = std::make_unique<ModelImporter>();
+
+    _threadPool = std::make_unique<ThreadPool>(10);
 
     return true;
 }

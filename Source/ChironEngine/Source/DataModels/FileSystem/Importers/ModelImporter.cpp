@@ -126,9 +126,13 @@ void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAss
         auto moduleResource = App->GetModule<ModuleResources>();
         for (int i = 0; i < meshesUIDs.size(); ++i)
         {
-            std::shared_ptr<MeshAsset> mesh = moduleResource->SearchAsset<MeshAsset>(meshesUIDs[i]);
-            std::shared_ptr<MaterialAsset> material = moduleResource->SearchAsset<MaterialAsset>(materialsUIDs[i]);
-            node->meshMaterial.emplace_back(mesh, material);
+            std::promise<std::shared_ptr<MeshAsset>> promiseMesh;
+            moduleResource->SearchAsset<MeshAsset>(meshesUIDs[i], promiseMesh);
+
+            std::promise<std::shared_ptr<MaterialAsset>> promiseMaterial;
+            moduleResource->SearchAsset<MaterialAsset>(materialsUIDs[i], promiseMaterial);
+            
+            node->meshMaterial.emplace_back(promiseMesh.get_future().get(), promiseMaterial.get_future().get());
         }
 
         nodes.push_back(std::move(node));
@@ -298,9 +302,10 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
 
     if (ModuleFileSystem::ExistsFile(meshPath.c_str()))
     {
-        std::shared_ptr<MeshAsset> meshAsset = App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
+        std::promise<std::shared_ptr<MeshAsset>> promiseMesh;
+        App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath, promiseMesh);
 
-        return meshAsset;
+        return promiseMesh.get_future().get();
     }
 
     // -------------- VERTEX ---------------------
@@ -371,11 +376,12 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
 
     ModuleFileSystem::SaveFile(meshPath.c_str(), fileBuffer, size);
 
-    std::shared_ptr<MeshAsset> meshAsset = App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
+    std::promise<std::shared_ptr<MeshAsset>> promiseMesh;
+    App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath, promiseMesh);
 
     delete[] fileBuffer;
 
-    return meshAsset;
+    return promiseMesh.get_future().get();
 }
 
 std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* material, const std::string& filePath, int iteration)
@@ -386,9 +392,10 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         std::to_string(iteration) + MAT_EXT;
     if (ModuleFileSystem::ExistsFile(matPath.c_str()))
     {
-        std::shared_ptr<MaterialAsset> materialAsset = resources->RequestAsset<MaterialAsset>(matPath);
+        std::promise<std::shared_ptr<MaterialAsset>> promiseMaterial;
+        App->GetModule<ModuleResources>()->RequestAsset<MaterialAsset>(matPath, promiseMaterial);
 
-        return materialAsset;
+        return promiseMaterial.get_future().get();
     }
 
     aiString file;
@@ -443,9 +450,10 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     ModuleFileSystem::SaveFile(matPath.c_str(),
         filebuffer.GetString(), filebuffer.GetSize());
 
-    std::shared_ptr<MaterialAsset> materialAsset = resources->RequestAsset<MaterialAsset>(matPath);
+    std::promise<std::shared_ptr<MaterialAsset>> promiseMaterial;
+    App->GetModule<ModuleResources>()->RequestAsset<MaterialAsset>(matPath, promiseMaterial);
 
-    return materialAsset;
+    return promiseMaterial.get_future().get();
 }
 
 void ModelImporter::CheckPathMaterial(const char* filePath, const aiString& file, std::string& dataBuffer)
