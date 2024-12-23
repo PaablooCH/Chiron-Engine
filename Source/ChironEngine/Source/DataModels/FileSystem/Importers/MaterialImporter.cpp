@@ -26,11 +26,11 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
 
     auto resources = App->GetModule<ModuleResources>();
 
-    std::promise<std::shared_ptr<TextureAsset>> promiseBase;
-    std::promise<std::shared_ptr<TextureAsset>> promiseNormalMap;
-    std::promise<std::shared_ptr<TextureAsset>> promiseOcclusion;
-    std::promise<std::shared_ptr<TextureAsset>> promiseProperty;
-    std::promise<std::shared_ptr<TextureAsset>> promiseEmissive;
+    std::future<std::shared_ptr<TextureAsset>> futureBase;
+    std::future<std::shared_ptr<TextureAsset>> futureNormalMap;
+    std::future<std::shared_ptr<TextureAsset>> futureOcclusion;
+    std::future<std::shared_ptr<TextureAsset>> futureProperty;
+    std::future<std::shared_ptr<TextureAsset>> futureEmissive;
 
     bool hasBase = false;
     bool hasNormal = false;
@@ -41,6 +41,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     std::string path = json["BaseTexturePath"];
     if (path != "")
     {
+        std::promise<std::shared_ptr<TextureAsset>> promiseBase;
         resources->RequestAsset<TextureAsset>(path, promiseBase);
         hasBase = true;
     }
@@ -48,6 +49,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     path = json["NormalMapPath"];
     if (path != "")
     {
+        std::promise<std::shared_ptr<TextureAsset>> promiseNormalMap;
         resources->RequestAsset<TextureAsset>(path, promiseNormalMap);
         hasNormal = true;
     }
@@ -55,6 +57,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     path = json["AmbientOcclusionPath"];
     if (path != "")
     {
+        std::promise<std::shared_ptr<TextureAsset>> promiseOcclusion;
         resources->RequestAsset<TextureAsset>(path, promiseOcclusion);
         hasOcclusion = true;
     }
@@ -62,6 +65,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     path = json["PropertyTexturePath"];
     if (path != "")
     {
+        std::promise<std::shared_ptr<TextureAsset>> promiseProperty;
         resources->RequestAsset<TextureAsset>(path, promiseProperty);
         hasProperty = true;
     }
@@ -69,29 +73,30 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     path = json["EmissiveTexturePath"];
     if (path != "")
     {
+        std::promise<std::shared_ptr<TextureAsset>> promiseEmissive;
         resources->RequestAsset<TextureAsset>(path, promiseEmissive);
         hasEmissive = true;
     }
     
     if (hasBase)
     {
-        material->SetBaseTexture(promiseBase.get_future().get());
+        material->SetBaseTexture(futureBase.get());
     }
     if (hasNormal)
     {
-        material->SetNormalMap(promiseNormalMap.get_future().get());
+        material->SetNormalMap(futureNormalMap.get());
     }
     if (hasOcclusion)
     {
-        material->SetAmbientOcclusion(promiseOcclusion.get_future().get());
+        material->SetAmbientOcclusion(futureOcclusion.get());
     }
     if (hasProperty)
     {
-        material->SetPropertyTexture(promiseProperty.get_future().get());
+        material->SetPropertyTexture(futureProperty.get());
     }
     if (hasEmissive)
     {
-        material->SetEmissiveTexture(promiseEmissive.get_future().get());
+        material->SetEmissiveTexture(futureEmissive.get());
     }
 
     Save(material);
@@ -131,11 +136,11 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
 
     auto resourceModule = App->GetModule<ModuleResources>();
 
-    std::promise<std::shared_ptr<TextureAsset>> promiseBase;
-    std::promise<std::shared_ptr<TextureAsset>> promiseNormalMap;
-    std::promise<std::shared_ptr<TextureAsset>> promiseOcclusion;
-    std::promise<std::shared_ptr<TextureAsset>> promiseProperty;
-    std::promise<std::shared_ptr<TextureAsset>> promiseEmissive;
+    std::future<std::shared_ptr<TextureAsset>> futureBase;
+    std::future<std::shared_ptr<TextureAsset>> futureNormalMap;
+    std::future<std::shared_ptr<TextureAsset>> futureOcclusion;
+    std::future<std::shared_ptr<TextureAsset>> futureProperty;
+    std::future<std::shared_ptr<TextureAsset>> futureEmissive;
 
     bool hasBase = false;
     bool hasNormal = false;
@@ -156,7 +161,8 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        resourceModule->SearchAsset<TextureAsset>(textureUID, promiseBase);
+        std::promise<std::shared_ptr<TextureAsset>> promiseBase;
+        futureBase = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseBase);
         hasBase = true;
     }
     fileBuffer += bytes;
@@ -164,7 +170,8 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        resourceModule->SearchAsset<TextureAsset>(textureUID, promiseNormalMap);
+        std::promise<std::shared_ptr<TextureAsset>> promiseNormalMap;
+        futureNormalMap = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseNormalMap);
         hasNormal = true;
     }
     fileBuffer += bytes;
@@ -172,7 +179,8 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        resourceModule->SearchAsset<TextureAsset>(textureUID, promiseOcclusion);
+        std::promise<std::shared_ptr<TextureAsset>> promiseOcclusion;
+        futureOcclusion = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseOcclusion);
         hasOcclusion = true;
     }
     fileBuffer += bytes;
@@ -180,7 +188,8 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        resourceModule->SearchAsset<TextureAsset>(textureUID, promiseProperty);
+        std::promise<std::shared_ptr<TextureAsset>> promiseProperty;
+        futureProperty = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseProperty);
         hasProperty = true;
     }
     fileBuffer += bytes;
@@ -188,7 +197,8 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        resourceModule->SearchAsset<TextureAsset>(textureUID, promiseEmissive);
+        std::promise<std::shared_ptr<TextureAsset>> promiseEmissivea;
+        futureEmissive = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseEmissivea);
         hasEmissive = true;
     }
     fileBuffer += bytes;
@@ -210,23 +220,23 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
 
     if (hasBase)
     {
-        material->SetBaseTexture(promiseBase.get_future().get());
+        material->SetBaseTexture(futureBase.get());
     }
     if (hasNormal)
     {
-        material->SetNormalMap(promiseNormalMap.get_future().get());
+        material->SetNormalMap(futureNormalMap.get());
     }
     if (hasOcclusion)
     {
-        material->SetAmbientOcclusion(promiseOcclusion.get_future().get());
+        material->SetAmbientOcclusion(futureOcclusion.get());
     }
     if (hasProperty)
     {
-        material->SetPropertyTexture(promiseProperty.get_future().get());
+        material->SetPropertyTexture(futureProperty.get());
     }
     if (hasEmissive)
     {
-        material->SetEmissiveTexture(promiseEmissive.get_future().get());
+        material->SetEmissiveTexture(futureEmissive.get());
     }
 
     delete[] fileBufferOriginal;

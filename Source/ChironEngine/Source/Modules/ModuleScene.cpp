@@ -108,9 +108,9 @@ void ModuleScene::LoadScene(const std::string& scenePath, std::function<void(voi
 void ModuleScene::ModelToGameObject(std::string& modelPath)
 {
     std::promise<std::shared_ptr<ModelAsset>> promiseModel;
-    App->GetModule<ModuleResources>()->RequestAsset<ModelAsset>(modelPath.c_str(), promiseModel);
+    auto modelFuture = App->GetModule<ModuleResources>()->RequestAsset<ModelAsset>(modelPath.c_str(), promiseModel);
 
-    std::shared_ptr<ModelAsset> modelAsset = promiseModel.get_future().get();
+    std::shared_ptr<ModelAsset> modelAsset = modelFuture.get();
     GameObject* gameObjectModel = CreateGameObject(modelAsset->GetName(), _loadedScene->GetRoot());
 
     const std::vector<std::unique_ptr<Node>>& nodes = modelAsset->GetNodes();

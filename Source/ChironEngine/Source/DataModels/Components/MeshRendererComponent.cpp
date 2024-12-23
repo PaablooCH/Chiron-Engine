@@ -90,13 +90,13 @@ void MeshRendererComponent::InternalLoad(const Field& meta)
     UID materialUID = meta["material"]["uid"];
     std::string materialPath = meta["material"]["assetPath"];
     std::promise<std::shared_ptr<MaterialAsset>> promiseMaterial;
-    moduleResource->RequestAsset<MaterialAsset>(materialPath, promiseMaterial);
+    auto futureMaterial = moduleResource->RequestAsset<MaterialAsset>(materialPath, promiseMaterial);
 
     UID meshUID = meta["mesh"]["uid"];
     std::string meshPath = meta["mesh"]["assetPath"];
     std::promise<std::shared_ptr<MeshAsset>> promiseMesh;
-    moduleResource->RequestAsset<MeshAsset>(meshPath, promiseMesh);
+    auto futureMesh = moduleResource->RequestAsset<MeshAsset>(meshPath, promiseMesh);
 
-    _material = promiseMaterial.get_future().get();
-    _mesh = promiseMesh.get_future().get();
+    _material = futureMaterial.get();
+    _mesh = futureMesh.get();
 }

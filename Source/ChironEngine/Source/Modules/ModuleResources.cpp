@@ -28,7 +28,7 @@ bool ModuleResources::Init()
     _meshImporter = std::make_unique<MeshImporter>();
     _modelImporter = std::make_unique<ModelImporter>();
 
-    _threadPool = std::make_unique<ThreadPool>(10);
+    _threadPool = std::make_unique<ThreadPool>(8);
 
     return true;
 }
@@ -44,9 +44,8 @@ bool ModuleResources::CleanUp()
     return true;
 }
 
-void ModuleResources::ImportAsset(const char* filePath, const std::shared_ptr<Asset>& asset)
+void ModuleResources::ImportAsset(const std::shared_ptr<Asset>& asset)
 {
-    asset->SetAssetPath(filePath);
     if (asset->GetLibraryPath() == "")
     {
         std::string libraryPath = GetLibraryPathByType(asset->GetType()) + std::to_string(asset->GetUID()) + BINARY_EXT;
@@ -55,16 +54,16 @@ void ModuleResources::ImportAsset(const char* filePath, const std::shared_ptr<As
     switch (asset->GetType())
     {
     case AssetType::Material:
-        _materialImporter->Import(filePath, std::dynamic_pointer_cast<MaterialAsset>(asset));
+        _materialImporter->Import(asset->GetAssetPath().c_str(), std::dynamic_pointer_cast<MaterialAsset>(asset));
         break;
     case AssetType::Mesh:
-        _meshImporter->Import(filePath, std::dynamic_pointer_cast<MeshAsset>(asset));
+        _meshImporter->Import(asset->GetAssetPath().c_str(), std::dynamic_pointer_cast<MeshAsset>(asset));
         break;
     case AssetType::Model:
-        _modelImporter->Import(filePath, std::dynamic_pointer_cast<ModelAsset>(asset));
+        _modelImporter->Import(asset->GetAssetPath().c_str(), std::dynamic_pointer_cast<ModelAsset>(asset));
         break;
     case AssetType::Texture:
-        _textureImporter->Import(filePath, std::dynamic_pointer_cast<TextureAsset>(asset));
+        _textureImporter->Import(asset->GetAssetPath().c_str(), std::dynamic_pointer_cast<TextureAsset>(asset));
         break;
     case AssetType::UNKNOWN:
         break;

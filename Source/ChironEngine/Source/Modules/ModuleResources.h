@@ -29,14 +29,14 @@ public:
 
     // Request resource and Import if is necessary
     template<class A = Asset>
-    void RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise);
+    std::future<std::shared_ptr<A>> RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise);
     
     // Search resource by UID
     template<class A = Asset>
-    void SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise);
+    std::future<std::shared_ptr<A>> SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise);
 
 private:
-    void ImportAsset(const char* filePath, const std::shared_ptr<Asset>& asset);
+    void ImportAsset(const std::shared_ptr<Asset>& asset);
     void LoadAsset(const std::shared_ptr<Asset>& asset);
     
     std::shared_ptr<Asset> LoadBinary(UID uid);
@@ -71,8 +71,9 @@ private:
 };
 
 template<class A>
-inline void ModuleResources::RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise)
+inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise)
 {
+    auto future = promise.get_future();
     _threadPool->AddTask(
         [this, path, &promise]() {
             try {
@@ -124,7 +125,7 @@ inline void ModuleResources::RequestAsset(const std::string path, std::promise<s
                     return;
                 }
                 shared = CreateNewAsset(filePath, type);
-                ImportAsset(filePath.c_str(), shared);
+                ImportAsset(shared);
                 promise.set_value(std::dynamic_pointer_cast<A>(shared));
             }
             catch (const std::exception& e) 
@@ -133,11 +134,13 @@ inline void ModuleResources::RequestAsset(const std::string path, std::promise<s
                 promise.set_exception(std::current_exception());
             }
         });
+    return future;
 }
 
 template<class A>
-inline void ModuleResources::SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise)
+inline std::future<std::shared_ptr<A>> ModuleResources::SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise)
 {
+    auto future = promise.get_future();
     _threadPool->AddTask(
         [this, uid, &promise]() {
             try {
@@ -164,4 +167,5 @@ inline void ModuleResources::SearchAsset(UID uid, std::promise<std::shared_ptr<A
                 promise.set_exception(std::current_exception());
             }
         });
+    return future;
 }
