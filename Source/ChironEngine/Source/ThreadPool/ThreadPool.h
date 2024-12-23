@@ -7,6 +7,7 @@ public:
     ~ThreadPool();
 
     void AddTask(const std::function<void()>& task);
+    void WaitForCompletion();
 
     inline bool IsEmpty() const;
 
@@ -20,6 +21,8 @@ private:
 
     std::queue<std::function<void()>> _tasks;
     std::mutex _tasksMutex;
+
+    std::atomic<int> _activeTasks;
 
     bool _stop;
 };

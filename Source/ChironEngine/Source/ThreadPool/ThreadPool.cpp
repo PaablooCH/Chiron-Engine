@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "ThreadPool.h"
 
-ThreadPool::ThreadPool(UINT threadNumber) : _stop(false)
+ThreadPool::ThreadPool(UINT threadNumber) : _activeTasks(0), _stop(false)
 {
     if (threadNumber == 0)
     {
@@ -36,9 +36,19 @@ ThreadPool::ThreadPool(UINT threadNumber) : _stop(false)
 
                         task = std::move(_tasks.front());
                         _tasks.pop();
+                        _activeTasks++;
                     }
 
                     task();
+
+                    {
+                        std::unique_lock<std::mutex> lock(_tasksMutex);
+                        _activeTasks--;
+                        if (_tasks.empty() && _activeTasks == 0) 
+                        {
+                            _cv.notify_all();
+                        }
+                    }
                 }
             }
         );
@@ -54,9 +64,9 @@ ThreadPool::~ThreadPool()
 
     _cv.notify_all();
 
-    for (auto& thread : _workers) 
+    for (auto& worker : _workers) 
     {
-        thread.join();
+        worker.join();
     }
     _workers.clear();
 }
@@ -68,4 +78,14 @@ void ThreadPool::AddTask(const std::function<void()>& task)
         _tasks.push(task);
     }
     _cv.notify_one();
+}
+
+void ThreadPool::WaitForCompletion()
+{
+    std::unique_lock<std::mutex> lock(_tasksMutex);
+    _cv.wait(lock, [this]
+        {
+            return _tasks.empty() && _activeTasks == 0;
+        }
+    );
 }
