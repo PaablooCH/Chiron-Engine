@@ -6,12 +6,12 @@
 #include "ModuleCamera.h"
 #include "ModuleID3D12.h"
 #include "ModuleProgram.h"
+#include "ModuleScene.h"
 #include "ModuleWindow.h"
-#include "ModuleFileSystem.h"
 
 #include "DataModels/Camera/Camera.h"
-
-#include "DataModels/Assets/ModelAsset.h"
+#include "DataModels/GameObject/GameObject.h"
+#include "DataModels/Scene/Scene.h"
 
 #include "DataModels/DX12/CommandList/CommandList.h"
 #include "DataModels/DX12/RootSignature/RootSignature.h"
@@ -27,14 +27,6 @@
     #include "Optick/optick.h"
 #endif // OPTICK
 
-void ModuleRender::LoadNewModel(std::string modelPath)
-{
-    CHIRON_TODO("Delete");
-    auto file = App->GetModule<ModuleFileSystem>();
-    model.reset(new ModelAsset());
-    file->Import(modelPath.c_str(), model);
-}
-
 ModuleRender::ModuleRender() : _scissor(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX)), _sceneTexture(nullptr),
 _depthStencilTexture(nullptr)
 {
@@ -47,9 +39,6 @@ ModuleRender::~ModuleRender()
 bool ModuleRender::Init()
 {
     auto d3d12 = App->GetModule<ModuleID3D12>();
-    auto file = App->GetModule<ModuleFileSystem>();
-    model = std::make_shared<ModelAsset>();
-    file->Import("Assets/Models/BakerHouse.fbx", model);
 
     auto commandQueue = d3d12->GetID3D12CommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
     _debugDraw = std::make_unique<DebugDrawPass>(d3d12->GetDevice(), commandQueue);
@@ -121,7 +110,10 @@ UpdateStatus ModuleRender::Update()
     auto dsv = _depthStencilTexture->GetDepthStencilView().GetCPUDescriptorHandle();
     _drawCommandList->SetRenderTargets(1, &rtv, FALSE, &dsv);
 
-    model->Draw(_drawCommandList);
+    for (auto gameObject : App->GetModule<ModuleScene>()->GetLoadedScene()->GetSceneGameObjects())
+    {
+        gameObject->Render(_drawCommandList);
+    }
 
     // ------------- DEBUG DRAW ----------------------
 
@@ -148,8 +140,6 @@ bool ModuleRender::CleanUp()
     _drawCommandList.reset();
     _depthStencilTexture.reset();
     _debugDraw.reset();
-    model.reset();
-    model = nullptr;
     _drawCommandList = nullptr;
 
     return true;
@@ -165,7 +155,7 @@ void ModuleRender::ResizeBuffers(unsigned newWidth, unsigned newHeight)
     D3D12_RESOURCE_DESC textureDesc =
         CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, newWidth, newHeight, 1, 1, 1, 0,
             D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", &clearValue);
+    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", true, &clearValue);
 
     _depthStencilTexture = App->GetModule<ModuleID3D12>()->
         CreateDepthStencil("Scene Depth Stencil Texture", newWidth, newHeight);
@@ -185,7 +175,7 @@ void ModuleRender::CreateTextures()
     D3D12_RESOURCE_DESC textureDesc =
         CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, 1, 1, 1, 0,
             D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
-    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", &clearValue);
+    _sceneTexture = std::make_unique<Texture>(textureDesc, "Scene Texture", true, &clearValue);
 
     _depthStencilTexture = App->GetModule<ModuleID3D12>()->CreateDepthStencil("Scene Depth Stencil Texture", width, height);
 }

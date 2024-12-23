@@ -7,8 +7,6 @@
 #include "SubWindows/Configuration/EngineStatisticsSubWindow.h"
 #include "SubWindows/Configuration/HardwareSubWindow.h"
 
-#include "DataModels/FileSystem/Json/Json.h"
-
 namespace
 {
     const std::string configurationPath = "Settings/Configuration.conf";

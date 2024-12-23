@@ -7,7 +7,7 @@ class Texture : public Resource
 {
 public:
     Texture();
-    Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "",
+    Texture(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name = "", bool load = false,
         const D3D12_CLEAR_VALUE* clearValue = nullptr);
     Texture(ComPtr<ID3D12Resource> resource);
     Texture(const Texture& copy);
@@ -52,6 +52,8 @@ private:
     D3D12_SHADER_RESOURCE_VIEW_DESC CreateSRVDesc(const D3D12_RESOURCE_DESC& resourceDesc);
     D3D12_UNORDERED_ACCESS_VIEW_DESC CreateUAVDesc(const D3D12_RESOURCE_DESC& resourceDesc, UINT mipSlice,
         UINT arraySlice = 0, UINT planeSlice = 0);
+
+    bool InternalLoad() override;
 
 private:
     mutable DescriptorAllocation _renderTargetView;

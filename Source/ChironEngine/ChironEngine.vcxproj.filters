@@ -312,6 +312,18 @@
     <ClCompile Include="Source\Auxiliar\SceneLoader.cpp">
       <Filter>Source\Auxiliar</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Modules\ModuleResources.cpp">
+      <Filter>Source\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MaterialImporter.cpp">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MeshImporter.cpp">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataModels\Components\MeshRendererComponent.cpp">
+      <Filter>Source\DataModels\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -566,6 +578,24 @@
     </ClInclude>
     <ClInclude Include="Source\Auxiliar\SceneLoader.h">
       <Filter>Source\Auxiliar</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Modules\ModuleResources.h">
+      <Filter>Source\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enums\AssetType.h">
+      <Filter>Source\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MaterialImporter.h">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h">
+      <Filter>Source\DataModels\FileSystem\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Components\MeshRendererComponent.h">
+      <Filter>Source\DataModels\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Components\Interfaces\Renderable.h">
+      <Filter>Source\DataModels\Components\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

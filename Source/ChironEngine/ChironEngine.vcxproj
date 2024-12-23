@@ -12,6 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Auxiliar\SceneLoader.cpp" />
+    <ClCompile Include="Source\DataModels\Components\MeshRendererComponent.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MaterialImporter.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Importers\MeshImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Json\Field.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Auxiliar\Formatter.cpp" />
@@ -71,6 +74,7 @@
     <ClCompile Include="Source\Modules\ModuleInput.cpp" />
     <ClCompile Include="Source\Modules\ModuleRender.cpp" />
     <ClCompile Include="Source\Modules\ModuleProgram.cpp" />
+    <ClCompile Include="Source\Modules\ModuleResources.cpp" />
     <ClCompile Include="Source\Modules\ModuleScene.cpp" />
     <ClCompile Include="Source\Modules\ModuleWindow.cpp" />
     <ClCompile Include="Source\Pch.cpp">
@@ -87,6 +91,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Auxiliar\SceneLoader.h" />
+    <ClInclude Include="Source\DataModels\Components\Interfaces\Renderable.h" />
+    <ClInclude Include="Source\DataModels\Components\MeshRendererComponent.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MaterialImporter.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h" />
+    <ClInclude Include="Source\Enums\AssetType.h" />
     <ClInclude Include="Source\Interfaces\Serializable.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Drawable.h" />
@@ -117,6 +126,7 @@
     <ClInclude Include="Source\DataModels\Window\MainMenuWindow.h" />
     <ClInclude Include="Source\Factories\ComponentWindowFactory.h" />
     <ClInclude Include="Source\Modules\ModuleEditor.h" />
+    <ClInclude Include="Source\Modules\ModuleResources.h" />
     <ClInclude Include="Source\Modules\ModuleScene.h" />
     <ClInclude Include="Source\Structs\AddComponentAction.h" />
     <ClInclude Include="Source\Structs\ModelAttributes.h" />

@@ -14,6 +14,7 @@ public:
     virtual ~Component();
 
     virtual void OnAwake() {};
+    virtual void NotifyTransform() {};
 
     void Save(Field& meta);
     void Load(const Field& meta);

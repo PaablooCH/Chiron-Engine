@@ -1,0 +1,11 @@
+{
+    "uid": 17245217588997293,
+    "type": "Model",
+    "assetPath": "Assets/Models/Duck.gltf",
+    "MeshesAssetPaths": [
+        "Assets/Meshes/nodes[2]_0.mesh"
+    ],
+    "MatAssetPaths": [
+        "Assets/Materials/Duck_0.mat"
+    ]
+}

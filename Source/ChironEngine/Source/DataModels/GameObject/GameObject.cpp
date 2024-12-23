@@ -6,8 +6,10 @@
 #include "Modules/ModuleScene.h"
 
 #include "DataModels/Components/TransformComponent.h"
+#include "DataModels/Components/MeshRendererComponent.h"
 #include "DataModels/Components/Interfaces/Drawable.h"
 #include "DataModels/Components/Interfaces/Updatable.h"
+#include "DataModels/Components/Interfaces/Renderable.h"
 
 #include "DataModels/FileSystem/UID/UIDGenerator.h"
 
@@ -18,11 +20,11 @@ GameObject::GameObject(const std::string& name) : GameObject(name, nullptr, Chir
 }
 
 // JSON constructor
-GameObject::GameObject(const Field& meta) : _uid(meta["uid"]), _name(meta["name"]), _parent(nullptr), 
+GameObject::GameObject(const Field& meta) : _uid(meta["uid"]), _name(meta["name"]), _parent(nullptr),
 _enabled(meta["enabled"]), _active(false), _static(meta["static"]), _tag(meta["tag"]), _hierarchyState(HierarchyState::NONE)
 {
     App->GetModule<ModuleScene>()->AddGameObject(this);
-    
+
     auto components = meta["Components"];
     for (int i = 0; i < components.Size(); i++)
     {
@@ -112,6 +114,17 @@ void GameObject::OnAwake()
     }
 }
 
+void GameObject::Render(const std::shared_ptr<CommandList>& commandList) const
+{
+    for (auto& component : _components)
+    {
+        if (auto* renderable = dynamic_cast<Renderable*>(component.get()))
+        {
+            renderable->Render(commandList);
+        }
+    }
+}
+
 void GameObject::SetParent(GameObject* parent)
 {
     assert(parent);
@@ -133,7 +146,7 @@ void GameObject::SetParent(GameObject* parent)
 void GameObject::SetEnabled(bool enabled)
 {
     _enabled = enabled;
-    
+
     for (auto& child : _children)
     {
         child->PropagateActive(_enabled && _active);
@@ -279,6 +292,7 @@ Component* GameObject::CreateComponent(ComponentType type)
         newComponent = new TransformComponent(this);
         break;
     case ComponentType::MESH_RENDERER:
+        newComponent = new MeshRendererComponent(this);
         break;
     case ComponentType::UNKNOWN:
         LOG_ERROR("UNKNOWN component type");

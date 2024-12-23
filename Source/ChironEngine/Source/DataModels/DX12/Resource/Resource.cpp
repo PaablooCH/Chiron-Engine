@@ -7,11 +7,13 @@
 
 #include "DataModels/DX12/ResourceStateTracker/ResourceStateTracker.h"
 
-Resource::Resource() : _resource(nullptr), _name(""), _device(nullptr), _featureSupport()
+Resource::Resource() : _resource(nullptr), _name(""), _device(nullptr), _featureSupport(), _clearValue(nullptr),
+_resourceDesc(), _loaded(false)
 {
 }
 
-Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name, const D3D12_CLEAR_VALUE* clearValue)
+Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& name /* = "" */, bool load /* = false */,
+    const D3D12_CLEAR_VALUE* clearValue /* = nullptr */) : _resourceDesc(resourceDesc), _loaded(load)
 {
     if (clearValue)
     {
@@ -19,24 +21,30 @@ Resource::Resource(const D3D12_RESOURCE_DESC& resourceDesc, const std::string& n
     }
 
     _device = App->GetModule<ModuleID3D12>()->GetDevice();
-    CD3DX12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-    Chiron::Utils::ThrowIfFailed(_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc,
-        D3D12_RESOURCE_STATE_COMMON, _clearValue.get(), IID_PPV_ARGS(&_resource)));
+
+    if (_loaded)
+    {
+        CD3DX12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+        Chiron::Utils::ThrowIfFailed(_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &_resourceDesc,
+            D3D12_RESOURCE_STATE_COMMON, _clearValue.get(), IID_PPV_ARGS(&_resource)));
+
+        ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
+    }
 
     SetName(name);
-    ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
     CheckFeatureSupport();
 }
 
-Resource::Resource(ComPtr<ID3D12Resource> resource) : _resource(resource)
+Resource::Resource(ComPtr<ID3D12Resource> resource) : _resource(resource), _name(""), _loaded(true)
 {
     _device = App->GetModule<ModuleID3D12>()->GetDevice();
+    _resourceDesc = resource->GetDesc();
     ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
     CheckFeatureSupport();
 }
 
 Resource::Resource(const Resource& copy) : _resource(copy._resource), _name(copy._name), _device(copy._device),
-_featureSupport(copy._featureSupport)
+_featureSupport(copy._featureSupport), _resourceDesc(copy._resourceDesc), _loaded(copy._loaded)
 {
     if (copy._clearValue)
     {
@@ -94,16 +102,47 @@ bool Resource::CheckFormatSupport(D3D12_FORMAT_SUPPORT2 formatSupport) const
     return (_featureSupport.Support2 & formatSupport) != 0;
 }
 
+bool Resource::Load()
+{
+    if (!_loaded)
+    {
+        CD3DX12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+        Chiron::Utils::ThrowIfFailed(_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &_resourceDesc,
+            D3D12_RESOURCE_STATE_COMMON, _clearValue.get(), IID_PPV_ARGS(&_resource)));
+
+        SetName(_name);
+        ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
+
+        _loaded = InternalLoad();
+    }
+    return _loaded;
+}
+
+bool Resource::Unload()
+{
+    if (_loaded)
+    {
+        ResourceStateTracker::RemoveGlobalResourceState(_resource.Get());
+        _resource.Reset();
+
+        _loaded = InternalUnload();
+    }
+    return _loaded;
+}
+
 void Resource::SetResource(ComPtr<ID3D12Resource> resource)
 {
+    ResourceStateTracker::RemoveGlobalResourceState(_resource.Get());
     _resource = resource;
+    _resourceDesc = _resource->GetDesc();
+    _loaded = true;
     ResourceStateTracker::AddGlobalResourceState(_resource.Get(), D3D12_RESOURCE_STATE_COMMON);
     CheckFeatureSupport();
 }
 
 void Resource::CheckFeatureSupport()
 {
-    _featureSupport.Format = _resource->GetDesc().Format;
+    _featureSupport.Format = _resourceDesc.Format;
     Chiron::Utils::ThrowIfFailed(_device->CheckFeatureSupport(D3D12_FEATURE_FORMAT_SUPPORT, &_featureSupport,
         sizeof(_featureSupport)));
 }

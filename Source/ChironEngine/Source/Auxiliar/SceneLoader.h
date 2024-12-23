@@ -4,7 +4,6 @@
 
 #include "DataModels/FileSystem/UID/UID.h"
 
-
 namespace Chiron::Loader
 {
     void LoadScene(std::variant<std::string, std::reference_wrapper<rapidjson::Document>>&& scenePathOrDocument,

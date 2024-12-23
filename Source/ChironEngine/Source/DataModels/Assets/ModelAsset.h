@@ -5,47 +5,45 @@
 class MaterialAsset;
 class MeshAsset;
 
-class CommandList;
+struct Node
+{
+    std::string name;
+    Matrix transform;
+    int parent;
+    std::vector<std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>>> meshMaterial;
+};
 
 class ModelAsset : public Asset
 {
 public:
-    ModelAsset();
+    ModelAsset(UID uid, const std::string& assetPath, const std::string& libraryPath);
     ~ModelAsset() override;
 
-    void Draw(const std::shared_ptr<CommandList>& commandList);
-
-    inline void AddMaterial(std::shared_ptr<MaterialAsset>& material);
-    inline void AddMesh(std::shared_ptr<MeshAsset>& mesh);
+    inline void AddNode(Node* node);
 
     // ------------- GETTERS ----------------------
 
-    inline const std::vector<std::shared_ptr<MaterialAsset>>& GetMaterials() const;
-    inline const std::vector<std::shared_ptr<MeshAsset>>& GetMeshes() const;
+    inline const std::vector<std::unique_ptr<Node>>& GetNodes() const;
+
+    // ------------- GETTERS ----------------------
+
+    inline void SetNodes(std::vector<std::unique_ptr<Node>>& nodes);
 
 private:
-    std::vector<std::shared_ptr<MaterialAsset>> _materials;
-    std::vector<std::shared_ptr<MeshAsset>> _meshes;
-
-    bool _isTopLeft;
+    std::vector<std::unique_ptr<Node>> _nodes;
 };
 
-inline const std::vector<std::shared_ptr<MaterialAsset>>& ModelAsset::GetMaterials() const
+inline void ModelAsset::AddNode(Node* node)
 {
-    return _materials;
+    _nodes.push_back(std::unique_ptr<Node>(node));
 }
 
-inline const std::vector<std::shared_ptr<MeshAsset>>& ModelAsset::GetMeshes() const
+inline const std::vector<std::unique_ptr<Node>>& ModelAsset::GetNodes() const
 {
-    return _meshes;
+    return _nodes;
 }
 
-inline void ModelAsset::AddMaterial(std::shared_ptr<MaterialAsset>& material)
+inline void ModelAsset::SetNodes(std::vector<std::unique_ptr<Node>>& nodes)
 {
-    _materials.push_back(material);
-}
-
-inline void ModelAsset::AddMesh(std::shared_ptr<MeshAsset>& mesh)
-{
-    _meshes.push_back(mesh);
+    _nodes = std::move(nodes);
 }

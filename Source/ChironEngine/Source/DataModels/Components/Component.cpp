@@ -12,7 +12,7 @@
 
 Component::Component(ComponentType type, GameObject* owner) : _type(type), _owner(owner), _enabled(true)
 {
-    if (auto* drawable = dynamic_cast<Drawable*>(this)) 
+    if (auto* drawable = dynamic_cast<Drawable*>(this))
     {
         App->GetModule<ModuleScene>()->AddDrawableComponent(drawable);
     }

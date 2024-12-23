@@ -5,17 +5,21 @@ class VertexBuffer : public Resource
 {
 public:
     VertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numVertices, size_t vertexStride,
-        const std::string& name = "");
+        const std::string& name = "", bool load = false);
     VertexBuffer(const VertexBuffer& copy);
 
     ~VertexBuffer() override;
 
     // ------------- GETTERS ----------------------
 
-    inline const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
+    inline const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView();
+    inline const size_t GetNumVertex() const;
+    inline const size_t GetVertexStride() const;
 
 private:
     VertexBuffer();
+
+    bool InternalLoad() override;
 
 private:
     size_t _numVertices;
@@ -23,7 +27,21 @@ private:
     D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
 };
 
-inline const D3D12_VERTEX_BUFFER_VIEW& VertexBuffer::GetVertexBufferView() const
+inline const D3D12_VERTEX_BUFFER_VIEW& VertexBuffer::GetVertexBufferView()
 {
+    if (!IsValid())
+    {
+        Load();
+    }
     return _vertexBufferView;
+}
+
+inline const size_t VertexBuffer::GetNumVertex() const
+{
+    return _numVertices;
+}
+
+inline const size_t VertexBuffer::GetVertexStride() const
+{
+    return _vertexStride;
 }

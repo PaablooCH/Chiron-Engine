@@ -55,9 +55,16 @@ TransformComponent::~TransformComponent()
 {
 }
 
-void TransformComponent::UpdateMatrices()
+void TransformComponent::UpdateMatrices(bool notify /* = true */)
 {
     RecalculateMatrices();
+    if (notify)
+    {
+        for (auto component : _owner->GetComponents())
+        {
+            component->NotifyTransform();
+        }
+    }
     for (auto child : _owner->GetChildren())
     {
         child->GetInternalComponent<TransformComponent>()->UpdateMatrices();
@@ -110,17 +117,17 @@ void TransformComponent::InternalLoad(const Field& meta)
 
 void TransformComponent::RecalculateMatrices()
 {
-    _localMatrix = Matrix::CreateTranslation(_localPos) * Matrix::CreateFromQuaternion(_localRot) * Matrix::CreateScale(_localSca);
+    _localMatrix = Matrix::CreateScale(_localSca) * Matrix::CreateFromQuaternion(_localRot) * Matrix::CreateTranslation(_localPos);
 
     auto parent = _owner->GetParent();
     if (parent)
     {
         auto parentGlobalMatrix = parent->GetInternalComponent<TransformComponent>()->_globalMatrix;
         _globalMatrix = parentGlobalMatrix * _localMatrix;
-        _globalMatrix.Decompose(_globalSca, _globalRot, _globalPos);
     }
     else
     {
         _globalMatrix = _localMatrix;
     }
+    _globalMatrix.Decompose(_globalSca, _globalRot, _globalPos);
 }

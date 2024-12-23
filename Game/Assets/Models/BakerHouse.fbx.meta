@@ -1,0 +1,13 @@
+{
+    "uid": 10036834126121965127,
+    "type": "Model",
+    "assetPath": "Assets/Models/BakerHouse.fbx",
+    "MeshesAssetPaths": [
+        "Assets/Meshes/Chimney_0.mesh",
+        "Assets/Meshes/Baker_house_0.mesh"
+    ],
+    "MatAssetPaths": [
+        "Assets/Materials/BakerHouse_0.mat",
+        "Assets/Materials/BakerHouse_0.mat"
+    ]
+}

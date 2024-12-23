@@ -15,6 +15,8 @@ namespace Chiron
         // Helper utility converts D3D API failures into exceptions.
         static void ThrowIfFailed(HRESULT hr, const std::string& message = "") noexcept(false);
 
+        static std::string GetErrorMessage(HRESULT hr);
+
         static inline void OpenLink(const std::string& url);
 
         // ------------- PARSE ----------------------
@@ -88,9 +90,6 @@ namespace Chiron
 
         static inline const ddVec3& ddConvert(const DirectX::SimpleMath::Vector3& v);
         static inline const ddMat4x4& ddConvert(const DirectX::SimpleMath::Matrix& m);
-
-    private:
-        static std::string GetErrorMessage(HRESULT hr);
     };
 
     inline void Chiron::Utils::OpenLink(const std::string& url)

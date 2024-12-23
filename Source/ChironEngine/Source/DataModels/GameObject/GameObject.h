@@ -5,6 +5,8 @@
 
 #include "DataModels/FileSystem/Json/Field.h"
 
+class CommandList;
+
 enum class HierarchyState
 {
     SELECTED,
@@ -33,6 +35,8 @@ public:
 
     void ReGenerateUID();
     void OnAwake();
+
+    void Render(const std::shared_ptr<CommandList>& commandList) const;
 
     // ------------- CHILDREN METHODS ----------------------
 
