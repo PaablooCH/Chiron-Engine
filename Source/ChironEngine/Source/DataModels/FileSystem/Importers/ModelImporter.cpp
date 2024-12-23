@@ -19,6 +19,10 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 
+#ifdef PROFILE
+    #include "Optick/optick.h"
+#endif // OPTICK
+
 ModelImporter::ModelImporter()
 {
 }
@@ -35,6 +39,9 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
         aiImportFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
     if (scene)
     {
+#ifdef PROFILE
+        OPTICK_CATEGORY("ImportModel", Optick::Category::Debug);
+#endif // DEBUG
         model->SetName(ModuleFileSystem::GetFileName(filePath));
         ImportNode(scene, filePath, model, scene->mRootNode, -1, Matrix::Identity);
 
@@ -50,6 +57,9 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
 
 void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAsset>& model)
 {
+#ifdef PROFILE
+    OPTICK_CATEGORY("Load Model", Optick::Category::Debug);
+#endif // OPTICK
     if (!ModuleFileSystem::ExistsFile(libraryPath))
     {
         // ------------- META ----------------------

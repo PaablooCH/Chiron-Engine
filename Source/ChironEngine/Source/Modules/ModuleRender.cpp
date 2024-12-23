@@ -23,7 +23,7 @@
 
 #include "DebugDrawPass.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -50,7 +50,7 @@ bool ModuleRender::Init()
 
 UpdateStatus ModuleRender::PreUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PreUpdateRender", Optick::Category::Rendering);
 #endif // DEBUG
     auto d3d12 = App->GetModule<ModuleID3D12>();
@@ -69,7 +69,7 @@ UpdateStatus ModuleRender::PreUpdate()
 
 UpdateStatus ModuleRender::Update()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("UpdateRender", Optick::Category::Rendering);
 #endif // DEBUG
     auto d3d12 = App->GetModule<ModuleID3D12>();

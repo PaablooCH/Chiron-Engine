@@ -6,7 +6,3 @@
 #define NUM_FRAMES_IN_FLIGHT 2U
 
 #define REPOSITORY_URL "https://github.com/PaablooCH/ChironDX"
-
-#ifdef DEBUG
-    #define OPTICK 0
-#endif // DEBUG

@@ -29,7 +29,7 @@
 #include "ImGui/imgui_impl_dx12.h"
 #include "ImGui/imgui_impl_win32.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -112,7 +112,7 @@ bool ModuleEditor::CleanUp()
 
 UpdateStatus ModuleEditor::PreUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PreUpdateEditor", Optick::Category::UI);
 #endif // DEBUG
     auto d3d12 = App->GetModule<ModuleID3D12>();
@@ -132,7 +132,7 @@ UpdateStatus ModuleEditor::PreUpdate()
 
 UpdateStatus ModuleEditor::Update()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("UpdateEditor", Optick::Category::UI);
 #endif // DEBUG
     auto d3d12 = App->GetModule<ModuleID3D12>();
@@ -181,7 +181,7 @@ UpdateStatus ModuleEditor::Update()
 
 UpdateStatus ModuleEditor::PostUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PostUpdateEditor", Optick::Category::UI);
 #endif // DEBUG
     App->GetModule<ModuleID3D12>()->PresentAndSwapBuffer();

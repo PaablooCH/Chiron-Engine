@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "ModuleInput.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -26,7 +26,7 @@ bool ModuleInput::Init()
 
 UpdateStatus ModuleInput::PreUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PreUpdateInput", Optick::Category::Input);
 #endif // DEBUG
     const auto& mouseState = _mouse->GetState();
@@ -48,7 +48,7 @@ UpdateStatus ModuleInput::Update()
 
 UpdateStatus ModuleInput::PostUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PostUpdateInput", Optick::Category::Input);
 #endif // DEBUG
     const auto& mouseState = _mouse->GetState();

@@ -14,7 +14,7 @@
 
 #include "DataModels/Timer/Timer.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -114,7 +114,7 @@ UpdateStatus Application::Update()
     double maxMs = 1000.0 / _maxFrameRate;
     if (ms < maxMs)
     {
-#if OPTICK
+#ifdef PROFILE
         OPTICK_CATEGORY("Sleep", Optick::Category::None);
 #endif // DEBUG
         std::chrono::duration<double, std::milli> sleepTime(maxMs - ms);

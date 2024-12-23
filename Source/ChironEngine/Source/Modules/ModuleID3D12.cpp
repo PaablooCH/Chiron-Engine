@@ -10,7 +10,7 @@
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
 #include "DataModels/DX12/Resource/Texture.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -63,7 +63,7 @@ bool ModuleID3D12::CleanUp()
 
 UpdateStatus ModuleID3D12::PostUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PostUpdateID3D12", Optick::Category::None);
 #endif // DEBUG
 #ifdef DEBUG
