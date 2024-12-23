@@ -30,7 +30,7 @@ public:
     // Request resource and Import if is necessary
     template<class A = Asset>
     std::future<std::shared_ptr<A>> RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise);
-    
+
     // Search resource by UID
     template<class A = Asset>
     std::future<std::shared_ptr<A>> SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise);
@@ -38,9 +38,9 @@ public:
 private:
     void ImportAsset(const std::shared_ptr<Asset>& asset);
     void LoadAsset(const std::shared_ptr<Asset>& asset);
-    
+
     std::shared_ptr<Asset> LoadBinary(UID uid);
-    
+
     // ------------- CREATORS ----------------------
 
     std::shared_ptr<Asset> CreateNewAsset(const std::string& assetPath, AssetType type);
@@ -128,7 +128,7 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
                 ImportAsset(shared);
                 promise.set_value(std::dynamic_pointer_cast<A>(shared));
             }
-            catch (const std::exception& e) 
+            catch (const std::exception& e)
             {
                 LOG_ERROR("Error during asset request: {}", e.what());
                 promise.set_exception(std::current_exception());

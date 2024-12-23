@@ -14,7 +14,7 @@ ThreadPool::ThreadPool(UINT threadNumber) : _activeTasks(0), _stop(false)
     }
     for (UINT i = 0; i < threadNumber; i++)
     {
-        _workers.emplace_back([this] 
+        _workers.emplace_back([this]
             {
                 while (true)
                 {
@@ -23,13 +23,13 @@ ThreadPool::ThreadPool(UINT threadNumber) : _activeTasks(0), _stop(false)
                     {
                         std::unique_lock<std::mutex> lock(_tasksMutex);
 
-                        _cv.wait(lock, [this] 
+                        _cv.wait(lock, [this]
                             {
                                 return !_tasks.empty() || _stop;
                             }
                         );
 
-                        if (_stop && _tasks.empty()) 
+                        if (_stop && _tasks.empty())
                         {
                             return;
                         }
@@ -44,7 +44,7 @@ ThreadPool::ThreadPool(UINT threadNumber) : _activeTasks(0), _stop(false)
                     {
                         std::unique_lock<std::mutex> lock(_tasksMutex);
                         _activeTasks--;
-                        if (_tasks.empty() && _activeTasks == 0) 
+                        if (_tasks.empty() && _activeTasks == 0)
                         {
                             _cv.notify_all();
                         }
@@ -64,7 +64,7 @@ ThreadPool::~ThreadPool()
 
     _cv.notify_all();
 
-    for (auto& worker : _workers) 
+    for (auto& worker : _workers)
     {
         worker.join();
     }

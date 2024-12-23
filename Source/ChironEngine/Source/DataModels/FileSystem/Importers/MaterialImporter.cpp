@@ -37,7 +37,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     bool hasOcclusion = false;
     bool hasProperty = false;
     bool hasEmissive = false;
-    
+
     std::string path = json["BaseTexturePath"];
     if (path != "")
     {
@@ -77,7 +77,7 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
         resources->RequestAsset<TextureAsset>(path, promiseEmissive);
         hasEmissive = true;
     }
-    
+
     if (hasBase)
     {
         material->SetBaseTexture(futureBase.get());

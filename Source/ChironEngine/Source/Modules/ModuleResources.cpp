@@ -103,7 +103,7 @@ std::shared_ptr<Asset> ModuleResources::LoadBinary(UID uid)
     std::vector<std::string> filesInLibPath = ModuleFileSystem::ListFilesWithPath(LIB_PATH);
     std::queue<std::string> filesToCheck;
     int i = 0;
-    if (!filesInLibPath.empty()) 
+    if (!filesInLibPath.empty())
     {
         filesToCheck.push(filesInLibPath[i++]);
     }
@@ -112,12 +112,12 @@ std::shared_ptr<Asset> ModuleResources::LoadBinary(UID uid)
     {
         std::string path = filesToCheck.front();
         filesToCheck.pop();
-        if (ModuleFileSystem::IsDirectory(path.c_str())) 
+        if (ModuleFileSystem::IsDirectory(path.c_str()))
         {
             path += "/";
             std::vector<std::string> filesInsideDirectory = ModuleFileSystem::ListFilesWithPath(path.c_str());
 
-            for (const auto& file : filesInsideDirectory) 
+            for (const auto& file : filesInsideDirectory)
             {
                 filesToCheck.push(file);
             }

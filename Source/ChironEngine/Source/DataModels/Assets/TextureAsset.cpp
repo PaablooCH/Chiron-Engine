@@ -121,7 +121,7 @@ bool TextureAsset::InternalLoad()
 
         auto signal = d3d12->ExecuteCommandList(commandList);
         //d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, signal);
-        
+
         result = result && true;
     }
     return result;

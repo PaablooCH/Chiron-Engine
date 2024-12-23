@@ -91,7 +91,8 @@ private:
     {
         explicit ResourceState(D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON)
             : State(state)
-        {}
+        {
+        }
 
         void SetSubresourceState(UINT subresource, D3D12_RESOURCE_STATES state)
         {

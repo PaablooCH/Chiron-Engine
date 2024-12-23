@@ -133,7 +133,7 @@ void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAss
 
             std::promise<std::shared_ptr<MaterialAsset>> promiseMaterial;
             moduleResource->SearchAsset<MaterialAsset>(materialsUIDs[i], promiseMaterial);
-            
+
             node->meshMaterial.emplace_back(promiseMesh.get_future().get(), promiseMaterial.get_future().get());
         }
 
@@ -284,7 +284,7 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             auto futureMeshAsset = ImportMesh(mesh, name, i);
             auto futureMaterialAsset = ImportMaterial(material, filePath, i);
 
-            std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>> meshMat = 
+            std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>> meshMat =
                 std::make_pair(futureMeshAsset.get(), futureMaterialAsset.get());
             modelNode->meshMaterial.push_back(meshMat);
         }
