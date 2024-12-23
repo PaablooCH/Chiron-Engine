@@ -33,10 +33,10 @@ public:
     template<class A = Asset>
     const std::shared_ptr<A> SearchAsset(UID uid);
 
-    void ImportAsset(const char* filePath, const std::shared_ptr<Asset>& asset);
-
 private:
+    void ImportAsset(const char* filePath, const std::shared_ptr<Asset>& asset);
     void LoadAsset(const std::shared_ptr<Asset>& asset);
+    
     std::shared_ptr<Asset> LoadBinary(UID uid);
 
     std::shared_ptr<Asset> CreateNewAsset(const std::string& assetPath, AssetType type);

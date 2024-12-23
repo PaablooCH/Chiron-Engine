@@ -101,16 +101,27 @@ std::shared_ptr<Asset> ModuleResources::LoadBinary(UID uid)
 {
     std::string binaryFile = std::to_string(uid) + BINARY_EXT;
 
-    std::vector<std::string> files = ModuleFileSystem::ListFilesWithPath(LIB_PATH);
-    for (auto i = 0; i < files.size(); ++i)
+    std::vector<std::string> filesInLibPath = ModuleFileSystem::ListFilesWithPath(LIB_PATH);
+    std::queue<std::string> filesToCheck;
+    int i = 0;
+    if (!filesInLibPath.empty()) 
     {
-        std::string path = files[i];
-        if (ModuleFileSystem::IsDirectory(path.c_str()))
+        filesToCheck.push(filesInLibPath[i++]);
+    }
+
+    while (!filesToCheck.empty())
+    {
+        std::string path = filesToCheck.front();
+        filesToCheck.pop();
+        if (ModuleFileSystem::IsDirectory(path.c_str())) 
         {
             path += "/";
             std::vector<std::string> filesInsideDirectory = ModuleFileSystem::ListFilesWithPath(path.c_str());
-            files.reserve(files.size() + filesInsideDirectory.size());
-            files.insert(files.end(), filesInsideDirectory.begin(), filesInsideDirectory.end());
+
+            for (const auto& file : filesInsideDirectory) 
+            {
+                filesToCheck.push(file);
+            }
         }
         else
         {
@@ -122,6 +133,11 @@ std::shared_ptr<Asset> ModuleResources::LoadBinary(UID uid)
                 LoadAsset(asset);
                 return asset;
             }
+        }
+
+        if (filesToCheck.empty() && i < filesInLibPath.size())
+        {
+            filesToCheck.push(filesInLibPath[i++]);
         }
     }
     return nullptr;
