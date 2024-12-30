@@ -11,6 +11,9 @@ struct ModelAttributes
 {
     matrix model;
     int uvCorrector;
+    //int uvCorrectorSpecularMetallnes;
+    //int uvCorrectorNormalMap;
+    //int uvCorrectorOcclusion;
 };
 ConstantBuffer<ModelAttributes> modelAttributes : register(b1);
 
@@ -27,8 +30,8 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-    float4 position : SV_Position;
     float2 texCoord : TEXCOORD;
+    float4 position : SV_Position;
 };
 
 VS_OUTPUT VSmain(VS_INPUT input)
@@ -49,7 +52,6 @@ SamplerState s1 : register(s0);
 
 struct PS_INPUT
 {
-    float4 position : SV_POSITION;
     float2 texCoord : TEXCOORD;
 };
 

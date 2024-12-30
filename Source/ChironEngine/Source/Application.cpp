@@ -8,11 +8,14 @@
 #include "Modules/ModuleInput.h"
 #include "Modules/ModuleProgram.h"
 #include "Modules/ModuleRender.h"
+#include "Modules/ModuleResources.h"
+#include "Modules/ModuleScene.h"
 #include "Modules/ModuleWindow.h"
 
 #include "DataModels/Timer/Timer.h"
+#include "ThreadPool/ThreadPool.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -24,11 +27,14 @@ Application::Application(HWND hwnd, HINSTANCE hInstance) : _frameCount(0), _delt
     _modules[static_cast<int>(ModuleToEnum<ModuleFileSystem>::value)] = std::make_unique<ModuleFileSystem>();
     _modules[static_cast<int>(ModuleToEnum<ModuleProgram>::value)] = std::make_unique<ModuleProgram>();
     _modules[static_cast<int>(ModuleToEnum<ModuleInput>::value)] = std::make_unique<ModuleInput>(hwnd);
+    _modules[static_cast<int>(ModuleToEnum<ModuleResources>::value)] = std::make_unique<ModuleResources>();
     _modules[static_cast<int>(ModuleToEnum<ModuleCamera>::value)] = std::make_unique<ModuleCamera>();
+    _modules[static_cast<int>(ModuleToEnum<ModuleScene>::value)] = std::make_unique<ModuleScene>();
     _modules[static_cast<int>(ModuleToEnum<ModuleRender>::value)] = std::make_unique<ModuleRender>();
     _modules[static_cast<int>(ModuleToEnum<ModuleEditor>::value)] = std::make_unique<ModuleEditor>();
 
     _timer = std::make_unique<Timer>();
+    _mainThreadPool = std::make_unique<ThreadPool>(15);
 }
 
 Application::~Application()
@@ -110,7 +116,7 @@ UpdateStatus Application::Update()
     double maxMs = 1000.0 / _maxFrameRate;
     if (ms < maxMs)
     {
-#if OPTICK
+#ifdef PROFILE
         OPTICK_CATEGORY("Sleep", Optick::Category::None);
 #endif // DEBUG
         std::chrono::duration<double, std::milli> sleepTime(maxMs - ms);

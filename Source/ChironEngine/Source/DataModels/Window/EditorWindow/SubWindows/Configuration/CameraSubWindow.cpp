@@ -7,12 +7,27 @@
 
 #include "DataModels/Camera/Camera.h"
 
+#include "DataModels/FileSystem/Json/Json.h"
+
 CameraSubWindow::CameraSubWindow() : SubWindow("Camera")
 {
 }
 
 CameraSubWindow::~CameraSubWindow()
 {
+}
+
+void CameraSubWindow::Save(Json& json)
+{
+    auto camera = json["Camera"];
+    auto fov = App->GetModule<ModuleCamera>()->GetCamera()->GetFOV();
+    camera["FOV"] = fov;
+}
+
+void CameraSubWindow::Load(const Json& json)
+{
+    auto camera = json["Camera"];
+    App->GetModule<ModuleCamera>()->GetCamera()->SetFOV(camera["FOV"]);
 }
 
 void CameraSubWindow::DrawWindowContent(const std::shared_ptr<CommandList>& commandList)

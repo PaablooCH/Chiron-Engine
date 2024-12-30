@@ -10,7 +10,7 @@
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
 #include "DataModels/DX12/Resource/Texture.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
@@ -63,7 +63,7 @@ bool ModuleID3D12::CleanUp()
 
 UpdateStatus ModuleID3D12::PostUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PostUpdateID3D12", Optick::Category::None);
 #endif // DEBUG
 #ifdef DEBUG
@@ -324,7 +324,7 @@ bool ModuleID3D12::CreateSwapChain()
     return false;
 }
 
-std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::wstring& name)
+std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::string& name)
 {
     unsigned width;
     unsigned height;
@@ -333,7 +333,7 @@ std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::wstring& na
     return CreateDepthStencil(name, width, height);
 }
 
-std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::wstring& name, unsigned width, unsigned height)
+std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::string& name, unsigned width, unsigned height)
 {
     D3D12_CLEAR_VALUE clearValue = {};
     clearValue.Format = DXGI_FORMAT_D32_FLOAT;
@@ -341,7 +341,7 @@ std::unique_ptr<Texture> ModuleID3D12::CreateDepthStencil(const std::wstring& na
     CD3DX12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, width, height, 1, 0, 1, 0,
         D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
-    return std::make_unique<Texture>(desc, name, &clearValue);
+    return std::make_unique<Texture>(desc, name, true, &clearValue);
 }
 
 void ModuleID3D12::ObtainRTVFromSwapChain()
@@ -355,7 +355,7 @@ void ModuleID3D12::ObtainRTVFromSwapChain()
         Chiron::Utils::ThrowIfFailed(_swapChain->GetBuffer(i, IID_PPV_ARGS(&backBuffer)));
 
         _renderBuffers[i] = std::make_unique<Texture>(backBuffer);
-        _renderBuffers[i]->SetName((L"Render Buffer " + std::to_wstring(i)).c_str());
+        _renderBuffers[i]->SetName(("Render Buffer " + std::to_string(i)).c_str());
     }
 }
 

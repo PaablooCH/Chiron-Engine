@@ -10,6 +10,8 @@ public:
 private:
     void DrawWindowContent(const std::shared_ptr<CommandList>& commandList) override;
 
+    void LoadConfiguration();
+
 private:
     std::vector<std::unique_ptr<Window>> _subWindows;
 };

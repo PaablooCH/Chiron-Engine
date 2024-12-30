@@ -3,89 +3,84 @@
 
 class TextureAsset;
 
+enum MatConfig
+{
+    usePBR = 0x00000001,            // Use PBR or Specular as shaderType
+    isOpaque = 0x00000002,          // Is opaque or translucent
+};
+
 class MaterialAsset : public Asset
 {
 public:
     MaterialAsset();
+    MaterialAsset(UID uid, const std::string& assetPath, const std::string& libraryPath);
     ~MaterialAsset() override;
 
     // ------------- GETTERS ----------------------
 
-    inline std::wstring GetName() const override;
-    inline TextureAsset* GetDiffuse() const;
-    inline TextureAsset* GetNormal() const;
-    inline TextureAsset* GetMetalness() const;
-    inline TextureAsset* GetEmissive() const;
-    inline TextureAsset* GetOcclusion() const;
+    TextureAsset* GetBaseTexture();
+    TextureAsset* GetNormalMap();
+    TextureAsset* GetPropertyTexture();
+    TextureAsset* GetEmissiveTexture();
+    TextureAsset* GetAmbientOcclusion();
+    inline const Color& GetBaseColor() const;
+    inline const Color& GetSpecularColor() const;
+    inline UINT GetOptions() const;
 
     // ------------- SETTERS ----------------------
 
-    inline void SetDiffuse(std::shared_ptr<TextureAsset>& diffuse);
-    inline void SetNormal(std::shared_ptr<TextureAsset>& normal);
-    inline void SetMetalness(std::shared_ptr<TextureAsset>& metalness);
-    inline void SetEmissive(std::shared_ptr<TextureAsset>& emissive);
-    inline void SetOcclusion(std::shared_ptr<TextureAsset>& occlusion);
+    void SetBaseTexture(const std::shared_ptr<TextureAsset>& diffuse);
+    void SetNormalMap(const std::shared_ptr<TextureAsset>& normal);
+    void SetPropertyTexture(const std::shared_ptr<TextureAsset>& metalness);
+    void SetEmissiveTexture(const std::shared_ptr<TextureAsset>& emissive);
+    void SetAmbientOcclusion(const std::shared_ptr<TextureAsset>& occlusion);
+    inline void SetBaseColor(Color& color);
+    inline void SetSpecularColor(Color& color);
+    inline void SetOptions(UINT options);
 
 private:
-    std::shared_ptr<TextureAsset> _textureDiffuse;
-    std::shared_ptr<TextureAsset> _textureNormal;
-    std::shared_ptr<TextureAsset> _textureMetalness;
-    std::shared_ptr<TextureAsset> _textureEmissive;
-    std::shared_ptr<TextureAsset> _textureOcclusion;
+    bool InternalLoad() override;
+    bool InternalUnload() override;
+
+private:
+    std::shared_ptr<TextureAsset> _baseTexture;
+    std::shared_ptr<TextureAsset> _normalMap;
+    std::shared_ptr<TextureAsset> _propertyTexture;
+    std::shared_ptr<TextureAsset> _emissiveTexture;
+    std::shared_ptr<TextureAsset> _ambientOcclusion;
+
+    Color _baseColor;
+    Color _specularColor;
+
+    UINT _options;
 };
 
-inline std::wstring MaterialAsset::GetName() const
+inline const Color& MaterialAsset::GetBaseColor() const
 {
-    CHIRON_TODO("TODO");
-    return L"";
+    return _baseColor;
 }
 
-inline TextureAsset* MaterialAsset::GetDiffuse() const
+inline const Color& MaterialAsset::GetSpecularColor() const
 {
-    return _textureDiffuse.get();
+    return _specularColor;
 }
 
-inline TextureAsset* MaterialAsset::GetNormal() const
+inline UINT MaterialAsset::GetOptions() const
 {
-    return _textureNormal.get();
+    return _options;
 }
 
-inline TextureAsset* MaterialAsset::GetMetalness() const
+inline void MaterialAsset::SetBaseColor(Color& color)
 {
-    return _textureMetalness.get();
+    _baseColor = color;
 }
 
-inline TextureAsset* MaterialAsset::GetEmissive() const
+inline void MaterialAsset::SetSpecularColor(Color& color)
 {
-    return _textureEmissive.get();
+    _baseColor = color;
 }
 
-inline TextureAsset* MaterialAsset::GetOcclusion() const
+inline void MaterialAsset::SetOptions(UINT options)
 {
-    return _textureOcclusion.get();
-}
-
-inline void MaterialAsset::SetDiffuse(std::shared_ptr<TextureAsset>& diffuse)
-{
-    _textureDiffuse = diffuse;
-}
-
-inline void MaterialAsset::SetNormal(std::shared_ptr<TextureAsset>& normal)
-{
-    _textureNormal = normal;
-}
-
-inline void MaterialAsset::SetMetalness(std::shared_ptr<TextureAsset>& metalness)
-{
-    _textureMetalness = metalness;
-}
-
-inline void MaterialAsset::SetEmissive(std::shared_ptr<TextureAsset>& emissive)
-{
-    _textureEmissive = emissive;
-}
-
-inline void MaterialAsset::SetOcclusion(std::shared_ptr<TextureAsset>& occlusion)
-{
-    _textureOcclusion = occlusion;
+    _options = options;
 }

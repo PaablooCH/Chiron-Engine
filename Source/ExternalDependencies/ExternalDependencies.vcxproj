@@ -5,6 +5,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|x64">
+      <Configuration>Profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -19,8 +23,31 @@
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_dx12.cpp" />
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="PhysFS\physfs.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_7z.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_dir.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_grp.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_hog.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_iso9660.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_mvl.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_qpak.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_slb.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_unpacked.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_vdf.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_wad.c" />
+    <ClCompile Include="PhysFS\physfs_archiver_zip.c" />
+    <ClCompile Include="PhysFS\physfs_byteorder.c" />
+    <ClCompile Include="PhysFS\physfs_platform_haiku.cpp" />
+    <ClCompile Include="PhysFS\physfs_platform_os2.c" />
+    <ClCompile Include="PhysFS\physfs_platform_posix.c" />
+    <ClCompile Include="PhysFS\physfs_platform_qnx.c" />
+    <ClCompile Include="PhysFS\physfs_platform_unix.c" />
+    <ClCompile Include="PhysFS\physfs_platform_windows.c" />
+    <ClCompile Include="PhysFS\physfs_platform_winrt.cpp" />
+    <ClCompile Include="PhysFS\physfs_unicode.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h" />
@@ -31,9 +58,19 @@
     <ClInclude Include="ImGui\imgui_impl_dx12.h" />
     <ClInclude Include="ImGui\imgui_impl_win32.h" />
     <ClInclude Include="ImGui\imgui_internal.h" />
+    <ClInclude Include="ImGui\imgui_stdlib.h" />
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="PhysFS\physfs.h" />
+    <ClInclude Include="PhysFS\physfs_casefolding.h" />
+    <ClInclude Include="PhysFS\physfs_internal.h" />
+    <ClInclude Include="PhysFS\physfs_lzmasdk.h" />
+    <ClInclude Include="PhysFS\physfs_miniz.h" />
+    <ClInclude Include="PhysFS\physfs_platforms.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PhysFS\physfs_platform_apple.m" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -44,6 +81,12 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -64,11 +107,18 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
@@ -84,7 +134,7 @@
       <ConformanceMode>Default</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\ExternalDependencies\;..\ExternalDependencies\assimp;..\ExternalDependencies\ImGui;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ExternalDependencies\ImGui;..\ExternalDependencies\;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <SupportJustMyCode>true</SupportJustMyCode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -96,10 +146,36 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib;Advapi32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTex\;$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTK12\;$(SolutionDir)$(ProjectName)\assimp;$(SolutionDir)$(ProjectName)\Optick\libs\Debug</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>ImTextureID=ImU64;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\ExternalDependencies\ImGui;..\ExternalDependencies\;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib;Advapi32.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\Debug-$(Platform)\DirectXTex\;$(SolutionDir)bin\Debug-$(Platform)\DirectXTK12\;$(SolutionDir)$(ProjectName)\assimp;$(SolutionDir)$(ProjectName)\Optick\libs\Debug</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -113,7 +189,7 @@
       <ConformanceMode>Default</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\ExternalDependencies\;..\ExternalDependencies\SDL\include;..\ExternalDependencies\ImGui;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ExternalDependencies\ImGui;..\ExternalDependencies\;..\DirectXTK12\Inc</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -125,7 +201,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>OptickCore.lib;assimp-vc143-mt.lib;DirectXTex.lib;DirectXTK12.lib;user32.lib;dxgi.lib;dxguid.lib;d3d12.lib;d3dcompiler.lib;Shell32.lib;winmm.lib;Advapi32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTex\;$(SolutionDir)bin\$(Configuration)-$(Platform)\DirectXTK12\;$(SolutionDir)$(ProjectName)\assimp;$(SolutionDir)$(ProjectName)\Optick\libs\Release</AdditionalLibraryDirectories>

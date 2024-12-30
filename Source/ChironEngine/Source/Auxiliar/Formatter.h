@@ -1,10 +1,13 @@
 #pragma once
 
+class GameObject;
+
 namespace Chiron
 {
     namespace detail
     {
         size_t FindPositionKey(const std::string& format);
+        bool Format(std::string& format, GameObject* arg);
         bool Format(std::string& format, int arg);
         bool Format(std::string& format, unsigned int arg);
         bool Format(std::string& format, float arg);

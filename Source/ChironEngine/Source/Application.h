@@ -4,6 +4,7 @@
 #include "Enums/ModuleType.h"
 
 class Timer;
+class ThreadPool;
 
 class Application
 {
@@ -22,6 +23,7 @@ public:
     template<typename M>
     M* GetModule();
 
+    inline ThreadPool* GetMainThreadPool();
     inline const uint64_t GetFrameCount() const;
     inline const float GetDeltaTime() const;
     inline int& GetMaxFrameRate();
@@ -30,6 +32,7 @@ private:
     std::vector<std::unique_ptr<Module>> _modules;
 
     std::unique_ptr<Timer> _timer;
+    std::unique_ptr<ThreadPool> _mainThreadPool;
 
     uint64_t _frameCount;
 
@@ -43,6 +46,11 @@ inline M* Application::GetModule()
 {
     int index = static_cast<int>(ModuleToEnum<M>::value);
     return static_cast<M*>(_modules[index].get());
+}
+
+inline ThreadPool* Application::GetMainThreadPool()
+{
+    return _mainThreadPool.get();
 }
 
 inline const uint64_t Application::GetFrameCount() const

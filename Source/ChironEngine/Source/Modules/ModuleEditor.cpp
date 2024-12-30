@@ -3,6 +3,7 @@
 
 #include "Application.h"
 
+#include "ModuleFileSystem.h"
 #include "ModuleID3D12.h"
 #include "ModuleWindow.h"
 
@@ -10,6 +11,8 @@
 #include "DataModels/Window/MainMenuWindow.h"
 #include "DataModels/Window/EditorWindow/ConfigurationWindow.h"
 #include "DataModels/Window/EditorWindow/ConsoleWindow.h"
+#include "DataModels/Window/EditorWindow/HierarchyWindow.h"
+#include "DataModels/Window/EditorWindow/InspectorWindow.h"
 #include "DataModels/Window/EditorWindow/SceneWindow.h"
 
 #include "DataModels/DX12/CommandList/CommandList.h"
@@ -18,15 +21,24 @@
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocatorPage.h"
 #include "DataModels/DX12/Resource/Texture.h"
 
+#include "Defines/FileSystemDefine.h"
+
+#include "DataModels/Window/Fonts/Font.h"
+
 #include "ImGui/imgui_internal.h"
 #include "ImGui/imgui_impl_dx12.h"
 #include "ImGui/imgui_impl_win32.h"
 
-#if OPTICK
+#ifdef PROFILE
     #include "Optick/optick.h"
 #endif // OPTICK
 
-ModuleEditor::ModuleEditor() : _dockFlags(0)
+namespace
+{
+    const std::string windowsStatePath = "Settings/WindowsStates.conf";
+}
+
+ModuleEditor::ModuleEditor() : _dockFlags(0), _startDock(true)
 {
 }
 
@@ -44,7 +56,6 @@ bool ModuleEditor::Init()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;		// Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // Prevent mouse flickering
     ImGui::GetCurrentContext()->NavWindowingToggleLayer = false;
-    ImGui::StyleColorsDark();
 
     ImGui_ImplWin32_Init(App->GetModule<ModuleWindow>()->GetWindowId());
 
@@ -56,20 +67,27 @@ bool ModuleEditor::Init()
         _srvDescHeap->GetCPUDescriptorHandle(), _srvDescHeap->GetGPUDescriptorHandle());
 
     _windows.resize(static_cast<int>(WindowsType::SIZE));
-    _windows[static_cast<int>(WindowsType::ABOUT)] = std::make_unique<AboutWindow>();
     _windows[static_cast<int>(WindowsType::SCENE)] = std::make_unique<SceneWindow>();
     _windows[static_cast<int>(WindowsType::CONSOLE)] = std::make_unique<ConsoleWindow>();
     _windows[static_cast<int>(WindowsType::CONFIGURATION)] = std::make_unique<ConfigurationWindow>();
-    _mainMenu = std::make_unique<MainMenuWindow>(reinterpret_cast<AboutWindow*>(_windows[static_cast<int>(WindowsType::ABOUT)].get()));
+    _windows[static_cast<int>(WindowsType::HIERARCHY)] = std::make_unique<HierarchyWindow>();
+    _windows[static_cast<int>(WindowsType::INSPECTOR)] = std::make_unique<InspectorWindow>();
+    _mainMenu = std::make_unique<MainMenuWindow>();
 
-    SetStyles();
+    SetThemes();
+
+    _startDock = !ModuleFileSystem::ExistsFile("imgui.ini");
 
     return true;
 }
 
 bool ModuleEditor::Start()
 {
+    Font::SetDefaultFont();
     ApplyTheme(_darkGreenStyle);
+    SetStyle();
+
+    LoadWindowsState();
 
     _dockFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking;
@@ -80,18 +98,21 @@ bool ModuleEditor::Start()
 
 bool ModuleEditor::CleanUp()
 {
+    SaveWindowsState();
+
     _mainMenu.reset();
     _windows.clear();
     _srvDescHeap.reset();
     ImGui_ImplDX12_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+
     return true;
 }
 
 UpdateStatus ModuleEditor::PreUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PreUpdateEditor", Optick::Category::UI);
 #endif // DEBUG
     auto d3d12 = App->GetModule<ModuleID3D12>();
@@ -111,7 +132,7 @@ UpdateStatus ModuleEditor::PreUpdate()
 
 UpdateStatus ModuleEditor::Update()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("UpdateEditor", Optick::Category::UI);
 #endif // DEBUG
     auto d3d12 = App->GetModule<ModuleID3D12>();
@@ -123,7 +144,11 @@ UpdateStatus ModuleEditor::Update()
     ImGui::Begin("DockSpace", nullptr, _dockFlags);
     ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
     ImGui::DockSpace(dockSpaceId);
-    StartDock();
+    if (_startDock)
+    {
+        _startDock = false;
+        StartDock();
+    }
 
     ImGui::End();
 
@@ -156,7 +181,7 @@ UpdateStatus ModuleEditor::Update()
 
 UpdateStatus ModuleEditor::PostUpdate()
 {
-#if OPTICK
+#ifdef PROFILE
     OPTICK_CATEGORY("PostUpdateEditor", Optick::Category::UI);
 #endif // DEBUG
     App->GetModule<ModuleID3D12>()->PresentAndSwapBuffer();
@@ -165,35 +190,66 @@ UpdateStatus ModuleEditor::PostUpdate()
 
 void ModuleEditor::StartDock() const
 {
-    static bool firstTime = true;
-    if (firstTime)
+    ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
+
+    ImGui::DockBuilderRemoveNode(dockSpaceId);
+    ImGui::DockBuilderAddNode(dockSpaceId, _dockFlags | ImGuiDockNodeFlags_DockSpace);
+    ImGui::DockBuilderSetNodeSize(dockSpaceId, ImGui::GetMainViewport()->Size);
+
+    ImGuiID dockIdUp = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Up, 0.06f, nullptr, &dockSpaceId);
+    ImGuiID dockIdRight = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.27f, nullptr, &dockSpaceId);
+    ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
+    ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
+    ImGui::DockBuilderDockWindow(ICON_FA_TERMINAL " Console", dockIdDown);
+    //ImGui::DockBuilderDockWindow("File Browser", dockIdDown);
+    //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
+    ImGui::DockBuilderDockWindow(ICON_FA_GEAR " Configuration", dockIdRight);
+    //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
+    //ImGui::DockBuilderDockWindow("Resources", dockIdRight);
+    ImGui::DockBuilderDockWindow(ICON_FA_CIRCLE_INFO " Inspector", dockIdRight);
+    //ImGui::DockBuilderDockWindow("Editor Control", dockIdUp);
+    ImGui::DockBuilderDockWindow(ICON_FA_SITEMAP " Hierarchy", dockIdLeft);
+    ImGui::DockBuilderDockWindow(ICON_FA_BOX_OPEN " Scene", dockSpaceId);
+    ImGui::DockBuilderFinish(dockSpaceId);
+}
+
+void ModuleEditor::SaveWindowsState() const
+{
+    if (!ModuleFileSystem::IsDirectory(SETTINGS_FOLDER))
     {
-        firstTime = false;
-        ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
+        ModuleFileSystem::CreateDirectoryC(SETTINGS_FOLDER);
+    }
+    rapidjson::Document doc;
+    Json json = Json(doc);
 
-        ImGui::DockBuilderRemoveNode(dockSpaceId);
-        ImGui::DockBuilderAddNode(dockSpaceId, _dockFlags | ImGuiDockNodeFlags_DockSpace);
-        ImGui::DockBuilderSetNodeSize(dockSpaceId, ImGui::GetMainViewport()->Size);
+    for (auto& window : _windows)
+    {
+        json[window->GetName().c_str()] = window->GetEnabled();
+    }
+    auto aboutWindow = _mainMenu->GetAboutWindow();
+    json[aboutWindow->GetName().c_str()] = aboutWindow->GetEnabled();
 
-        ImGuiID dockIdUp = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Up, 0.06f, nullptr, &dockSpaceId);
-        ImGuiID dockIdRight = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.27f, nullptr, &dockSpaceId);
-        ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
-        ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
-        ImGui::DockBuilderDockWindow("Console", dockIdDown);
-        //ImGui::DockBuilderDockWindow("File Browser", dockIdDown);
-        //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
-        ImGui::DockBuilderDockWindow("Configuration", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Resources", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Inspector", dockIdRight);
-        //ImGui::DockBuilderDockWindow("Editor Control", dockIdUp);
-        //ImGui::DockBuilderDockWindow("Hierarchy", dockIdLeft);
-        ImGui::DockBuilderDockWindow("Scene", dockSpaceId);
-        ImGui::DockBuilderFinish(dockSpaceId);
+    auto buffer = json.ToBuffer();
+    ModuleFileSystem::SaveFile(windowsStatePath.c_str(), buffer.GetString(), buffer.GetSize());
+}
+
+void ModuleEditor::LoadWindowsState()
+{
+    rapidjson::Document doc;
+    Json json = Json(doc);
+
+    if (ModuleFileSystem::LoadJson(windowsStatePath.c_str(), json) != -1)
+    {
+        for (auto& window : _windows)
+        {
+            window->SetEnabled(json[window->GetName().c_str()]);
+        }
+        auto aboutWindow = _mainMenu->GetAboutWindow();
+        aboutWindow->SetEnabled(json[aboutWindow->GetName().c_str()]);
     }
 }
 
-void ModuleEditor::SetStyles()
+void ModuleEditor::SetThemes()
 {
     // ------------- COLORFULL STYLE ----------------------
 
@@ -277,46 +333,46 @@ void ModuleEditor::SetStyles()
     _darkGreenStyle.ScrollbarGrab = ImVec4(0.25f, 0.25f, 0.25f, 0.60f);
     _darkGreenStyle.ScrollbarGrabHovered = ImVec4(0.34f, 0.34f, 0.34f, 0.60f);
     _darkGreenStyle.ScrollbarGrabActive = ImVec4(0.41f, 0.41f, 0.41f, 0.60f);
-    _darkGreenStyle.CheckMark = ImVec4(0.24f, 0.71f, 0.50f, 1.00f);
-    _darkGreenStyle.SliderGrab = ImVec4(0.24f, 0.71f, 0.50f, 1.00f);
-    _darkGreenStyle.SliderGrabActive = ImVec4(0.24f, 0.84f, 0.50f, 1.00f);
-    _darkGreenStyle.Button = ImVec4(0.17f, 0.27f, 0.22f, 1.00f);
-    _darkGreenStyle.ButtonHovered = ImVec4(0.27f, 0.48f, 0.38f, 1.00f);
-    _darkGreenStyle.ButtonActive = ImVec4(0.36f, 0.65f, 0.52f, 1.00f);
-    _darkGreenStyle.Header = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
-    _darkGreenStyle.HeaderHovered = ImVec4(0.24f, 0.71f, 0.50f, 1.00f);
-    _darkGreenStyle.HeaderActive = ImVec4(0.24f, 0.84f, 0.50f, 1.00f);
+    _darkGreenStyle.CheckMark = ImVec4(0.09f, 0.50f, 0.33f, 1.00f);
+    _darkGreenStyle.SliderGrab = ImVec4(0.12f, 0.47f, 0.32f, 1.00f);
+    _darkGreenStyle.SliderGrabActive = ImVec4(0.21f, 0.56f, 0.41f, 1.00f);
+    _darkGreenStyle.Button = ImVec4(0.24f, 0.24f, 0.22f, 1.00f);
+    _darkGreenStyle.ButtonHovered = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
+    _darkGreenStyle.ButtonActive = ImVec4(0.32f, 0.32f, 0.32f, 1.00f);
+    _darkGreenStyle.Header = ImVec4(0.23f, 0.23f, 0.23f, 1.00f);
+    _darkGreenStyle.HeaderHovered = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
+    _darkGreenStyle.HeaderActive = ImVec4(0.32f, 0.32f, 0.32f, 1.00f);
     _darkGreenStyle.Separator = ImVec4(0.34f, 0.34f, 0.34f, 0.60f);
     _darkGreenStyle.SeparatorHovered = ImVec4(0.34f, 0.34f, 0.34f, 0.60f);
     _darkGreenStyle.SeparatorActive = ImVec4(0.41f, 0.41f, 0.41f, 0.60f);
-    _darkGreenStyle.ResizeGrip = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
-    _darkGreenStyle.ResizeGripHovered = ImVec4(0.24f, 0.71f, 0.50f, 1.00f);
-    _darkGreenStyle.ResizeGripActive = ImVec4(0.24f, 0.84f, 0.50f, 1.00f);
-    _darkGreenStyle.TabHovered = ImVec4(0.24f, 0.82f, 0.50f, 1.00f);
-    _darkGreenStyle.Tab = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
-    _darkGreenStyle.TabSelected = ImVec4(0.23f, 0.73f, 0.45f, 1.00f);
+    _darkGreenStyle.ResizeGrip = ImVec4(0.11f, 0.30f, 0.22f, 1.00f);
+    _darkGreenStyle.ResizeGripHovered = ImVec4(0.16f, 0.42f, 0.33f, 1.00f);
+    _darkGreenStyle.ResizeGripActive = ImVec4(0.08f, 0.22f, 0.15f, 1.00f);
+    _darkGreenStyle.TabHovered = ImVec4(0.16f, 0.42f, 0.33f, 1.00f);
+    _darkGreenStyle.Tab = ImVec4(0.11f, 0.30f, 0.22f, 1.00f);
+    _darkGreenStyle.TabSelected = ImVec4(0.09f, 0.50f, 0.33f, 1.00f);
     _darkGreenStyle.TabSelectedOverline = ImVec4(0.25f, 0.25f, 0.25f, 0.60f);
-    _darkGreenStyle.TabDimmed = ImVec4(0.17f, 0.27f, 0.22f, 1.00f);
-    _darkGreenStyle.TabDimmedSelected = ImVec4(0.23f, 0.73f, 0.45f, 1.00f);
+    _darkGreenStyle.TabDimmed = ImVec4(0.11f, 0.30f, 0.22f, 1.00f);
+    _darkGreenStyle.TabDimmedSelected = ImVec4(0.09f, 0.50f, 0.33f, 1.00f);
     _darkGreenStyle.TabDimmedSelectedOverline = ImVec4(0.25f, 0.25f, 0.25f, 0.60f);
-    _darkGreenStyle.DockingPreview = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
+    _darkGreenStyle.DockingPreview = ImVec4(0.11f, 0.30f, 0.22f, 1.00f);
     _darkGreenStyle.DockingEmptyBg = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
-    _darkGreenStyle.PlotLines = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
-    _darkGreenStyle.PlotLinesHovered = ImVec4(0.23f, 0.73f, 0.45f, 1.00f);
-    _darkGreenStyle.PlotHistogram = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
-    _darkGreenStyle.PlotHistogramHovered = ImVec4(0.23f, 0.73f, 0.45f, 1.00f);
+    _darkGreenStyle.PlotLines = ImVec4(0.12f, 0.47f, 0.32f, 1.00f);
+    _darkGreenStyle.PlotLinesHovered = ImVec4(0.18f, 0.59f, 0.42f, 1.00f);
+    _darkGreenStyle.PlotHistogram = ImVec4(0.12f, 0.47f, 0.32f, 1.00f);
+    _darkGreenStyle.PlotHistogramHovered = ImVec4(0.18f, 0.59f, 0.42f, 1.00f);
     _darkGreenStyle.TableHeaderBg = ImVec4(0.16f, 0.43f, 0.31f, 1.00f);
     _darkGreenStyle.TableBorderStrong = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
     _darkGreenStyle.TableBorderLight = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
     _darkGreenStyle.TableRowBg = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
     _darkGreenStyle.TableRowBgAlt = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
-    _darkGreenStyle.TextLink = ImVec4(0.31f, 1.00f, 0.62f, 1.00f);
-    _darkGreenStyle.TextSelectedBg = ImVec4(0.23f, 0.73f, 0.45f, 1.00f);
-    _darkGreenStyle.DragDropTarget = ImVec4(0.23f, 0.73f, 0.45f, 1.00f);
-    _darkGreenStyle.NavHighlight = ImVec4(0.31f, 1.00f, 0.62f, 1.00f);
+    _darkGreenStyle.TextLink = ImVec4(0.22f, 0.70f, 0.51f, 1.00f);
+    _darkGreenStyle.TextSelectedBg = ImVec4(0.23f, 0.59f, 0.45f, 1.00f);
+    _darkGreenStyle.DragDropTarget = ImVec4(0.11f, 0.30f, 0.22f, 1.00f);
+    _darkGreenStyle.NavHighlight = ImVec4(0.22f, 0.63f, 0.46f, 1.00f);
     _darkGreenStyle.NavWindowingHighlight = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     _darkGreenStyle.NavWindowingDimBg = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
-    _darkGreenStyle.ModalWindowDimBg = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+    _darkGreenStyle.ModalWindowDimBg = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 }
 
 void ModuleEditor::ApplyTheme(const ThemeColors& theme)
@@ -380,4 +436,32 @@ void ModuleEditor::ApplyTheme(const ThemeColors& theme)
     colors[ImGuiCol_NavWindowingHighlight] = theme.NavWindowingHighlight;
     colors[ImGuiCol_NavWindowingDimBg] = theme.NavWindowingDimBg;
     colors[ImGuiCol_ModalWindowDimBg] = theme.ModalWindowDimBg;
+}
+
+void ModuleEditor::SetStyle()
+{
+    ImGui::GetStyle().WindowPadding = ImVec2(8.f, 8.f);
+    ImGui::GetStyle().FramePadding = ImVec2(4.f, 3.f);
+    ImGui::GetStyle().ItemSpacing = ImVec2(8.f, 4.f);
+    ImGui::GetStyle().ItemInnerSpacing = ImVec2(4.f, 4.f);
+    ImGui::GetStyle().TouchExtraPadding = ImVec2(0.f, 0.f);
+    ImGui::GetStyle().IndentSpacing = 21.f;
+    ImGui::GetStyle().ScrollbarSize = 14.f;
+    ImGui::GetStyle().GrabMinSize = 12.f;
+
+    ImGui::GetStyle().WindowBorderSize = 1.f;
+    ImGui::GetStyle().ChildBorderSize = 1.f;
+    ImGui::GetStyle().PopupBorderSize = 1.f;
+    ImGui::GetStyle().FrameBorderSize = 0.f;
+    ImGui::GetStyle().TabBorderSize = 0.f;
+    ImGui::GetStyle().TabBarBorderSize = 1.f;
+    ImGui::GetStyle().TabBarOverlineSize = 2.f;
+
+    ImGui::GetStyle().WindowRounding = 7.f;
+    ImGui::GetStyle().ChildRounding = 6.f;
+    ImGui::GetStyle().FrameRounding = 6.f;
+    ImGui::GetStyle().PopupRounding = 6.f;
+    ImGui::GetStyle().ScrollbarRounding = 9.f;
+    ImGui::GetStyle().GrabRounding = 6.f;
+    ImGui::GetStyle().TabRounding = 6.f;
 }

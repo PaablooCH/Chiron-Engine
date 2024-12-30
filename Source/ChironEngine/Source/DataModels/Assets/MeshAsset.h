@@ -17,37 +17,60 @@ class MeshAsset : public Asset
 {
 public:
     MeshAsset();
+    MeshAsset(UID uid, const std::string& assetPath, const std::string& libraryPath);
     ~MeshAsset() override;
 
     // ------------- GETTERS ----------------------
 
-    inline std::wstring GetName() const override;
-    inline IndexBuffer* GetIndexBuffer() const;
-    inline VertexBuffer* GetVertexBuffer() const;
+    inline IndexBuffer* GetIndexBuffer();
+    inline const std::vector<UINT>& GetIndexData();
 
-    // ------------- GETTERS ----------------------
+    inline VertexBuffer* GetVertexBuffer();
+    inline const std::vector<Vertex>& GetTriangleVertices();
 
-    void SetIndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numIndices, const DXGI_FORMAT& indexFormat,
-        const std::wstring& name = L"");
-    void SetVertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t numVertices, const std::wstring& name = L"");
+    // ------------- SETTERS ----------------------
+
+    void SetIndexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, std::vector<UINT>& indexBufferData, const DXGI_FORMAT& indexFormat,
+        const std::string& name = "");
+    void SetVertexBuffer(const D3D12_RESOURCE_DESC& resourceDesc, std::vector<Vertex>& triangleVertices,
+        const std::string& name = "");
+
+private:
+    bool InternalLoad() override;
+    bool InternalUnload() override;
 
 private:
     std::unique_ptr<IndexBuffer> _indexBuffer;
     std::unique_ptr<VertexBuffer> _vertexBuffer;
+
+    std::vector<UINT> _indexBufferData;
+    std::vector<Vertex> _triangleVertices;
 };
 
-inline std::wstring MeshAsset::GetName() const
+inline IndexBuffer* MeshAsset::GetIndexBuffer()
 {
-    CHIRON_TODO("TODO");
-    return L"";
-}
-
-inline IndexBuffer* MeshAsset::GetIndexBuffer() const
-{
+    if (!IsValid())
+    {
+        Load();
+    }
     return _indexBuffer.get();
 }
 
-inline VertexBuffer* MeshAsset::GetVertexBuffer() const
+inline const std::vector<UINT>& MeshAsset::GetIndexData()
 {
+    return _indexBufferData;
+}
+
+inline VertexBuffer* MeshAsset::GetVertexBuffer()
+{
+    if (!IsValid())
+    {
+        Load();
+    }
     return _vertexBuffer.get();
+}
+
+inline const std::vector<Vertex>& MeshAsset::GetTriangleVertices()
+{
+    return _triangleVertices;
 }

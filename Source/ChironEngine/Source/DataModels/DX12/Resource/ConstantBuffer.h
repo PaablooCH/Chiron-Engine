@@ -6,11 +6,13 @@
 class ConstantBuffer : public Resource
 {
 public:
-    ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, const std::wstring& name = L"");
+    ConstantBuffer(const D3D12_RESOURCE_DESC& resourceDesc, size_t sizeInBytes, const std::string& name = "", bool load = false);
     ~ConstantBuffer();
 
 private:
     void CreateView();
+
+    bool InternalLoad() override;
 
 private:
     size_t _sizeInBytes;

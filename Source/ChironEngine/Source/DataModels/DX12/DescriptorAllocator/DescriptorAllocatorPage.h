@@ -52,7 +52,8 @@ private:
     struct FreeBlockInfo
     {
         FreeBlockInfo(uint32_t size) : size(size)
-        {}
+        {
+        }
 
         uint32_t size;
         TFreeBlocksBySizeMap::iterator blockBySizeIt;
@@ -62,7 +63,8 @@ private:
     {
         StaleDescriptorInfo(uint32_t offset, uint32_t size, uint64_t frame) : offset(offset), size(size),
             frameNumber(frame)
-        {}
+        {
+        }
 
         // Offset within the descriptor heap.
         uint32_t offset;

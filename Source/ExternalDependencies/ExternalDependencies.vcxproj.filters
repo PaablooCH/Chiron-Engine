@@ -4,6 +4,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{66e4705e-730e-40b2-afb3-25fde56dd227}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physfs">
+      <UniqueIdentifier>{b77dc942-6f7b-47d7-bec8-137382357283}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGui\ImGuizmo.cpp">
@@ -35,6 +38,75 @@
     </ClCompile>
     <ClCompile Include="ImGui\imgui_impl_win32.cpp">
       <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_stdlib.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_unicode.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_7z.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_dir.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_grp.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_hog.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_iso9660.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_mvl.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_qpak.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_slb.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_unpacked.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_vdf.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_wad.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_archiver_zip.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_byteorder.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_haiku.cpp">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_os2.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_posix.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_qnx.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_unix.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_windows.c">
+      <Filter>Physfs</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysFS\physfs_platform_winrt.cpp">
+      <Filter>Physfs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,5 +143,31 @@
     <ClInclude Include="ImGui\imgui_impl_dx12.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="ImGui\imgui_stdlib.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\physfs_platforms.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\physfs.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\physfs_casefolding.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\physfs_internal.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\physfs_lzmasdk.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\physfs_miniz.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PhysFS\physfs_platform_apple.m">
+      <Filter>Physfs</Filter>
+    </None>
   </ItemGroup>
 </Project>
