@@ -1,6 +1,10 @@
 #include "Pch.h"
 #include "MeshRendererComponent.h"
 
+#include "Application.h"
+
+#include "Modules/ModuleResources.h"
+
 #include "DataModels/Assets/MeshAsset.h"
 #include "DataModels/Assets/MaterialAsset.h"
 #include "DataModels/Assets/TextureAsset.h"
@@ -10,7 +14,6 @@
 #include "DataModels/GameObject/GameObject.h"
 
 #include "DataModels/DX12/CommandList/CommandList.h"
-#include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
 #include "DataModels/DX12/DescriptorAllocator/DescriptorAllocatorPage.h"
 #include "DataModels/DX12/Resource/IndexBuffer.h"
 #include "DataModels/DX12/Resource/VertexBuffer.h"
@@ -59,8 +62,40 @@ void MeshRendererComponent::Render(const std::shared_ptr<CommandList>& commandLi
 
 void MeshRendererComponent::InternalSave(Field& meta)
 {
+    UID uid = 0;
+    std::string assetPath = "";
+    if (_material)
+    {
+        uid = _material->GetUID();
+        assetPath = _material->GetAssetPath();
+    }
+    meta["material"]["uid"] = uid;
+    meta["material"]["assetPath"] = assetPath;
+
+    uid = 0;
+    assetPath.clear();
+    if (_mesh)
+    {
+        uid = _mesh->GetUID();
+        assetPath = _mesh->GetAssetPath();
+    }
+    meta["mesh"]["uid"] = uid;
+    meta["mesh"]["assetPath"] = assetPath;
 }
 
 void MeshRendererComponent::InternalLoad(const Field& meta)
 {
+    auto moduleResource = App->GetModule<ModuleResources>();
+
+    UID materialUID = meta["material"]["uid"];
+    std::string materialPath = meta["material"]["assetPath"];
+    auto futureMaterial = moduleResource->RequestAsset<MaterialAsset>(materialPath);
+
+    UID meshUID = meta["mesh"]["uid"];
+    std::string meshPath = meta["mesh"]["assetPath"];
+    std::promise<std::shared_ptr<MeshAsset>> promiseMesh;
+    auto futureMesh = moduleResource->RequestAsset<MeshAsset>(meshPath);
+
+    _material = futureMaterial.get();
+    _mesh = futureMesh.get();
 }

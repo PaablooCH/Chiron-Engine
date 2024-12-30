@@ -120,7 +120,7 @@ bool TextureAsset::InternalLoad()
         commandList->UpdateBufferResource(_texture.get(), 0, static_cast<uint32_t>(subresources.size()), subresources.data());
 
         auto signal = d3d12->ExecuteCommandList(commandList);
-        d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, signal);
+        //d3d12->WaitForFenceValue(D3D12_COMMAND_LIST_TYPE_COPY, signal);
 
         result = result && true;
     }

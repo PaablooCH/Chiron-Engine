@@ -109,6 +109,9 @@
     <Filter Include="Source\Interfaces">
       <UniqueIdentifier>{f19e723d-02cb-4c67-9a4d-b3b19e83c620}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ThreadPool">
+      <UniqueIdentifier>{387c52a0-9390-4b62-9cab-16fe0968c5e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -323,6 +326,9 @@
     </ClCompile>
     <ClCompile Include="Source\DataModels\Components\MeshRendererComponent.cpp">
       <Filter>Source\DataModels\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThreadPool\ThreadPool.cpp">
+      <Filter>Source\ThreadPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +602,9 @@
     </ClInclude>
     <ClInclude Include="Source\DataModels\Components\Interfaces\Renderable.h">
       <Filter>Source\DataModels\Components\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThreadPool\ThreadPool.h">
+      <Filter>Source\ThreadPool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

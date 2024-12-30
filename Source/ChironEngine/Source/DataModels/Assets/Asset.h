@@ -16,7 +16,7 @@ public:
 
     inline const UID GetUID() const;
     inline virtual const std::string& GetName() const;
-    inline virtual AssetType GetType() const;
+    inline AssetType GetType() const;
     inline const std::string& GetAssetPath() const;
     inline const std::string& GetLibraryPath() const;
 

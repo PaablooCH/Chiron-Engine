@@ -11,6 +11,9 @@ struct ModelAttributes
 {
     matrix model;
     int uvCorrector;
+    //int uvCorrectorSpecularMetallnes;
+    //int uvCorrectorNormalMap;
+    //int uvCorrectorOcclusion;
 };
 ConstantBuffer<ModelAttributes> modelAttributes : register(b1);
 

@@ -13,6 +13,7 @@
 #include "Modules/ModuleWindow.h"
 
 #include "DataModels/Timer/Timer.h"
+#include "ThreadPool/ThreadPool.h"
 
 #ifdef PROFILE
     #include "Optick/optick.h"
@@ -33,6 +34,7 @@ Application::Application(HWND hwnd, HINSTANCE hInstance) : _frameCount(0), _delt
     _modules[static_cast<int>(ModuleToEnum<ModuleEditor>::value)] = std::make_unique<ModuleEditor>();
 
     _timer = std::make_unique<Timer>();
+    _mainThreadPool = std::make_unique<ThreadPool>(15);
 }
 
 Application::~Application()

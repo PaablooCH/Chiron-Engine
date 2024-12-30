@@ -9,6 +9,8 @@
 #include "DataModels/GameObject/GameObject.h"
 #include "DataModels/Scene/Scene.h"
 
+#include "ThreadPool/ThreadPool.h"
+
 namespace Chiron::Loader
 {
     namespace
@@ -52,7 +54,7 @@ namespace Chiron::Loader
 
             // ------------- LINK COMPONENTS/PARENT ----------------------
 
-            std::vector<std::thread> threads;
+            auto mainTreadPool = App->GetMainThreadPool();
             for (int i = 0; i < gameObjects.Size(); i++)
             {
                 auto gameObjectField = gameObjects[i]["GameObject"];
@@ -66,7 +68,7 @@ namespace Chiron::Loader
                 // ------------- LINK COMPONENTS ----------------------
 
                 auto components = gameObjectField["Components"];
-                threads.emplace_back(
+                mainTreadPool->AddTask(
                     [&]() {
                         gameObject->Load(components);
                     });
@@ -94,33 +96,19 @@ namespace Chiron::Loader
                 }
             }
 
-            for (auto& t : threads)
-            {
-                if (t.joinable())
-                {
-                    t.join();
-                }
-            }
-
-            threads.clear();
+            mainTreadPool->WaitForCompletion();
 
             // ------------- ON AWAKE GAMEOBJECTS ----------------------
 
             for (auto& gameObject : sceneModule->GetLoadedScene()->GetSceneGameObjects())
             {
-                threads.emplace_back(
+                mainTreadPool->AddTask(
                     [&]() {
                         gameObject->OnAwake();
                     });
             }
 
-            for (auto& t : threads)
-            {
-                if (t.joinable())
-                {
-                    t.join();
-                }
-            }
+            mainTreadPool->WaitForCompletion();
 
             // ------------- CORRECT SOME GAMEOBJECTS ----------------------
 

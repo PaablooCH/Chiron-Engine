@@ -40,6 +40,7 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
     if (scene)
     {
 #ifdef PROFILE
+        OPTICK_THREAD("ImportThread");
         OPTICK_CATEGORY("ImportModel", Optick::Category::Debug);
 #endif // DEBUG
         model->SetName(ModuleFileSystem::GetFileName(filePath));
@@ -58,6 +59,7 @@ void ModelImporter::Import(const char* filePath, const std::shared_ptr<ModelAsse
 void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAsset>& model)
 {
 #ifdef PROFILE
+    OPTICK_THREAD("LoadThread");
     OPTICK_CATEGORY("Load Model", Optick::Category::Debug);
 #endif // OPTICK
     if (!ModuleFileSystem::ExistsFile(libraryPath))
@@ -126,9 +128,10 @@ void ModelImporter::Load(const char* libraryPath, const std::shared_ptr<ModelAss
         auto moduleResource = App->GetModule<ModuleResources>();
         for (int i = 0; i < meshesUIDs.size(); ++i)
         {
-            std::shared_ptr<MeshAsset> mesh = moduleResource->SearchAsset<MeshAsset>(meshesUIDs[i]);
-            std::shared_ptr<MaterialAsset> material = moduleResource->SearchAsset<MaterialAsset>(materialsUIDs[i]);
-            node->meshMaterial.emplace_back(mesh, material);
+            auto futureMesh = moduleResource->SearchAsset<MeshAsset>(meshesUIDs[i]);
+            auto futureMat = moduleResource->SearchAsset<MaterialAsset>(materialsUIDs[i]);
+
+            node->meshMaterial.emplace_back(futureMesh.get(), futureMat.get());
         }
 
         nodes.push_back(std::move(node));
@@ -275,10 +278,11 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
             LOG_INFO("Importing mesh {}", name);
             LOG_INFO("Importing material {}", material->GetName().C_Str());
 
-            std::shared_ptr<MeshAsset> meshAsset = ImportMesh(mesh, name, i);
-            std::shared_ptr<MaterialAsset> materialAsset = ImportMaterial(material, filePath, i);
+            auto futureMeshAsset = ImportMesh(mesh, name, i);
+            auto futureMaterialAsset = ImportMaterial(material, filePath, i);
 
-            std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>> meshMat = std::make_pair(meshAsset, materialAsset);
+            std::pair<std::shared_ptr<MeshAsset>, std::shared_ptr<MaterialAsset>> meshMat =
+                std::make_pair(futureMeshAsset.get(), futureMaterialAsset.get());
             modelNode->meshMaterial.push_back(meshMat);
         }
 
@@ -292,15 +296,13 @@ void ModelImporter::ImportNode(const aiScene* scene, const char* filePath, const
     }
 }
 
-std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const std::string& fileName, int iteration)
+std::future<std::shared_ptr<MeshAsset>> ModelImporter::ImportMesh(const aiMesh* mesh, const std::string& fileName, int iteration)
 {
     std::string meshPath = MESHES_PATH + fileName + "_" + std::to_string(iteration) + MESH_EXT;
 
     if (ModuleFileSystem::ExistsFile(meshPath.c_str()))
     {
-        std::shared_ptr<MeshAsset> meshAsset = App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
-
-        return meshAsset;
+        return App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
     }
 
     // -------------- VERTEX ---------------------
@@ -371,14 +373,12 @@ std::shared_ptr<MeshAsset> ModelImporter::ImportMesh(const aiMesh* mesh, const s
 
     ModuleFileSystem::SaveFile(meshPath.c_str(), fileBuffer, size);
 
-    std::shared_ptr<MeshAsset> meshAsset = App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
-
     delete[] fileBuffer;
 
-    return meshAsset;
+    return App->GetModule<ModuleResources>()->RequestAsset<MeshAsset>(meshPath);
 }
 
-std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* material, const std::string& filePath, int iteration)
+std::future<std::shared_ptr<MaterialAsset>> ModelImporter::ImportMaterial(const aiMaterial* material, const std::string& filePath, int iteration)
 {
     auto resources = App->GetModule<ModuleResources>();
 
@@ -386,9 +386,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
         std::to_string(iteration) + MAT_EXT;
     if (ModuleFileSystem::ExistsFile(matPath.c_str()))
     {
-        std::shared_ptr<MaterialAsset> materialAsset = resources->RequestAsset<MaterialAsset>(matPath);
-
-        return materialAsset;
+        return App->GetModule<ModuleResources>()->RequestAsset<MaterialAsset>(matPath);
     }
 
     aiString file;
@@ -443,9 +441,7 @@ std::shared_ptr<MaterialAsset> ModelImporter::ImportMaterial(const aiMaterial* m
     ModuleFileSystem::SaveFile(matPath.c_str(),
         filebuffer.GetString(), filebuffer.GetSize());
 
-    std::shared_ptr<MaterialAsset> materialAsset = resources->RequestAsset<MaterialAsset>(matPath);
-
-    return materialAsset;
+    return App->GetModule<ModuleResources>()->RequestAsset<MaterialAsset>(matPath);
 }
 
 void ModelImporter::CheckPathMaterial(const char* filePath, const aiString& file, std::string& dataBuffer)

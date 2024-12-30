@@ -56,7 +56,8 @@ private:
         DescriptorTableCache()
             : NumDescriptors(0)
             , BaseDescriptor(nullptr)
-        {}
+        {
+        }
 
         // Reset the table cache.
         void Reset()

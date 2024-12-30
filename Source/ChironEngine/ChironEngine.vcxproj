@@ -95,6 +95,7 @@
     <ClCompile Include="Source\DataModels\DX12\Resource\VertexBuffer.cpp" />
     <ClCompile Include="Source\DataModels\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Inspector\TransformComponentWindow.cpp" />
+    <ClCompile Include="Source\ThreadPool\ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Auxiliar\SceneLoader.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Source\DataModels\DX12\Resource\VertexBuffer.h" />
     <ClInclude Include="Source\Structs\ThemeColors.h" />
     <ClInclude Include="Source\DataModels\Components\TransformComponent.h" />
+    <ClInclude Include="Source\ThreadPool\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\DataModels\GameObject\GameObject.inl" />
