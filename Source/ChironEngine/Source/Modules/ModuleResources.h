@@ -29,11 +29,11 @@ public:
 
     // Request resource and Import if is necessary
     template<class A = Asset>
-    std::future<std::shared_ptr<A>> RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise);
+    std::future<std::shared_ptr<A>> RequestAsset(const std::string path);
 
     // Search resource by UID
     template<class A = Asset>
-    std::future<std::shared_ptr<A>> SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise);
+    std::future<std::shared_ptr<A>> SearchAsset(UID uid);
 
 private:
     void ImportAsset(const std::shared_ptr<Asset>& asset);
@@ -71,18 +71,19 @@ private:
 };
 
 template<class A>
-inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::string path, std::promise<std::shared_ptr<A>>& promise)
+inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::string path)
 {
-    auto future = promise.get_future();
+    std::shared_ptr<std::promise<std::shared_ptr<A>>> promise = std::make_shared<std::promise<std::shared_ptr<A>>>();
+    auto future = promise->get_future();
     _threadPool->AddTask(
-        [this, path, &promise]() {
+        [this, path, promise]() {
             try {
                 std::shared_ptr<Asset> shared;
                 AssetType type = GetTypeByExtension(path);
                 if (type == AssetType::UNKNOWN)
                 {
                     LOG_ERROR("Extension not supported.");
-                    promise.set_value(nullptr);
+                    promise->set_value(nullptr);
                     return;
                 }
 
@@ -101,7 +102,7 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
                     if (it != _assets.end() && !(it->second).expired())
                     {
                         shared = (it->second).lock();
-                        promise.set_value(std::dynamic_pointer_cast<A>(shared));
+                        promise->set_value(std::dynamic_pointer_cast<A>(shared));
                         return;
                     }
                     std::string libraryPath = GetLibraryPath(uid, type);
@@ -113,7 +114,7 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
                     {
                         shared = CreateAssetOfType(type, uid, filePath, libraryPath);
                         LoadAsset(shared);
-                        promise.set_value(std::dynamic_pointer_cast<A>(shared));
+                        promise->set_value(std::dynamic_pointer_cast<A>(shared));
                         return;
                     }
                 }
@@ -121,50 +122,59 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
                 if (!ModuleFileSystem::ExistsFile(filePath.c_str()))
                 {
                     CHIRON_TODO("copy the file outside the project into the project");
-                    promise.set_value(nullptr);
+                    promise->set_value(nullptr);
                     return;
                 }
                 shared = CreateNewAsset(filePath, type);
                 ImportAsset(shared);
-                promise.set_value(std::dynamic_pointer_cast<A>(shared));
+                promise->set_value(std::dynamic_pointer_cast<A>(shared));
             }
-            catch (const std::exception& e)
+            catch (std::future_error const& e)
             {
-                LOG_ERROR("Error during asset request: {}", e.what());
-                promise.set_exception(std::current_exception());
+                LOG_ERROR("Error during asset request Future error: {}", e.what());
+            }
+            catch (std::exception const& e)
+            {
+                LOG_ERROR("Error during asset request Standard exception: {}", e.what());
+                promise->set_exception(std::current_exception());
+            }
+            catch (...)
+            {
+                LOG_ERROR("Error during asset request Unknown exception");
             }
         });
     return future;
 }
 
 template<class A>
-inline std::future<std::shared_ptr<A>> ModuleResources::SearchAsset(UID uid, std::promise<std::shared_ptr<A>>& promise)
+inline std::future<std::shared_ptr<A>> ModuleResources::SearchAsset(UID uid)
 {
-    auto future = promise.get_future();
+    std::shared_ptr<std::promise<std::shared_ptr<A>>> promise = std::make_shared<std::promise<std::shared_ptr<A>>>();
+    auto future = promise->get_future();
     _threadPool->AddTask(
-        [this, uid, &promise]() {
+        [this, uid, promise]() {
             try {
                 std::shared_ptr<Asset> shared;
                 auto it = _assets.find(uid);
                 if (it != _assets.end() && !(it->second).expired())
                 {
                     shared = (it->second).lock();
-                    promise.set_value(std::dynamic_pointer_cast<A>(shared));
+                    promise->set_value(std::dynamic_pointer_cast<A>(shared));
                     return;
                 }
                 shared = LoadBinary(uid);
                 if (shared)
                 {
-                    promise.set_value(std::dynamic_pointer_cast<A>(shared));
+                    promise->set_value(std::dynamic_pointer_cast<A>(shared));
                     return;
                 }
                 LOG_WARNING("Couldn't find or load {} file.", uid);
-                promise.set_value(nullptr);
+                promise->set_value(nullptr);
             }
             catch (const std::exception& e)
             {
                 LOG_ERROR("Error during asset request: {}", e.what());
-                promise.set_exception(std::current_exception());
+                promise->set_exception(std::current_exception());
             }
         });
     return future;

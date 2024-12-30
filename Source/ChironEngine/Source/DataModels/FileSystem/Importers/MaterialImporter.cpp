@@ -41,40 +41,35 @@ void MaterialImporter::Import(const char* filePath, const std::shared_ptr<Materi
     std::string path = json["BaseTexturePath"];
     if (path != "")
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseBase;
-        resources->RequestAsset<TextureAsset>(path, promiseBase);
+        futureBase = resources->RequestAsset<TextureAsset>(path);
         hasBase = true;
     }
 
     path = json["NormalMapPath"];
     if (path != "")
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseNormalMap;
-        resources->RequestAsset<TextureAsset>(path, promiseNormalMap);
+        futureNormalMap = resources->RequestAsset<TextureAsset>(path);
         hasNormal = true;
     }
 
     path = json["AmbientOcclusionPath"];
     if (path != "")
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseOcclusion;
-        resources->RequestAsset<TextureAsset>(path, promiseOcclusion);
+        futureOcclusion = resources->RequestAsset<TextureAsset>(path);
         hasOcclusion = true;
     }
 
     path = json["PropertyTexturePath"];
     if (path != "")
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseProperty;
-        resources->RequestAsset<TextureAsset>(path, promiseProperty);
+        futureProperty = resources->RequestAsset<TextureAsset>(path);
         hasProperty = true;
     }
 
     path = json["EmissiveTexturePath"];
     if (path != "")
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseEmissive;
-        resources->RequestAsset<TextureAsset>(path, promiseEmissive);
+        futureEmissive = resources->RequestAsset<TextureAsset>(path);
         hasEmissive = true;
     }
 
@@ -161,8 +156,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseBase;
-        futureBase = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseBase);
+        futureBase = resourceModule->SearchAsset<TextureAsset>(textureUID);
         hasBase = true;
     }
     fileBuffer += bytes;
@@ -170,8 +164,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseNormalMap;
-        futureNormalMap = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseNormalMap);
+        futureNormalMap = resourceModule->SearchAsset<TextureAsset>(textureUID);
         hasNormal = true;
     }
     fileBuffer += bytes;
@@ -179,8 +172,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseOcclusion;
-        futureOcclusion = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseOcclusion);
+        futureOcclusion = resourceModule->SearchAsset<TextureAsset>(textureUID);
         hasOcclusion = true;
     }
     fileBuffer += bytes;
@@ -188,8 +180,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseProperty;
-        futureProperty = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseProperty);
+        futureProperty = resourceModule->SearchAsset<TextureAsset>(textureUID);
         hasProperty = true;
     }
     fileBuffer += bytes;
@@ -197,8 +188,7 @@ void MaterialImporter::Load(const char* libraryPath, const std::shared_ptr<Mater
     memcpy(&textureUID, fileBuffer, bytes);
     if (textureUID != 0)
     {
-        std::promise<std::shared_ptr<TextureAsset>> promiseEmissivea;
-        futureEmissive = resourceModule->SearchAsset<TextureAsset>(textureUID, promiseEmissivea);
+        futureEmissive = resourceModule->SearchAsset<TextureAsset>(textureUID);
         hasEmissive = true;
     }
     fileBuffer += bytes;
