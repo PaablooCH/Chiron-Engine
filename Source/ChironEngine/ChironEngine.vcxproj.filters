@@ -330,6 +330,9 @@
     <ClCompile Include="Source\ThreadPool\ThreadPool.cpp">
       <Filter>Source\ThreadPool</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.cpp">
+      <Filter>Source\DataModels\Windows\EditorWindow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -605,6 +608,9 @@
     </ClInclude>
     <ClInclude Include="Source\ThreadPool\ThreadPool.h">
       <Filter>Source\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.h">
+      <Filter>Source\DataModels\Windows\EditorWindow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

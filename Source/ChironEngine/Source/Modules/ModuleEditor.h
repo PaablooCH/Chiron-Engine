@@ -38,6 +38,7 @@ private:
     {
         CONFIGURATION,
         CONSOLE,
+        FILE_BROWSER,
         HIERARCHY,
         INSPECTOR,
         SCENE,

@@ -58,6 +58,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\ConfigurationWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\ConsoleWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\EditorWindow.cpp" />
+    <ClCompile Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\InspectorWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SceneWindow.cpp" />
     <ClCompile Include="Source\DataModels\Window\EditorWindow\SubWindows\Configuration\CameraSubWindow.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="Source\DataModels\Components\MeshRendererComponent.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Importers\MaterialImporter.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h" />
+    <ClInclude Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.h" />
     <ClInclude Include="Source\Enums\AssetType.h" />
     <ClInclude Include="Source\Interfaces\Serializable.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Json\Field.h" />

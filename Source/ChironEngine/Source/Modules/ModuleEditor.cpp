@@ -11,6 +11,7 @@
 #include "DataModels/Window/MainMenuWindow.h"
 #include "DataModels/Window/EditorWindow/ConfigurationWindow.h"
 #include "DataModels/Window/EditorWindow/ConsoleWindow.h"
+#include "DataModels/Window/EditorWindow/FileBrowserWindow.h"
 #include "DataModels/Window/EditorWindow/HierarchyWindow.h"
 #include "DataModels/Window/EditorWindow/InspectorWindow.h"
 #include "DataModels/Window/EditorWindow/SceneWindow.h"
@@ -70,6 +71,7 @@ bool ModuleEditor::Init()
     _windows[static_cast<int>(WindowsType::SCENE)] = std::make_unique<SceneWindow>();
     _windows[static_cast<int>(WindowsType::CONSOLE)] = std::make_unique<ConsoleWindow>();
     _windows[static_cast<int>(WindowsType::CONFIGURATION)] = std::make_unique<ConfigurationWindow>();
+    _windows[static_cast<int>(WindowsType::FILE_BROWSER)] = std::make_unique<FileBrowserWindow>();
     _windows[static_cast<int>(WindowsType::HIERARCHY)] = std::make_unique<HierarchyWindow>();
     _windows[static_cast<int>(WindowsType::INSPECTOR)] = std::make_unique<InspectorWindow>();
     _mainMenu = std::make_unique<MainMenuWindow>();
@@ -201,7 +203,7 @@ void ModuleEditor::StartDock() const
     ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
     ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
     ImGui::DockBuilderDockWindow(ICON_FA_TERMINAL " Console", dockIdDown);
-    //ImGui::DockBuilderDockWindow("File Browser", dockIdDown);
+    ImGui::DockBuilderDockWindow(ICON_FA_FOLDER " File Browser", dockIdDown);
     //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
     ImGui::DockBuilderDockWindow(ICON_FA_GEAR " Configuration", dockIdRight);
     //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
