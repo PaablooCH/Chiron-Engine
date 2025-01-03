@@ -203,7 +203,7 @@ void ModuleEditor::StartDock() const
     ImGuiID dockIdDown = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, 0.32f, nullptr, &dockSpaceId);
     ImGuiID dockIdLeft = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, 0.22f, nullptr, &dockSpaceId);
     ImGui::DockBuilderDockWindow(ICON_FA_TERMINAL " Console", dockIdDown);
-    ImGui::DockBuilderDockWindow(ICON_FA_FOLDER " File Browser", dockIdDown);
+    ImGui::DockBuilderDockWindow(ICON_FA_FOLDER_TREE " File Browser", dockIdDown);
     //ImGui::DockBuilderDockWindow("State Machine Editor", dockIdDown);
     ImGui::DockBuilderDockWindow(ICON_FA_GEAR " Configuration", dockIdRight);
     //ImGui::DockBuilderDockWindow("Navigation", dockIdRight);
