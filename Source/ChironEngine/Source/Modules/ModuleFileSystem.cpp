@@ -1,6 +1,7 @@
 #include "Pch.h"
 #include "ModuleFileSystem.h"
 
+#include <filesystem>
 #include "PhysFS/physfs.h"
 
 ModuleFileSystem::ModuleFileSystem()
@@ -15,7 +16,7 @@ bool ModuleFileSystem::Init()
 {
     PHYSFS_init(nullptr);
     PHYSFS_mount(".", nullptr, 0);
-    PHYSFS_mount("..", nullptr, 0);
+    //PHYSFS_mount("..", nullptr, 0);
     PHYSFS_setWriteDir(".");
 
     return true;
@@ -95,6 +96,85 @@ const std::string ModuleFileSystem::GetPathWithoutFile(const std::string& path)
 
     // If no separator is found, return an empty string (no directory path)
     return "";
+}
+
+bool ModuleFileSystem::DeleteDirectory(const char* path)
+{
+    const char* realDir = PHYSFS_getRealDir(path);
+    if (!realDir) 
+    {
+        LOG_ERROR("Error: Directory does not exist in PhysFS.");
+        return false;
+    }
+
+    try 
+    {
+        std::filesystem::path fullPath = std::filesystem::path(realDir) / path;
+        if (std::filesystem::exists(fullPath)) 
+        {
+            std::filesystem::remove_all(fullPath);
+            LOG_INFO("Directory deleted successfully.");
+            PHYSFS_mount(".", nullptr, 0);
+            return true;
+        }
+        else 
+        {
+            LOG_ERROR("Error: Directory does not exist in the real filesystem.");
+            return false;
+        }
+    }
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+        LOG_ERROR("Filesystem error: {}", e.what());
+        return false;
+    }
+}
+
+bool ModuleFileSystem::MoveDirectory(const char* sourcePath, const char* destinationPath)
+{
+    const char* realSource = PHYSFS_getRealDir(sourcePath);
+    if (!realSource) 
+    {
+        LOG_ERROR("Error: Unable to locate real source directory: {}", PHYSFS_getLastError());
+        return false;
+    }
+
+    try 
+    {
+        std::filesystem::path realSourcePath = std::filesystem::path(realSource) / sourcePath;
+        std::filesystem::path realDestinationPath = std::filesystem::path(PHYSFS_getWriteDir()) / destinationPath;
+
+        if (!std::filesystem::exists(realSourcePath)) 
+        {
+            LOG_ERROR("Error: Source directory does not exist in the filesystem.");
+            return false;
+        }
+
+        if (std::filesystem::exists(realDestinationPath)) 
+        {
+            LOG_ERROR("Error: Destination already exists in the filesystem.");
+            return false;
+        }
+
+        std::filesystem::rename(realSourcePath, realDestinationPath);
+        LOG_INFO("Directory moved successfully from {} to {}", realSourcePath.string(), realDestinationPath.string());
+
+        if (!PHYSFS_mount(realDestinationPath.string().c_str(), nullptr, 1))
+        {
+            LOG_ERROR("Warning: Unable to mount destination into PhysFS: {}", PHYSFS_getLastError());
+        }
+        if (!PHYSFS_unmount(realSourcePath.string().c_str()))
+        {
+            LOG_WARNING("Unable to unmount old source path: {}", PHYSFS_getLastError());
+        }
+
+        return true;
+    }
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+        LOG_ERROR("Filesystem error: {}", e.what());
+        return false;
+    }
 }
 
 bool ModuleFileSystem::SaveFile(const char* filePath, const void* buffer, size_t size, bool append /*= false */)

@@ -18,6 +18,8 @@ public:
     static const std::string GetFileExtension(const char* path);
     static const std::string GetFileName(const std::string& path);
     static const std::string GetPathWithoutFile(const std::string& path);
+    static bool DeleteDirectory(const char* path);
+    static bool MoveDirectory(const char* sourcePath, const char* destinationPath);
 
     // ------------- PHYSFS METHODS ----------------------
 
