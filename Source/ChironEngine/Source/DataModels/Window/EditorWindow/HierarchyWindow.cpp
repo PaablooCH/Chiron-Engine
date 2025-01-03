@@ -60,7 +60,7 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
 
     while (!stack.empty())
     {
-        auto [gameObject, childrenVisited] = stack.top();
+        auto& [gameObject, childrenVisited] = stack.top();
         stack.pop();
 
         if (childrenVisited)
@@ -95,7 +95,8 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
             moduleScene->SetSelectedGameObject(gameObject);
         }
 
-        if (ImGui::BeginPopupContextItem("RightClickGameObject", ImGuiPopupFlags_MouseButtonRight)) {
+        if (ImGui::BeginPopupContextItem("RightClickGameObject", ImGuiPopupFlags_MouseButtonRight)) 
+        {
             if (ImGui::MenuItem("Create Empty child"))
             {
                 moduleScene->CreateGameObject("Empty GameObject", gameObject);
@@ -120,14 +121,14 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTree(GameObject* rootG
         if (ImGui::BeginDragDropSource())
         {
             UID uid = gameObject->GetUID();
-            ImGui::SetDragDropPayload("HIERARCHY", &uid, sizeof(UID));
+            ImGui::SetDragDropPayload("HIERARCHY_GAMEOBJECT", &uid, sizeof(UID));
             ImGui::Text(gameObject->GetName().c_str());
             ImGui::EndDragDropSource();
         }
 
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY"))
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_GAMEOBJECT"))
             {
                 UID draggedGameObjectUID = *static_cast<UID*>(payload->Data);
                 auto draggedGameObject = moduleScene->SearchGameObjectByUID(draggedGameObjectUID);
@@ -168,7 +169,7 @@ HierarchyWindow::HierarchyStatus HierarchyWindow::DrawNodeTreeFiltered(GameObjec
 
     while (!stack.empty())
     {
-        auto [gameObject, childrenVisited] = stack.top();
+        auto& [gameObject, childrenVisited] = stack.top();
         stack.pop();
 
         if (childrenVisited)
