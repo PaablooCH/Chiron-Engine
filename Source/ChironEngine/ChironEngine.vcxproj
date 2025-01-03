@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Auxiliar\SceneLoader.cpp" />
     <ClCompile Include="Source\DataModels\Components\MeshRendererComponent.cpp" />
+    <ClCompile Include="Source\DataModels\FileSystem\Folder\Folder.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Importers\MaterialImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Importers\MeshImporter.cpp" />
     <ClCompile Include="Source\DataModels\FileSystem\Json\Field.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="Source\Auxiliar\SceneLoader.h" />
     <ClInclude Include="Source\DataModels\Components\Interfaces\Renderable.h" />
     <ClInclude Include="Source\DataModels\Components\MeshRendererComponent.h" />
+    <ClInclude Include="Source\DataModels\FileSystem\Folder\Folder.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Importers\MaterialImporter.h" />
     <ClInclude Include="Source\DataModels\FileSystem\Importers\MeshImporter.h" />
     <ClInclude Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.h" />

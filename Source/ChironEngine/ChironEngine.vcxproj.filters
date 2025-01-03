@@ -112,6 +112,9 @@
     <Filter Include="Source\ThreadPool">
       <UniqueIdentifier>{387c52a0-9390-4b62-9cab-16fe0968c5e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\DataModels\FileSystem\Folder">
+      <UniqueIdentifier>{44a4b348-2ba8-488c-a6e7-abe9da942009}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -333,6 +336,7 @@
     <ClCompile Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.cpp">
       <Filter>Source\DataModels\Windows\EditorWindow</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataModels\FileSystem\Folder\Folder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -612,6 +616,7 @@
     <ClInclude Include="Source\DataModels\Window\EditorWindow\FileBrowserWindow.h">
       <Filter>Source\DataModels\Windows\EditorWindow</Filter>
     </ClInclude>
+    <ClInclude Include="Source\DataModels\FileSystem\Folder\Folder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\DataModels\GameObject\GameObject.inl">
