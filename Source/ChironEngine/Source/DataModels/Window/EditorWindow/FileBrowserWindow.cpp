@@ -76,8 +76,10 @@ void FileBrowserWindow::DrawFolderTree()
             {
                 std::string newPath = folder->GetPath() + "New Folder";
                 CHIRON_TODO("Problem with duplicated names");
-                ModuleFileSystem::CreateDirectoryC(newPath.c_str());
-                new Folder(newPath, folder);
+                if (ModuleFileSystem::CreateUniqueDirectory(newPath))
+                {
+                    new Folder(newPath, folder);
+                }
             }
             if (IsDeletable(folder) && DrawDeleteFolderMenu(folder))
             {

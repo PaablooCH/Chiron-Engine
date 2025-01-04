@@ -278,6 +278,12 @@ bool ModuleFileSystem::CreateDirectoryC(const char* directoryName)
     return PHYSFS_mkdir(directoryName);
 }
 
+bool ModuleFileSystem::CreateUniqueDirectory(std::string& directoryName)
+{
+    UniqueName(directoryName);
+    return CreateDirectoryC(directoryName.c_str());
+}
+
 bool ModuleFileSystem::IsDirectory(const char* path)
 {
     return PHYSFS_isDirectory(path);
@@ -315,6 +321,26 @@ std::vector<std::string> ModuleFileSystem::ListFilesWithPath(const char* directo
         files[i] = directoryPath + files[i];
     }
     return files;
+}
+
+void ModuleFileSystem::UniqueName(std::string& directoryName)
+{
+    std::string uniqueName = directoryName;
+    int counter = 1;
+
+    while (true)
+    {
+        if (!PHYSFS_exists(uniqueName.c_str()))
+        {
+            break;
+        }
+
+        std::ostringstream oss;
+        oss << directoryName << "_" << counter++;
+        uniqueName = oss.str();
+    }
+
+    directoryName = uniqueName;
 }
 
 bool ModuleFileSystem::OpenFile(const char* filePath, OpenFileMethod method, PHYSFS_File*& result)

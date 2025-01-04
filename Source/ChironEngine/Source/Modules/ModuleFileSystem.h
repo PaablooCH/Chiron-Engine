@@ -30,6 +30,7 @@ public:
     static bool DeleteFileC(const char* path);
     static bool ExistsFile(const char* path);
     static bool CreateDirectoryC(const char* directoryName);
+    static bool CreateUniqueDirectory(std::string& directoryName);
     static bool IsDirectory(const char* path);
     static long long GetModificationDate(const char* path);
     static std::vector<std::string> ListFiles(const char* directoryPath);
@@ -42,5 +43,6 @@ private:
         READ,
         WRITE
     };
+    static void UniqueName(std::string& directoryName);
     static bool OpenFile(const char* filePath, OpenFileMethod method, PHYSFS_File*& result);
 };
