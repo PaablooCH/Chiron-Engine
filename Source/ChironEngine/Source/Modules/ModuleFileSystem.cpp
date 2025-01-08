@@ -98,6 +98,16 @@ const std::string ModuleFileSystem::GetPathWithoutFile(const std::string& path)
     return "";
 }
 
+std::vector<std::string> ModuleFileSystem::SplitPath(const std::string& path)
+{
+    std::vector<std::string> directories;
+    for (const auto& part : std::filesystem::path(path)) 
+    {
+        directories.push_back(part.string());
+    }
+    return directories;
+}
+
 bool ModuleFileSystem::DeleteDirectory(const char* path)
 {
     const char* realDir = PHYSFS_getRealDir(path);

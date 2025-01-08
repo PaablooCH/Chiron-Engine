@@ -14,6 +14,7 @@ private:
     bool DrawDeleteFolderMenu(Folder* folder);
 
     void GenerateFolders();
+    void SelectFolder(Folder* folder);
 
     inline bool IsDeletable(Folder* folder) const;
 private:
@@ -21,6 +22,8 @@ private:
 
     std::unique_ptr<Folder> _rootFolder;
     Folder* _selectedFolder;
+
+    std::vector<std::string> _selectablePaths;
 };
 
 inline bool FileBrowserWindow::IsDeletable(Folder* folder) const

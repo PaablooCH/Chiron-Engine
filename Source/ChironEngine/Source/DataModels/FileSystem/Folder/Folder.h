@@ -10,6 +10,7 @@ public:
     ~Folder();
 
     Folder* FindFolder(UID uid);
+    Folder* FindFolder(const std::vector<std::string>& path, int iterator);
 
     // ------------- CHILDREN METHODS ----------------------
 

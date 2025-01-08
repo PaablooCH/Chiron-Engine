@@ -11,7 +11,7 @@ FileBrowserWindow::FileBrowserWindow() : EditorWindow(ICON_FA_FOLDER_TREE " File
 _currentPath("Assets")
 {
     _rootFolder = std::make_unique<Folder>(_currentPath);
-    _selectedFolder = _rootFolder.get();
+    SelectFolder(_rootFolder.get());
 
     GenerateFolders();
 }
@@ -22,7 +22,62 @@ FileBrowserWindow::~FileBrowserWindow()
 
 void FileBrowserWindow::DrawWindowContent(const std::shared_ptr<CommandList>& commandList)
 {
-    DrawFolderTree();
+    if (ImGui::BeginChild("##FolderTreeChild", ImVec2(300, 0), ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders))
+    {
+        DrawFolderTree();
+    }
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+    
+    ImGui::BeginGroup();
+    if (_selectedFolder)
+    {
+        if (ImGui::BeginChild("##FolderInfoChild", ImVec2(0, 0), ImGuiChildFlags_Borders))
+        {
+            for (int i = 0; i < _selectablePaths.size(); i++)
+            {
+                if (ImGui::Button(_selectablePaths[i].c_str()))
+                {
+                    std::vector<std::string> extracted(
+                        std::make_move_iterator(_selectablePaths.begin()),
+                        std::make_move_iterator(_selectablePaths.begin() + i + 1)
+                    );
+                    SelectFolder(_rootFolder->FindFolder(extracted, 0));
+                }
+                if (i < _selectablePaths.size() - 1)
+                {
+                    ImGui::SameLine();
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            ImGui::Text("%s", _selectedFolder->GetName());
+            ImGui::TextDisabled("UID: 0x%08X", _selectedFolder->GetUID());
+            ImGui::Separator();
+            if (ImGui::BeginTable("##properties", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY))
+            {
+                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 2.0f);
+
+                ImGui::EndTable();
+            }
+        }
+        ImGui::EndChild();
+    }
+    ImGui::EndGroup();
 }
 
 void FileBrowserWindow::DrawFolderTree()
@@ -68,7 +123,7 @@ void FileBrowserWindow::DrawFolderTree()
 
         if (ImGui::IsItemClicked() && folder != _selectedFolder)
         {
-            _selectedFolder = folder;
+            SelectFolder(folder);
         }
 
         if (ImGui::BeginPopupContextItem("RightClickFolder", ImGuiPopupFlags_MouseButtonRight)) {
@@ -191,4 +246,10 @@ void FileBrowserWindow::GenerateFolders()
             }
         }
     }
+}
+
+void FileBrowserWindow::SelectFolder(Folder* folder)
+{
+    _selectedFolder = folder;
+    _selectablePaths = ModuleFileSystem::SplitPath(_selectedFolder->GetPath());
 }

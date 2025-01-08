@@ -41,6 +41,21 @@ Folder* Folder::FindFolder(UID uid)
     return nullptr;
 }
 
+Folder* Folder::FindFolder(const std::vector<std::string>& path, int iterator)
+{
+    if (iterator == path.size() - 1)
+    {
+        return this;
+    }
+    for (auto& sub : _subdirectories)
+    {
+        if (sub->GetName() == path[iterator])
+        {
+            return sub->FindFolder(path, iterator + 1);
+        }
+    }
+}
+
 void Folder::LinkSubdirectory(Folder* subdirectory)
 {
     assert(subdirectory);
@@ -48,7 +63,7 @@ void Folder::LinkSubdirectory(Folder* subdirectory)
     if (!IsSubdirectory(subdirectory))
     {
         subdirectory->_parent = this;
-        std::string newPath = _path + '/' + subdirectory->_name + '/';
+        std::string newPath = _path + '/' + subdirectory->_name;
         subdirectory->_path = newPath;
         _subdirectories.push_back(std::unique_ptr<Folder>(subdirectory));
     }
