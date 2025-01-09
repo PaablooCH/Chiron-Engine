@@ -12,6 +12,8 @@ private:
     void DrawWindowContent(const std::shared_ptr<CommandList>& commandList) override;
     void DrawFolderTree();
     bool DrawDeleteFolderMenu(Folder* folder);
+    void DrawFolderPath();
+    void DrawButtonSubdirectories(int i, const std::string& actualSubdirectory);
 
     void GenerateFolders();
     void SelectFolder(Folder* folder);

@@ -41,19 +41,22 @@ Folder* Folder::FindFolder(UID uid)
     return nullptr;
 }
 
-Folder* Folder::FindFolder(const std::vector<std::string>& path, int iterator)
+Folder* Folder::FindFolder(const std::vector<std::string>& path, int iterator /* = 0 */)
 {
     if (iterator == path.size() - 1)
     {
         return this;
     }
+    iterator++;
     for (auto& sub : _subdirectories)
     {
         if (sub->GetName() == path[iterator])
         {
-            return sub->FindFolder(path, iterator + 1);
+            return sub->FindFolder(path, iterator);
         }
     }
+    LOG_ERROR("Didn't find folder");
+    return nullptr;
 }
 
 void Folder::LinkSubdirectory(Folder* subdirectory)

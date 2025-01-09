@@ -35,37 +35,8 @@ void FileBrowserWindow::DrawWindowContent(const std::shared_ptr<CommandList>& co
     {
         if (ImGui::BeginChild("##FolderInfoChild", ImVec2(0, 0), ImGuiChildFlags_Borders))
         {
-            for (int i = 0; i < _selectablePaths.size(); i++)
-            {
-                if (ImGui::Button(_selectablePaths[i].c_str()))
-                {
-                    std::vector<std::string> extracted(
-                        std::make_move_iterator(_selectablePaths.begin()),
-                        std::make_move_iterator(_selectablePaths.begin() + i + 1)
-                    );
-                    SelectFolder(_rootFolder->FindFolder(extracted, 0));
-                }
-                if (i < _selectablePaths.size() - 1)
-                {
-                    ImGui::SameLine();
-                }
-            }
+            DrawFolderPath();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-            ImGui::Text("%s", _selectedFolder->GetName());
-            ImGui::TextDisabled("UID: 0x%08X", _selectedFolder->GetUID());
             ImGui::Separator();
             if (ImGui::BeginTable("##properties", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY))
             {
@@ -126,11 +97,11 @@ void FileBrowserWindow::DrawFolderTree()
             SelectFolder(folder);
         }
 
-        if (ImGui::BeginPopupContextItem("RightClickFolder", ImGuiPopupFlags_MouseButtonRight)) {
+        if (ImGui::BeginPopupContextItem("RightClickFolder", ImGuiPopupFlags_MouseButtonRight)) 
+        {
             if (ImGui::MenuItem("Create Folder"))
             {
                 std::string newPath = folder->GetPath() + "New Folder";
-                CHIRON_TODO("Problem with duplicated names");
                 if (ModuleFileSystem::CreateUniqueDirectory(newPath))
                 {
                     new Folder(newPath, folder);
@@ -218,6 +189,70 @@ bool FileBrowserWindow::DrawDeleteFolderMenu(Folder* folder)
         return true;
     }
     return false;
+}
+
+void FileBrowserWindow::DrawFolderPath()
+{
+    for (int i = 0; i < _selectablePaths.size(); i++)
+    {
+        if (ImGui::Button(_selectablePaths[i].c_str()))
+        {
+            if (i != _selectablePaths.size() - 1)
+            {
+                std::vector<std::string> extracted(
+                    std::make_move_iterator(_selectablePaths.begin()),
+                    std::make_move_iterator(_selectablePaths.begin() + i + 1));
+                SelectFolder(_rootFolder->FindFolder(extracted));
+            }
+        }
+        if (i < _selectablePaths.size() - 1)
+        {
+            ImGui::SameLine();
+            DrawButtonSubdirectories(i, _selectablePaths[i + 1]);
+            ImGui::SameLine();
+        }
+    }
+}
+
+void FileBrowserWindow::DrawButtonSubdirectories(int iterator, const std::string& actualSubdirectory)
+{
+    std::string popupId = "SubdirectoriesMenu##" + std::to_string(iterator);
+    std::string iconFolder = ICON_FA_GREATER_THAN;
+    std::ostringstream oss;
+    oss << iconFolder << "##" << iterator;
+    if (ImGui::Button(oss.str().c_str()))
+    {
+        ImGui::OpenPopup(popupId.c_str());
+    }
+    if (ImGui::BeginPopup(popupId.c_str()))
+    {
+        if (static_cast<unsigned long long>(iterator) + 1 > _selectablePaths.size())
+        {
+            ImGui::EndPopup();
+            return;
+        }
+        std::vector<std::string> extracted(
+            _selectablePaths.begin(),
+            _selectablePaths.begin() + iterator + 1);
+        auto folder = _rootFolder->FindFolder(extracted);
+
+        auto& subdirectories = folder->GetSubdirectories();
+        for (int i = 0; i < subdirectories.size(); i++)
+        {
+            std::string name = subdirectories[i]->GetName();
+            if (name.empty())
+            {
+                name = "Unnamed Folder";
+            }
+            std::string label = name + "##" + std::to_string(i);
+            bool marked = name == actualSubdirectory;
+            if (ImGui::MenuItem(label.c_str(), NULL, marked))
+            {
+                SelectFolder(subdirectories[i].get());
+            }
+        }
+        ImGui::EndPopup();
+    }
 }
 
 void FileBrowserWindow::GenerateFolders()
