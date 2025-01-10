@@ -1,19 +1,30 @@
 #include "Pch.h"
 #include "FileBrowserWindow.h"
 
-#include "Modules/ModuleFileSystem.h"
+#include "Application.h"
 
+#include "Modules/ModuleFileSystem.h"
+#include "Modules/ModuleResources.h"
+
+#include "DataModels/Assets/TextureAsset.h"
 #include "DataModels/FileSystem/Folder/Folder.h"
+
+#include "DataModels/DX12/CommandList/CommandList.h"
+#include "DataModels/DX12/DescriptorAllocator/DescriptorAllocator.h"
+#include "DataModels/DX12/Resource/Texture.h"
 
 #include <sstream>
 
 FileBrowserWindow::FileBrowserWindow() : EditorWindow(ICON_FA_FOLDER_TREE " File Browser", ImGuiWindowFlags_AlwaysAutoResize),
 _currentPath("Assets")
 {
+    auto futureFolder = App->GetModule<ModuleResources>()->RequestAsset<TextureAsset>("Engine/Icons/Folder_Default.png");
+
     _rootFolder = std::make_unique<Folder>(_currentPath);
     SelectFolder(_rootFolder.get());
-
     GenerateFolders();
+
+    _folderIcon = futureFolder.get();
 }
 
 FileBrowserWindow::~FileBrowserWindow()
@@ -38,13 +49,8 @@ void FileBrowserWindow::DrawWindowContent(const std::shared_ptr<CommandList>& co
             DrawFolderPath();
 
             ImGui::Separator();
-            if (ImGui::BeginTable("##properties", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY))
-            {
-                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 2.0f);
-
-                ImGui::EndTable();
-            }
+            
+            DrawFolderContent(commandList);
         }
         ImGui::EndChild();
     }
@@ -252,6 +258,76 @@ void FileBrowserWindow::DrawButtonSubdirectories(int iterator, const std::string
             }
         }
         ImGui::EndPopup();
+    }
+}
+
+void FileBrowserWindow::DrawFolderContent(const std::shared_ptr<CommandList>& commandList)
+{
+    // Transition Resource
+    commandList->TransitionBarrier(_folderIcon->GetTexture().get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+    float itemWidth = 50.0f;
+    float availableWidth = ImGui::GetContentRegionAvail().x;
+    int itemsPerRow = static_cast<int>(availableWidth / itemWidth);
+    if (itemsPerRow < 1)
+    {
+        itemsPerRow = 1;
+    }
+
+    if (ImGui::BeginTable("DynamicTable", itemsPerRow, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY))
+    {
+        for (auto& folder : _selectedFolder->GetSubdirectories())
+        {
+            ImGui::TableNextColumn();
+
+            ImGui::PushID(folder->GetUID());
+
+            ImVec2 iconSize(48, 48);
+            if (ImGui::Selectable("", false, ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_AllowOverlap, iconSize))
+            {
+                if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                {
+                    SelectFolder(folder.get());
+                }
+            }
+            ImVec2 selectableMin = ImGui::GetItemRectMin();
+            ImVec2 selectableMax = ImGui::GetItemRectMax();
+            ImVec2 selectableSize = ImVec2(selectableMax.x - selectableMin.x, selectableMax.y - selectableMin.y);
+
+            ImVec2 imagePos = ImVec2(
+                selectableMin.x + (selectableSize.x - iconSize.x) / 2.0f, // Center horizontally
+                selectableMin.y + (selectableSize.y - iconSize.y) / 2.0f  // Center vertically
+            );
+
+            ImGui::SetCursorScreenPos(imagePos);
+            ImGui::Image((ImTextureID)(_folderIcon->GetTexture()->GetShaderResourceView().GetGPUDescriptorHandle().ptr),
+                iconSize);
+
+            // Truncate name
+            std::string name = folder->GetName();
+            float maxWidth = iconSize.x + 5;
+            std::string truncatedLabel = name;
+            const std::string ellipsis = "...";
+
+            float textWidth = ImGui::CalcTextSize(name.c_str()).x;
+
+            if (textWidth > maxWidth)
+            {
+                while (!truncatedLabel.empty() && ImGui::CalcTextSize((truncatedLabel + ellipsis).c_str()).x > maxWidth)
+                {
+                    truncatedLabel.pop_back();
+                }
+                truncatedLabel += ellipsis;
+            }
+
+            float textOffsetX = (maxWidth > textWidth) ? (maxWidth - textWidth) * 0.5f : 0.0f;
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + textOffsetX);
+            ImGui::Text(truncatedLabel.c_str());
+
+            CHIRON_TODO("Display Files");
+            ImGui::PopID();
+        }
+        ImGui::EndTable();
     }
 }
 

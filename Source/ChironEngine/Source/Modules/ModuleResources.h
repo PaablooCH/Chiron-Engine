@@ -52,7 +52,6 @@ private:
 
     std::string GetLibraryPath(UID uid, AssetType type);
     std::string GetLibraryPathByType(AssetType type);
-    std::string GetAssetPathByType(AssetType type);
     AssetType GetTypeByExtension(const std::string& path);
     AssetType GetTypeByLibraryPath(const std::string& path);
     AssetType GetTypeByFolderName(std::string& pathWithOutFile);
@@ -79,7 +78,13 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
         [this, path, promise]() {
             try {
                 std::shared_ptr<Asset> shared;
-                AssetType type = GetTypeByExtension(path);
+                std::string filePath = path;
+                if (!ModuleFileSystem::ExistsFile(filePath.c_str()))
+                {
+                    // if the path comes from outside the project we want to check only Assets folder
+                    filePath = ModuleFileSystem::TrimPathToDesired(filePath, "Assets");
+                }
+                AssetType type = GetTypeByExtension(filePath);
                 if (type == AssetType::UNKNOWN)
                 {
                     LOG_ERROR("Extension not supported.");
@@ -87,7 +92,6 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
                     return;
                 }
 
-                std::string filePath = GetAssetPathByType(type) + ModuleFileSystem::GetFile(path.c_str());
                 std::string metaPath = filePath + META_EXT;
 
                 if (ModuleFileSystem::ExistsFile(metaPath.c_str()))
@@ -119,12 +123,13 @@ inline std::future<std::shared_ptr<A>> ModuleResources::RequestAsset(const std::
                     }
                 }
                 // If anything previous works import it again
-                if (!ModuleFileSystem::ExistsFile(filePath.c_str()))
+                CHIRON_TODO("Delete");
+                /*if (!ModuleFileSystem::ExistsFile(filePath.c_str()))
                 {
-                    CHIRON_TODO("copy the file outside the project into the project");
-                    promise->set_value(nullptr);
-                    return;
-                }
+                    std::string newPath = "Assets/" + ModuleFileSystem::GetFile(path.c_str());
+                    ModuleFileSystem::CopyFileC(path.c_str(), newPath.c_str());
+                    filePath = newPath;
+                }*/
                 shared = CreateNewAsset(filePath, type);
                 ImportAsset(shared);
                 promise->set_value(std::dynamic_pointer_cast<A>(shared));

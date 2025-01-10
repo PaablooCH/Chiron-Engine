@@ -254,25 +254,6 @@ std::string ModuleResources::GetLibraryPathByType(AssetType type)
     return "";
 }
 
-std::string ModuleResources::GetAssetPathByType(AssetType type)
-{
-    switch (type)
-    {
-    case AssetType::Material:
-        return MATERIALS_PATH;
-    case AssetType::Mesh:
-        return MESHES_PATH;
-    case AssetType::Model:
-        return MODELS_PATH;
-    case AssetType::Texture:
-        return TEXTURES_PATH;
-    case AssetType::UNKNOWN:
-        LOG_WARNING("Try to get the UNKNOWN library folder.");
-        break;
-    };
-    return "";
-}
-
 AssetType ModuleResources::GetTypeByLibraryPath(const std::string& path)
 {
     std::string pathWithOutFile = ModuleFileSystem::GetPathWithoutFile(path);

@@ -21,13 +21,15 @@ public:
     static std::vector<std::string> SplitPath(const std::string& path);
     static bool DeleteDirectory(const char* path);
     static bool MoveDirectory(const char* sourcePath, const char* destinationPath);
+    static bool CopyFileC(const char* sourcePath, const char* destPath);
+    static std::string TrimPathToDesired(const std::string& fullPath, const std::string& desiredStart);
 
     // ------------- PHYSFS METHODS ----------------------
 
     static bool SaveFile(const char* filePath, const void* buffer, size_t size, bool append = false);
     static int LoadFile(const char* filePath, char*& buffer);
     static int LoadJson(const char* filePath, Json& json);
-    static bool CopyFileC(const char* sourcePath, const char* destPath);
+    static bool CopyFilePHYSFS(const char* sourcePath, const char* destPath);
     static bool DeleteFileC(const char* path);
     static bool ExistsFile(const char* path);
     static bool CreateDirectoryC(const char* directoryName);

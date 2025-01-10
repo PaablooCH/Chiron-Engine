@@ -187,6 +187,53 @@ bool ModuleFileSystem::MoveDirectory(const char* sourcePath, const char* destina
     }
 }
 
+bool ModuleFileSystem::CopyFileC(const char* sourcePath, const char* destPath)
+{
+    try 
+    {
+        std::filesystem::path destination = destPath;
+        std::filesystem::path source = sourcePath;
+        std::filesystem::copy(source, destination, std::filesystem::copy_options::overwrite_existing);
+        LOG_INFO("File copied successfully");
+        if (!PHYSFS_mount(destination.parent_path().string().c_str(), nullptr, 1))
+        {
+            LOG_ERROR("Warning: Unable to mount destination into PhysFS: {}", PHYSFS_getLastError());
+            return false;
+        }
+        return true;
+    }
+    catch (const std::filesystem::filesystem_error& e) 
+    {
+        LOG_ERROR("Error: {}", e.what());
+    }
+}
+
+std::string ModuleFileSystem::TrimPathToDesired(const std::string& fullPath, const std::string& desiredStart)
+{
+    std::filesystem::path path(fullPath);
+    std::filesystem::path result;
+
+    bool found = false;
+    for (const auto& part : path) 
+    {
+        if (part == desiredStart) 
+        {
+            found = true;
+        }
+        if (found) 
+        {
+            result /= part;
+        }
+    }
+
+    if (!found) 
+    {
+        LOG_ERROR("Desired part not found in the path.");
+    }
+
+    return result.generic_string();
+}
+
 bool ModuleFileSystem::SaveFile(const char* filePath, const void* buffer, size_t size, bool append /*= false */)
 {
     PHYSFS_File* handle;
@@ -256,7 +303,7 @@ int ModuleFileSystem::LoadJson(const char* filePath, Json& json)
     return size;
 }
 
-bool ModuleFileSystem::CopyFileC(const char* sourcePath, const char* destPath)
+bool ModuleFileSystem::CopyFilePHYSFS(const char* sourcePath, const char* destPath)
 {
     if (!ExistsFile(sourcePath))
     {
