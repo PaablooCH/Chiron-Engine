@@ -23,7 +23,7 @@ void Font::SetDefaultFont()
     float baseFontSize = 16.0f;
     float iconFontSize = baseFontSize * 0.80f;
 
-    _instanceFont->_robotoRegular = std::unique_ptr<ImFont>(io.Fonts->AddFontFromFileTTF("Fonts/Roboto/Roboto-Regular.ttf", baseFontSize));
+    _instanceFont->_robotoRegular = std::unique_ptr<ImFont>(io.Fonts->AddFontFromFileTTF("Engine/Fonts/Roboto/Roboto-Regular.ttf", baseFontSize));
 
     // merge in icons from Font Awesome
     static const ImWchar iconsRanges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
@@ -32,7 +32,7 @@ void Font::SetDefaultFont()
     iconsConfig.PixelSnapH = true;
     iconsConfig.GlyphMinAdvanceX = iconFontSize;
     iconsConfig.GlyphOffset.y = -0.7f;
-    io.Fonts->AddFontFromFileTTF("Fonts/FontAwesome/fa-solid-900.ttf", iconFontSize, &iconsConfig, iconsRanges);
+    io.Fonts->AddFontFromFileTTF("Engine/Fonts/FontAwesome/fa-solid-900.ttf", iconFontSize, &iconsConfig, iconsRanges);
 
     io.Fonts->Build();
     io.FontDefault = _instanceFont->_robotoRegular.get();
@@ -80,7 +80,7 @@ void Font::GenerateInstance()
         float baseFontSize = 16.0f;
         float iconFontSize = baseFontSize * 0.80f;
 
-        _instanceFont->_forkWebfont = std::unique_ptr<ImFont>(io.Fonts->AddFontFromFileTTF("Fonts/Roboto/Roboto-Regular.ttf", baseFontSize));
+        _instanceFont->_forkWebfont = std::unique_ptr<ImFont>(io.Fonts->AddFontFromFileTTF("Engine/Fonts/Roboto/Roboto-Regular.ttf", baseFontSize));
 
         // merge in icons from Font Awesome
         static const ImWchar iconsRanges[] = { ICON_MIN_FK, ICON_MAX_16_FK, 0 };
@@ -89,7 +89,7 @@ void Font::GenerateInstance()
         iconsConfig.PixelSnapH = true;
         iconsConfig.GlyphMinAdvanceX = iconFontSize;
         iconsConfig.GlyphOffset.y = -0.7f;
-        io.Fonts->AddFontFromFileTTF("Fonts/ForkAwesome/forkawesome-webfont.ttf", iconFontSize, &iconsConfig, iconsRanges);
+        io.Fonts->AddFontFromFileTTF("Engine/Fonts/ForkAwesome/forkawesome-webfont.ttf", iconFontSize, &iconsConfig, iconsRanges);
 
         io.Fonts->Build();
     }
